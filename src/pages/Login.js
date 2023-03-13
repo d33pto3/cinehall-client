@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser } from "../features/auth/authSlice";
 
 //initial State
 const initialState = {
@@ -9,7 +11,9 @@ const initialState = {
 };
 
 export function Login() {
+  const dispatch = useDispatch();
   const [userLoginInfo, setUserLoginInfo] = useState(initialState);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setUserLoginInfo({
@@ -20,8 +24,10 @@ export function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(userLoginInfo.email, userLoginInfo.password);
+    dispatch(loginUser(userLoginInfo));
+
     setUserLoginInfo(initialState);
+    navigate("/");
   };
 
   return (

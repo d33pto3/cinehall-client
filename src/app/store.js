@@ -1,8 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "../features/user/userSlice";
+import authReducer from "../features/auth/authSlice";
+import movieReducer from "../features/movie/movieSlice";
+import bookingsReducer from "../features/bookings/bookingsSlice";
+import theaterReducer from "../features/theaters/theaterSlice";
 
 export const store = configureStore({
   reducer: {
-    user: userReducer,
+    auth: authReducer,
+    movies: movieReducer,
+    bookings: bookingsReducer,
+    theaters: theaterReducer,
   },
 });

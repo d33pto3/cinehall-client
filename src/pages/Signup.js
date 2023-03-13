@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { addUser } from "../features/user/userSlice";
+import { addUser } from "../features/auth/authSlice";
 import validator from "validator";
 
 const initialState = {

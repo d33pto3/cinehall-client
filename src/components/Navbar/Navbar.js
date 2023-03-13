@@ -1,19 +1,27 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import AuthComp from "./AuthComp";
-import CineHall from "./CineHall";
-import Logout from "./Logout";
-import { BsSearch } from "react-icons/bs";
 import { RiSearchLine } from "react-icons/ri";
+import { useSelector } from "react-redux";
+import DropDownMenu from "./DropDownMenu";
 
 export default function Navbar() {
-  const user = localStorage.getItem("user");
+  const { auth } = useSelector((state) => state);
+  const { user } = auth;
+  // useEffect(() => {
+  //   const { user, token } = JSON.parse(localStorage.getItem("user"));
+  //   console.log(user.email, token);
+  //   if (user) {
+  //     dispatch(loginUser(user.email, user.password));
+  //   }
+  // }, [dispatch]);
+
   return (
     <nav className="w-full max-h-30 py-4 bg-slate-800 shadow">
       <div className="w-full container mx-auto flex flex-wrap items-center justify-between">
         <div>
           <Link to="/" className="p-20">
-            <CineHall />
+            <span className="text-white text-4xl">CINEHALL</span>
           </Link>
         </div>
         <div className="flex items-center text-lg no-underline text-white pr-6">
@@ -29,14 +37,13 @@ export default function Navbar() {
           </div>
           <Link className="mr-5">About</Link>
           <Link className="mr-7">Contact</Link>
-
-          {!user ? (
+          {user ? (
+            <DropDownMenu user={user} />
+          ) : (
             <>
               <AuthComp authType={"Login"} goto={"/login"} />
               <AuthComp authType={"Signup"} goto={"/signup"} />
             </>
-          ) : (
-            <Logout />
           )}
         </div>
       </div>

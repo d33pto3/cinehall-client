@@ -5,9 +5,11 @@ import NowPlaying from "../components/MovieSlider/NowPlaying";
 import TopMovieSlider from "../components/MovieSlider/TopMovie/TopMovieSlider";
 
 export default function Home() {
-  const user = useSelector((state) => state.user);
+  // const { isLoading, isError, user, error } = useSelector(
+  //   (state) => state.user
+  // );
 
-  // console.log(user);
+  // console.log(user, isLoading, error, isError);
 
   return (
     <>
