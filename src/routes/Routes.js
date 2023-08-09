@@ -19,8 +19,8 @@ import AddMoviePage from "../components/Movie/AddMovie";
 import Theater from "../components/Theaters/Theater";
 
 const AppRoutes = () => {
-  const { user } = JSON.parse(localStorage.getItem("user"));
-  const { role } = user;
+  // const { user } = JSON.parse(localStorage.getItem("user")) || null;
+  // const { role } = user || null;
 
   return (
     <Router>
@@ -29,7 +29,7 @@ const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-        <Route element={<ProtectedRoute />}>
+        {/* <Route element={<ProtectedRoute />}>
           {role === "admin" && (
             <>
               <Route path="/admin/:id" element={<AdminDashboard />} />
@@ -40,7 +40,7 @@ const AppRoutes = () => {
           <Route path="/user/:id" element={<UserDashboard />} />
           <Route path="/movies/:id" element={<MovieDetails />} />
           <Route path="*" element={<Navigate to="/" />} />
-        </Route>
+        </Route> */}
       </Routes>
       <Footer />
     </Router>

@@ -13,6 +13,7 @@ export const addUserAsync = async (user) => {
     return response.data;
   } catch (err) {
     console.log(err.response.data.error);
+    return "There was an signing the user";
   }
 };
 
