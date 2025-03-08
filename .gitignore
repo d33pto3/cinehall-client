@@ -1,0 +1,55 @@
+# Node.js dependencies
+node_modules/
+
+# Build directories
+build/
+dist/
+out/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE or Editor-specific files
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Next.js build outputs
+.next/
+.next/cache/
+
+# Environment variable files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Test coverage
+coverage/
+
+# Sentry or other error tracking system output
+.sentry/
+
+# Temporary files from npm
+package-lock.json
+
+# Miscellaneous
+*.tgz
+*.bak
+*.swp
+
+# Ignore large files that are not part of the repo (like node_modules/@next/swc)
+node_modules/@next/swc-linux-x64-gnu/next-swc.linux-x64-gnu.node
+node_modules/@next/swc-linux-x64-musl/next-swc.linux-x64-musl.node
