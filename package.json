@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "dev": "turbo run dev --parallel",
+    "dev:web": "cd apps/web && yarn dev",
     "build": "turbo run build",
     "start": "turbo run start",
     "lint": "turbo run lint",
