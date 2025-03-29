@@ -1,9 +1,16 @@
 // src/context/AuthContext.tsx
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+  useCallback,
+} from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface User {
   _id: string;
@@ -14,13 +21,18 @@ interface User {
 }
 
 interface AuthContextType {
+  user: User | null;
+  loading: boolean;
   isAuthenticated: boolean;
-  user: User | null; // Replace with your User type
+  error: string | null;
   register: (
     userData: Omit<User, "_id" | "role"> & { password: string }
   ) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
+  firebaseLogin: (idToken: string) => Promise<void>;
   logout: () => Promise<void>;
+  checkAuth: () => Promise<void>;
+  clearError: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,10 +40,44 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+  const clearError = useCallback(() => setError(null), []);
+
+  const checkAuth = useCallback(async () => {
+    try {
+      setLoading(true);
+      const url = process.env.NEXT_PUBLIC_API_URL;
+      if (!url) throw new Error("API URL is not defined");
+
+      const response = await axios.get(`${url}/auth/me`, {
+        withCredentials: true,
+      });
+
+      setUser(response.data.user);
+      setIsAuthenticated(true);
+    } catch (error) {
+      setIsAuthenticated(false);
+      setUser(null);
+      if (axios.isAxiosError(error)) {
+        // setError(error.response?.data?.message || "Session expired");
+        console.log(error);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   const login = async (email: string, password: string) => {
     try {
+      setLoading(true);
+      clearError();
       const url = process.env.NEXT_PUBLIC_API_URL;
       if (!url)
         throw new Error("API URL is not defined in environment variables.");
@@ -42,17 +88,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         { withCredentials: true } // Include cookies in the request
       );
 
-      const { user: userData } = response.data;
-
-      // Update state
+      setUser(response.data.user);
       setIsAuthenticated(true);
-      setUser(userData);
-
-      // Redirect to dashboard or home
       router.push("/");
     } catch (error) {
-      console.error("Login failed:", error);
+      setIsAuthenticated(false);
+      setUser(null);
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "Login failed");
+      }
       throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const firebaseLogin = async (idToken: string) => {
+    try {
+      setLoading(true);
+      clearError();
+      const url = process.env.NEXT_PUBLIC_API_URL;
+      if (!url) throw new Error("API URL is not defined");
+
+      const response = await axios.post(
+        `${url}/auth/login/firebase`,
+        { idToken },
+        { withCredentials: true }
+      );
+
+      setUser(response.data.user);
+      setIsAuthenticated(true);
+      router.push("/");
+    } catch (error) {
+      setIsAuthenticated(false);
+      setUser(null);
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "Firebase login failed");
+      }
+      throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,31 +135,67 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     userData: Omit<User, "_id" | "role"> & { password: string }
   ) => {
     try {
+      setLoading(true);
+      clearError();
       const url = process.env.NEXT_PUBLIC_API_URL;
       if (!url)
         throw new Error("API URL is not defined in environment variables.");
 
-      await axios.post(`${url}/auth/register`, userData, {
+      const response = await axios.post(`${url}/auth/register`, userData, {
         withCredentials: true, // Include cookies in the request
       });
 
-      // Optionally, you can log the user in after registration
-      await login(userData.email, userData.password);
+      setUser(response.data.user);
+      setIsAuthenticated(true);
+      router.push("/");
     } catch (error) {
-      console.error("Registration failed:", error);
+      setIsAuthenticated(false);
+      setUser(null);
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "Registration failed");
+      }
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   const logout = async () => {
-    setIsAuthenticated(false);
-    setUser(null);
-    return Promise.resolve();
+    try {
+      setLoading(true);
+      clearError();
+      const url = process.env.NEXT_PUBLIC_API_URL;
+      if (!url)
+        throw new Error("API URL is not defined in environment variables.");
+
+      await axios.post(`${url}/auth/logout`, {}, { withCredentials: true });
+
+      setIsAuthenticated(false);
+      setUser(null);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "Logout failed");
+      }
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, user, register, login, logout }}
+      value={{
+        user,
+        loading,
+        isAuthenticated,
+        error,
+        register,
+        login,
+        firebaseLogin,
+        logout,
+        checkAuth,
+        clearError,
+      }}
     >
       {children}
     </AuthContext.Provider>

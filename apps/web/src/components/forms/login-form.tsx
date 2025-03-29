@@ -16,6 +16,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -28,7 +32,11 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { login } = useAuth();
+  const { login, error, clearError, loading } = useAuth();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const redirectUrl = searchParams.get("redirect") || "/";
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(formSchema),
@@ -40,10 +48,15 @@ export function LoginForm({
 
   const onSubmit = async (data: LoginFormData) => {
     try {
+      setIsSubmitting(true);
+      clearError();
       const { email, password } = data;
       await login(email, password);
+      router.push(redirectUrl);
     } catch (error) {
       console.error("Error during API call:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -57,6 +70,12 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {error && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className="flex flex-col gap-6">
@@ -73,8 +92,12 @@ export function LoginForm({
                   placeholder="******"
                 />
                 <div className="flex flex-col gap-3">
-                  <Button type="submit" className="w-full">
-                    Login
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={isSubmitting || loading}
+                  >
+                    {isSubmitting ? "Logging in..." : "Login"}
                   </Button>
                   <Button variant="outline" className="w-full">
                     Login with Google
