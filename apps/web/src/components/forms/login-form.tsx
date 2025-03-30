@@ -32,7 +32,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { login, error, clearError, loading } = useAuth();
+  const { login, error, clearError, loading, firebaseLogin } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,6 +55,19 @@ export function LoginForm({
       router.push(redirectUrl);
     } catch (error) {
       console.error("Error during API call:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleFirebaseLogin = async () => {
+    try {
+      setIsSubmitting(true);
+      clearError();
+      await firebaseLogin();
+      router.push(redirectUrl);
+    } catch (error) {
+      console.log("Error during google login: ", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -99,7 +112,13 @@ export function LoginForm({
                   >
                     {isSubmitting ? "Logging in..." : "Login"}
                   </Button>
-                  <Button variant="outline" className="w-full">
+                  <Button
+                    variant="outline"
+                    className="w-full hover:cursor-pointer"
+                    type="button"
+                    onClick={handleFirebaseLogin}
+                    disabled={isSubmitting || loading}
+                  >
                     Login with Google
                   </Button>
                 </div>

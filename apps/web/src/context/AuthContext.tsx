@@ -11,6 +11,8 @@ import {
 } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "@/lib/firebase/client";
 
 interface User {
   _id: string;
@@ -29,7 +31,7 @@ interface AuthContextType {
     userData: Omit<User, "_id" | "role"> & { password: string }
   ) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
-  firebaseLogin: (idToken: string) => Promise<void>;
+  firebaseLogin: () => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
   clearError: () => void;
@@ -40,6 +42,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [idToken, setIdToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -103,13 +106,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const firebaseLogin = async (idToken: string) => {
+  const firebaseLogin = async () => {
     try {
       setLoading(true);
       clearError();
+      const userCredential = await signInWithPopup(auth, googleProvider);
+      const token = await userCredential.user.getIdToken();
+      setIdToken(token);
+
       const url = process.env.NEXT_PUBLIC_API_URL;
       if (!url) throw new Error("API URL is not defined");
 
+      // send token to backend
       const response = await axios.post(
         `${url}/auth/login/firebase`,
         { idToken },
