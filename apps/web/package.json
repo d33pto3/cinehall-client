@@ -16,6 +16,7 @@
     "axios": "^1.8.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "firebase": "^11.5.0",
     "framer-motion": "^12.6.2",
     "lucide-react": "^0.485.0",
     "motion": "^12.6.2",
