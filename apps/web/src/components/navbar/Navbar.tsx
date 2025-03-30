@@ -6,21 +6,30 @@ import React, { FC } from "react";
 import { Button } from "../ui/button";
 
 const Navbar: FC = ({}) => {
-  const { user } = useAuth();
+  const { loading, user, logout } = useAuth();
   console.log(user);
+  console.log("loading", loading);
   return (
     <div className="flex flex-row-reverse justify-between items-center pt-3">
       <div>
         {user ? (
           <div className="flex items-center gap-2">
             <Link href={"/profile"}>Welcome, {user.username}</Link>
-            <Button>Logout</Button>
+            <Button className="hover:cursor-pointer" onClick={logout}>
+              Logout
+            </Button>
           </div>
         ) : (
           <Link href={"/login"}>Login</Link>
         )}
       </div>
-      <div className="font-bold text-4xl">CineHall</div>
+      <Link
+        href={"/"}
+        className="font-bold text-[4.7rem] flex items-center justify-center"
+      >
+        {/* <TextHoverEffect text="CineHall" /> */}
+        CineHall
+      </Link>
     </div>
   );
 };
