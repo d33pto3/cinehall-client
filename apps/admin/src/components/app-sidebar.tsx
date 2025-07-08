@@ -35,7 +35,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
           },
           {
             title: "All Halls",
-            url: "#",
+            url: "/admin/halls",
             icon: IconListDetails,
           },
           {

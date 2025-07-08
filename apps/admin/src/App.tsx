@@ -30,7 +30,7 @@ function App() {
       {isAuthenticated && user?.role === "admin" && (
         <Route path="/admin" element={<Layout />}>
           <Route index element={<AdminDashboard />} />
-          <Route path="/" element={<Halls />} />
+          <Route path="halls" element={<Halls />} />
         </Route>
       )}
 
