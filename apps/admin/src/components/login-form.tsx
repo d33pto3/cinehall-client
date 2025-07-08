@@ -31,9 +31,12 @@ export function LoginForm({
   const onSubmit: SubmitHandler<ILoginFormInput> = async (data) => {
     try {
       const user = await login(data.email, data.password);
+
+      console.log(user);
+
       if (user?.role === "admin") {
         navigate("/admin");
-      } else if (user?.role === "hallowner") {
+      } else if (user?.role === "hallOwner") {
         navigate("/hall");
       } else {
         toast.error("Unauthenticated user!");

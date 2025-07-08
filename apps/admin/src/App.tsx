@@ -1,9 +1,10 @@
 import "./App.css";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/layout";
-import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import { useAuth } from "./context/AuthContext";
+import AdminDashboard from "./pages/AdminDashboard";
+import Halls from "./pages/admin/Halls";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -17,7 +18,8 @@ function App() {
       <Route
         path="/"
         element={
-          isAuthenticated ? (
+          isAuthenticated &&
+          (user?.role === "admin" || user?.role === "hallOwner") ? (
             <Navigate to={user?.role === "admin" ? "/admin" : "/hallowner"} />
           ) : (
             <Login />
@@ -27,13 +29,14 @@ function App() {
 
       {isAuthenticated && user?.role === "admin" && (
         <Route path="/admin" element={<Layout />}>
-          <Route index element={<Dashboard />} />
+          <Route index element={<AdminDashboard />} />
+          <Route path="/" element={<Halls />} />
         </Route>
       )}
 
-      {isAuthenticated && user?.role === "hallowner" && (
+      {isAuthenticated && user?.role === "hallOwner" && (
         <Route path="/hallowner" element={<Layout />}>
-          <Route index element={<Dashboard />} />
+          <Route index element={<AdminDashboard />} />
         </Route>
       )}
 

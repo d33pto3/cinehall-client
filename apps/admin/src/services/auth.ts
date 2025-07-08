@@ -17,7 +17,8 @@ export async function getCurrentUser() {
   const response = await axios.get("/auth/me", {
     withCredentials: true,
   });
-  return response.data.user;
+
+  return response.data;
 }
 
 export async function logout() {

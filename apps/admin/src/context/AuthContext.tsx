@@ -12,13 +12,14 @@ import {
 } from "../services/auth";
 import { useNavigate } from "react-router-dom";
 
-type UserRole = "admin" | "hallowner";
+type UserRole = "admin" | "hallOwner";
 
-interface User {
+export interface User {
   _id: string;
   name: string;
   email: string;
   role: UserRole;
+  avatar: string;
 }
 
 interface AuthContextType {
@@ -45,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         // Redirect based on role
         if (user?.role === "admin") navigate("/admin");
-        else if (user?.role === "hallOwner") navigate("/hallOwner");
+        else if (user?.role === "hallowner") navigate("/hallowner");
       } catch (error) {
         setUser(null);
         // navigate("/login");
@@ -55,19 +56,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     initAuth();
-  }, [navigate]); // Empty dependency array = runs once on mount
+  }, []); // Empty dependency array = runs once on mount
 
   const login = async (email: string, password: string) => {
     const user = await loginAPI(email, password); // Sets cookie via backend
     setUser(user);
-    console.log(user);
-    // if (user?.role === "admin") navigate("/admin");
-    // else if (user?.role === "hallowner") navigate("/hallowner");
-    // return user;
+    return user;
   };
 
   const logout = async () => {
-    await logoutAPI(); // Backend clears the cookie
+    await logoutAPI();
     setUser(null);
     navigate("/login");
   };
