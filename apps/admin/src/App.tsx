@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import { useAuth } from "./context/AuthContext";
 import AdminDashboard from "./pages/AdminDashboard";
 import Halls from "./pages/admin/Halls";
+import AddHall from "./pages/admin/AddHall";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -31,6 +32,7 @@ function App() {
         <Route path="/admin" element={<Layout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="halls" element={<Halls />} />
+          <Route path="halls/add-hall" element={<AddHall />} />
         </Route>
       )}
 

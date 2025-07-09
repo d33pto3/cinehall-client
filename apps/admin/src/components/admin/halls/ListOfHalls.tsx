@@ -7,9 +7,7 @@ import {
 } from "@tanstack/react-table";
 import TSTable from "@/components/common/TSTable";
 import axios from "../../../utils/axios";
-
-// import { HallsTableActions } from "@/components/HallsTableActions"; // create this
-
+import HallMoreAction from "./MoreAction";
 interface Hall {
   _id: string;
   name: string;
@@ -64,10 +62,7 @@ export default function ListOfHalls() {
     {
       id: "actions",
       header: "",
-      cell: ({ row }) => (
-        // <HallsTableActions hallId={row.original._id}
-        <></>
-      ),
+      cell: ({ row }) => <HallMoreAction hallId={row.original._id} />,
     },
   ];
 

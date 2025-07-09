@@ -41,15 +41,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        const user = await getCurrentUser(); // Automatically sends cookie
+        const user = await getCurrentUser();
         setUser(user);
 
-        // Redirect based on role
-        if (user?.role === "admin") navigate("/admin");
-        else if (user?.role === "hallowner") navigate("/hallowner");
+        // only redirect if on root or login page
+        const currentPath = location.pathname;
+        if (
+          currentPath === "/" ||
+          currentPath === "/login" ||
+          currentPath === ""
+        ) {
+          if (user?.role === "admin") navigate("/admin");
+          else if (user?.role === "hallowner") navigate("/hallowner");
+        }
       } catch (error) {
         setUser(null);
-        // navigate("/login");
       } finally {
         setLoading(false);
       }
