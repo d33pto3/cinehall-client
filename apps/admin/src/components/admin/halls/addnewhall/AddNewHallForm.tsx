@@ -86,7 +86,7 @@ export default function AddNewHallForm() {
         });
         // form.reset();
       }
-    } catch (err) {
+    } catch (err: any) {
       console.log(err);
       toast.error(err?.response?.data?.message || "Something went wrong");
     } finally {
