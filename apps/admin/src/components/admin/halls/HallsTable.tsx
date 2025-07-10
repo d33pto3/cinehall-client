@@ -39,7 +39,7 @@ export default function HallsTable() {
 
   return (
     <>
-      <div className="container mx-auto p-8">
+      <div className="container mx-auto">
         <h1 className="text-4xl font-bold mb-6">Halls</h1>
         <div className="flex mb-6 items-center">
           <div className="relative w-64 mr-2">

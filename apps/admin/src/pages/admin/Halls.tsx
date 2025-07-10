@@ -2,14 +2,14 @@ import HallsTable from "@/components/admin/halls/HallsTable";
 
 // import ListingsTable from "./components/ListingsTable";
 function Halls() {
-//   {
-//   searchParams,
-// }: {
-//   searchParams?: {
-//     query?: string;
-//     page?: string;
-//   };
-// }
+  //   {
+  //   searchParams,
+  // }: {
+  //   searchParams?: {
+  //     query?: string;
+  //     page?: string;
+  //   };
+  // }
   // const query = searchParams?.query || "";
 
   return (

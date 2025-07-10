@@ -36,8 +36,6 @@ export default function ListOfHalls() {
     fetchHalls();
   }, []);
 
-  console.log(halls);
-
   const columns: ColumnDef<Hall>[] = [
     {
       accessorKey: "name",
