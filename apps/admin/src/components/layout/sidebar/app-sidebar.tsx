@@ -7,8 +7,8 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 
-import { NavMain } from "@/components/nav-main";
-import { NavUser } from "@/components/nav-user";
+import { NavMain } from "@/components/layout/sidebar/nav-main";
+import { NavUser } from "@/components/layout/sidebar/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -30,8 +30,13 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       ? [
           {
             title: "Dashboard",
-            url: "#",
+            url: "/admin",
             icon: IconDashboard,
+          },
+          {
+            title: "Users",
+            url: "/admin/users",
+            icon: IconUsers,
           },
           {
             title: "All Halls",
@@ -47,11 +52,6 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             title: "Movie Library",
             url: "#",
             icon: IconFolder,
-          },
-          {
-            title: "Showtimes",
-            url: "#",
-            icon: IconUsers,
           },
         ]
       : [

@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export function NavMain({
   items,
@@ -19,6 +19,8 @@ export function NavMain({
     icon?: Icon;
   }[];
 }) {
+  const navigate = useNavigate();
+
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -43,12 +45,13 @@ export function NavMain({
         </SidebarMenu>
         <SidebarMenu>
           {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title}>
-                <Link to={item.url} className="flex items-center gap-2">
-                  {item.icon && <item.icon className="w-4 h-4" />}
-                  <span>{item.title}</span>
-                </Link>
+            <SidebarMenuItem key={item.title} className="">
+              <SidebarMenuButton
+                tooltip={item.title}
+                onClick={() => navigate(item.url)}
+              >
+                {item.icon && <item.icon className="w-4 h-4" />}
+                <span>{item.title}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

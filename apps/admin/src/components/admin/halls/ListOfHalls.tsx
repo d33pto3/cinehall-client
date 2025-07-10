@@ -6,7 +6,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import TSTable from "@/components/common/TSTable";
-import axios from "../../../utils/axios";
+import axios from "../../../lib/axios";
 import HallMoreAction from "./MoreAction";
 interface Hall {
   _id: string;

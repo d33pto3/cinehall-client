@@ -21,10 +21,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import axios from "@/utils/axios";
+import axios from "@/lib/axios";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "react-toastify";
-import { sleep } from "@/utils/sleep";
+import { sleep } from "@/lib/sleep";
 
 const hallFormSchema = z.object({
   name: z.string().min(1, {

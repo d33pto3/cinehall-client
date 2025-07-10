@@ -1,11 +1,13 @@
 import "./App.css";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Layout from "./components/layout";
-import Login from "./pages/Login";
+import Layout from "@/components/layout";
+import Login from "@/pages/Login";
 import { useAuth } from "./context/AuthContext";
-import AdminDashboard from "./pages/AdminDashboard";
-import Halls from "./pages/admin/Halls";
-import AddHall from "./pages/admin/AddHall";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import Halls from "@/pages/admin/hall";
+import AddHall from "@/pages/admin/hall/AddHall";
+import NotFound from "@/pages/404";
+import Users from "./pages/admin/user";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -19,8 +21,7 @@ function App() {
       <Route
         path="/"
         element={
-          isAuthenticated &&
-          (user?.role === "admin" || user?.role === "hallOwner") ? (
+          isAuthenticated ? (
             <Navigate to={user?.role === "admin" ? "/admin" : "/hallowner"} />
           ) : (
             <Login />
@@ -28,31 +29,25 @@ function App() {
         }
       />
 
-      {isAuthenticated && user?.role === "admin" && (
-        <Route path="/admin" element={<Layout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="halls" element={<Halls />} />
-          <Route path="halls/add-hall" element={<AddHall />} />
+      {/* All authenticated routes wrapped with Layout */}
+      {isAuthenticated && (
+        <Route element={<Layout />}>
+          {user?.role === "admin" && (
+            <>
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/users" element={<Users />} />
+              <Route path="/admin/halls" element={<Halls />} />
+              <Route path="/admin/halls/add-hall" element={<AddHall />} />
+            </>
+          )}
+          {user?.role === "hallOwner" && (
+            <Route path="/hallowner" element={<AdminDashboard />} />
+          )}
+          {/* <Route path="*" element={<NotFound />} /> */}
         </Route>
       )}
 
-      {isAuthenticated && user?.role === "hallOwner" && (
-        <Route path="/hallowner" element={<Layout />}>
-          <Route index element={<AdminDashboard />} />
-        </Route>
-      )}
-
-      {/* Redirect everything else to login or dashboard based on auth */}
-      <Route
-        path="*"
-        element={
-          isAuthenticated ? (
-            <Navigate to={user?.role === "admin" ? "/admin" : "/hallowner"} />
-          ) : (
-            <Navigate to="/" />
-          )
-        }
-      />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

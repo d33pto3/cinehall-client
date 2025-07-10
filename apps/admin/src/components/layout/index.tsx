@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
 import { SidebarProvider } from "../ui/sidebar";
-import { AppSidebar } from "../app-sidebar";
+import { AppSidebar } from "./sidebar/app-sidebar";
 import { useAuth } from "@/context/AuthContext";
-import { SiteHeader } from "../site-header";
+import { SiteHeader } from "./site-header";
 
 function Layout() {
   const { user } = useAuth();

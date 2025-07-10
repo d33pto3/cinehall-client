@@ -1,4 +1,4 @@
-import axios from "../utils/axios";
+import axios from "../lib/axios";
 
 export async function login(email: string, password: string) {
   const response = await axios.post(

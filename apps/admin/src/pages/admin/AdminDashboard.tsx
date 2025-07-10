@@ -2,7 +2,7 @@ import AdminSectionCards from "@/components/admin/AdminSectionCards";
 import { useAuth } from "@/context/AuthContext";
 import { ChartAreaInteractive } from "@/components/chart-area-interactive";
 import { DataTable } from "@/components/data-table";
-import data from "../constants/data.json";
+import data from "@/constants/data.json";
 
 function AdminDashboard() {
   const { user } = useAuth();
