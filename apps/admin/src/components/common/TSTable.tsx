@@ -20,17 +20,19 @@ import { Button } from "@/components/ui/button";
 
 interface TSTableProps<TData> {
   table: TanstackTable<TData>;
-  // pagination: {
-  //   pageIndex: number;
-  //   pageSize: number;
-  // };
+  pagination: {
+    pageIndex: number;
+    pageSize: number;
+  };
 }
 
 export default function TSTable<TData>({
   table,
-}: // pagination,
-TSTableProps<TData>) {
+  pagination,
+}: TSTableProps<TData>) {
   // const t = useTranslations("UsersPage");
+
+  console.log(pagination);
 
   return (
     <div>
@@ -97,9 +99,7 @@ TSTableProps<TData>) {
 
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {/* {t("Page")} {pagination.pageIndex + 1} {t("of")}{" "} */}
-          {/* {t("Page")} {pagination.pageIndex + 1} {t("of")}{" "} */}
-          {table?.getPageCount()}
+          Page {pagination.pageIndex + 1} of {table?.getPageCount()}
         </div>
         <div className="space-x-2">
           <Button

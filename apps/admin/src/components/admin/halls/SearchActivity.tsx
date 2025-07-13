@@ -1,26 +1,16 @@
 import { Input } from "@/components/ui/input";
-import { useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { FiSearch } from "react-icons/fi";
 
 export default function SearchActivity({
   placeholder,
+  onSearch,
 }: {
   placeholder: string;
+  onSearch: (value: string) => void;
 }) {
-  const searchParams = useSearchParams();
-
-  const handleSearch = useDebouncedCallback((term) => {
-    const params = new URLSearchParams(searchParams);
-    // if (term) {
-    //   params.set("query", term);
-    // } else {
-    //   params.delete("query");
-    // }
-    // router.replace({
-    //   pathname: "/activities",
-    //   query: Object.fromEntries(params.entries()),
-    // });
+  const handleSearch = useDebouncedCallback((value) => {
+    onSearch(value);
   }, 300);
 
   return (

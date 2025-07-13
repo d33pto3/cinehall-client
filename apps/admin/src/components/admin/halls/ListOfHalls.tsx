@@ -16,16 +16,25 @@ interface Hall {
   owner: string;
 }
 
-export default function ListOfHalls() {
+export default function ListOfHalls({ search }: { search: string }) {
   const [halls, setHalls] = useState<Hall[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
+
+  const limit = 10;
   // const [sorting, setSorting] = useState([]);
 
   useEffect(() => {
     const fetchHalls = async () => {
       try {
-        const res = await axios.get("/hall"); // replace with your actual API
-        setHalls(res.data);
+        const res = await axios.get(
+          `/hall/admin?search=${search}&page=${page}&limit=${limit}`
+        ); // replace with your actual API
+        console.log(res.data);
+        setHalls(res.data.data);
+        setPage(res.data.page);
+        setPageCount(res.data.pages);
       } catch (error) {
         console.error("Failed to fetch halls", error);
       } finally {
@@ -34,7 +43,7 @@ export default function ListOfHalls() {
     };
 
     fetchHalls();
-  }, []);
+  }, [search, page]);
 
   const columns: ColumnDef<Hall>[] = [
     {
@@ -77,5 +86,10 @@ export default function ListOfHalls() {
 
   if (loading) return <div>Loading...</div>;
 
-  return <TSTable<Hall> table={table} />;
+  return (
+    <TSTable<Hall>
+      table={table}
+      pagination={{ pageIndex: page, pageSize: pageCount }}
+    />
+  );
 }
