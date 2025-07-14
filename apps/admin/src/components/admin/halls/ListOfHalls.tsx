@@ -17,7 +17,19 @@ interface Hall {
   owner: string;
 }
 
-export default function ListOfHalls({ search }: { search: string }) {
+interface Props {
+  search: string;
+  filters: {
+    screens?: string[];
+    owners?: string[];
+    dateRange?: {
+      from: Date | null;
+      to: Date | null;
+    };
+  };
+}
+
+export default function ListOfHalls({ search, filters }: Props) {
   const [halls, setHalls] = useState<Hall[]>([]);
   const [loading, setLoading] = useState(true);
   const [pageIndex, setPageIndex] = useState(0); // 0-based
@@ -28,9 +40,24 @@ export default function ListOfHalls({ search }: { search: string }) {
     const fetchHalls = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(
-          `/hall/admin?search=${search}&page=${pageIndex + 1}&limit=${pageSize}`
-        );
+
+        const params: Record<string, any> = {
+          search,
+          page: pageIndex + 1,
+          limit: pageSize,
+        };
+
+        if (filters.screens && filters.screens.length > 0) {
+          params.screens = filters.screens.join(",");
+        }
+
+        if (filters.dateRange?.from)
+          params.dateFrom = filters.dateRange.from.toISOString();
+
+        if (filters.dateRange?.to)
+          params.dateTo = filters.dateRange.to.toISOString();
+
+        const res = await axios.get(`/hall/admin`, { params });
         setHalls(res.data.data);
         setPageCount(res.data.pages); // from backend
       } catch (error) {
@@ -41,7 +68,7 @@ export default function ListOfHalls({ search }: { search: string }) {
     };
 
     fetchHalls();
-  }, [search, pageIndex, pageSize]);
+  }, [search, pageIndex, pageSize, filters]);
 
   const columns: ColumnDef<Hall>[] = [
     {
