@@ -99,7 +99,7 @@ export default function TSTable<TData>({
 
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          Page {pagination.pageIndex + 1} of {table?.getPageCount()}
+          Page {pagination.pageIndex} of {table.getPageCount()}
         </div>
         <div className="space-x-2">
           <Button

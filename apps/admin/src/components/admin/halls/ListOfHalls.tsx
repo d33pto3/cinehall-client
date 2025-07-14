@@ -8,6 +8,7 @@ import {
 import TSTable from "@/components/common/TSTable";
 import axios from "../../../lib/axios";
 import HallMoreAction from "./MoreAction";
+
 interface Hall {
   _id: string;
   name: string;
@@ -19,22 +20,19 @@ interface Hall {
 export default function ListOfHalls({ search }: { search: string }) {
   const [halls, setHalls] = useState<Hall[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [pageCount, setPageCount] = useState(1);
-
-  const limit = 10;
-  // const [sorting, setSorting] = useState([]);
+  const [pageIndex, setPageIndex] = useState(0); // 0-based
+  const [pageSize, setPageSize] = useState(10); // items per page
+  const [pageCount, setPageCount] = useState(0); // total number of pages
 
   useEffect(() => {
     const fetchHalls = async () => {
       try {
+        setLoading(true);
         const res = await axios.get(
-          `/hall/admin?search=${search}&page=${page}&limit=${limit}`
-        ); // replace with your actual API
-        console.log(res.data);
+          `/hall/admin?search=${search}&page=${pageIndex + 1}&limit=${pageSize}`
+        );
         setHalls(res.data.data);
-        setPage(res.data.page);
-        setPageCount(res.data.pages);
+        setPageCount(res.data.pages); // from backend
       } catch (error) {
         console.error("Failed to fetch halls", error);
       } finally {
@@ -43,7 +41,7 @@ export default function ListOfHalls({ search }: { search: string }) {
     };
 
     fetchHalls();
-  }, [search, page]);
+  }, [search, pageIndex, pageSize]);
 
   const columns: ColumnDef<Hall>[] = [
     {
@@ -52,19 +50,19 @@ export default function ListOfHalls({ search }: { search: string }) {
       cell: ({ row }) => row.original.name,
     },
     {
-      accessorKey: "location",
+      accessorKey: "address",
       header: "Location",
       cell: ({ row }) => row.original.address,
     },
     {
       accessorKey: "screens",
-      header: "Screen",
+      header: "Screens",
       cell: ({ row }) => row.original.screens,
     },
     {
       accessorKey: "owner",
       header: "Owner",
-      cell: ({ row }) => row.original.name,
+      cell: ({ row }) => row.original.owner,
     },
     {
       id: "actions",
@@ -76,12 +74,24 @@ export default function ListOfHalls({ search }: { search: string }) {
   const table = useReactTable<Hall>({
     data: halls,
     columns,
+    pageCount, // needed for manual pagination
+    manualPagination: true,
+    state: {
+      pagination: {
+        pageIndex,
+        pageSize,
+      },
+    },
+    onPaginationChange: (updater) => {
+      const next =
+        typeof updater === "function"
+          ? updater({ pageIndex, pageSize })
+          : updater;
+      setPageIndex(next.pageIndex);
+      setPageSize(next.pageSize);
+    },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    // state: {
-    //   sorting,
-    // },
-    // onSortingChange: setSorting,
   });
 
   if (loading) return <div>Loading...</div>;
@@ -89,7 +99,10 @@ export default function ListOfHalls({ search }: { search: string }) {
   return (
     <TSTable<Hall>
       table={table}
-      pagination={{ pageIndex: page, pageSize: pageCount }}
+      pagination={{
+        pageIndex: pageIndex + 1,
+        pageSize: pageCount,
+      }}
     />
   );
 }
