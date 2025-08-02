@@ -16,16 +16,20 @@ interface Hall {
   owner: string;
 }
 
-export default function ListOfHalls() {
+export default function ListOfHalls({ query }: { query: string }) {
   const [halls, setHalls] = useState<Hall[]>([]);
   const [loading, setLoading] = useState(true);
   // const [sorting, setSorting] = useState([]);
 
+  console.log(halls);
+
   useEffect(() => {
     const fetchHalls = async () => {
       try {
-        const res = await axios.get("/hall"); // replace with your actual API
-        setHalls(res.data);
+        const res = await axios.get("/hall/admin", {
+          params: { search: query },
+        });
+        setHalls(res.data.data);
       } catch (error) {
         console.error("Failed to fetch halls", error);
       } finally {
@@ -34,7 +38,7 @@ export default function ListOfHalls() {
     };
 
     fetchHalls();
-  }, []);
+  }, [query]);
 
   const columns: ColumnDef<Hall>[] = [
     {

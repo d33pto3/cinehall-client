@@ -5,8 +5,11 @@ import { Button } from "@/components/ui/button";
 import { LuFilter } from "react-icons/lu";
 import { Link } from "react-router-dom";
 import { IoIosAddCircleOutline } from "react-icons/io";
+import { useState } from "react";
 
 export default function HallsTable() {
+  const [searchQuery, setSearchQuery] = useState("");
+
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
@@ -43,7 +46,7 @@ export default function HallsTable() {
         <h1 className="text-4xl font-bold mb-6">Halls</h1>
         <div className="flex mb-6 items-center">
           <div className="relative w-64 mr-2">
-            <SearchActivity placeholder="Search..." />
+            <SearchActivity placeholder="Search..." onSearch={setSearchQuery} />
           </div>
           <Sheet>
             <SheetTrigger asChild>
@@ -73,7 +76,7 @@ export default function HallsTable() {
                 filters={filterState}
                 fetchTrigger={shouldFetchInvoices}
               /> */}
-        <ListOfHalls />
+        <ListOfHalls query={searchQuery} />
       </div>
     </>
   );
