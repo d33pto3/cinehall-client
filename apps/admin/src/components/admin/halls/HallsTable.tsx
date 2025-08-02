@@ -1,10 +1,10 @@
-import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import ListOfHalls from "./ListOfHalls";
 import SearchActivity from "./SearchActivity";
+import HallsFilter from "./HallsFilter";
 import { Button } from "@/components/ui/button";
-import { LuFilter } from "react-icons/lu";
 import { Link } from "react-router-dom";
 import { IoIosAddCircleOutline } from "react-icons/io";
+import { useState } from "react";
 import { useState } from "react";
 
 export default function HallsTable() {
@@ -40,25 +40,22 @@ export default function HallsTable() {
 
   // console.log("filter", filterState);
 
+  const [search, setSearch] = useState("");
+  const [currentFilters, setCurrentFilters] = useState({});
+
   return (
     <>
       <div className="container mx-auto">
         <h1 className="text-4xl font-bold mb-6">Halls</h1>
         <div className="flex mb-6 items-center">
           <div className="relative w-64 mr-2">
-            <SearchActivity placeholder="Search..." onSearch={setSearchQuery} />
+            <SearchActivity
+              placeholder="Search..."
+              onSearch={setSearch}
+              onSearch={setSearchQuery}
+            />
           </div>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                className="flex items-center text-gray-400 mr-2"
-              >
-                <LuFilter className="mr-2 w-4 h-4" />
-                Filter
-              </Button>
-            </SheetTrigger>
-          </Sheet>
+          <HallsFilter onFilter={setCurrentFilters} />
           <Link
             to="/admin/halls/add-hall"
             className="flex items-center ml-auto"
@@ -77,7 +74,11 @@ export default function HallsTable() {
                 
                 fetchTrigger={shouldFetchInvoices}
               /> */}
-        <ListOfHalls query={searchQuery} />
+        <ListOfHalls
+          search={search}
+          filters={currentFilters}
+          query={searchQuery}
+        />
       </div>
     </>
   );

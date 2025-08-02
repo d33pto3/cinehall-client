@@ -7,10 +7,10 @@ export default function SearchActivity({
   onSearch,
 }: {
   placeholder: string;
-  onSearch: (query: string) => void;
+  onSearch: (value: string) => void;
 }) {
-  const handleSearch = useDebouncedCallback((term: string) => {
-    onSearch(term);
+  const handleSearch = useDebouncedCallback((value) => {
+    onSearch(value);
   }, 300);
 
   return (

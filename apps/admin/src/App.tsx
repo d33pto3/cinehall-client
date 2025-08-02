@@ -19,6 +19,17 @@ function App() {
   return (
     <Routes>
       <Route
+        path="/login"
+        element={
+          isAuthenticated ? (
+            <Navigate to={user?.role === "admin" ? "/admin" : "/hallowner"} />
+          ) : (
+            <Login />
+          )
+        }
+      />
+
+      <Route
         path="/"
         element={
           isAuthenticated ? (
@@ -30,7 +41,7 @@ function App() {
       />
 
       {/* All authenticated routes wrapped with Layout */}
-      {isAuthenticated && (
+      {isAuthenticated ? (
         <Route element={<Layout />}>
           {user?.role === "admin" && (
             <>
@@ -45,6 +56,8 @@ function App() {
           )}
           {/* <Route path="*" element={<NotFound />} /> */}
         </Route>
+      ) : (
+        <Route path="*" element={<Navigate to="/login" />} />
       )}
 
       <Route path="*" element={<NotFound />} />
