@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { useState } from "react";
-import { useState } from "react";
 
 export default function HallsTable() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,11 +48,7 @@ export default function HallsTable() {
         <h1 className="text-4xl font-bold mb-6">Halls</h1>
         <div className="flex mb-6 items-center">
           <div className="relative w-64 mr-2">
-            <SearchActivity
-              placeholder="Search..."
-              onSearch={setSearch}
-              onSearch={setSearchQuery}
-            />
+            <SearchActivity placeholder="Search..." onSearch={setSearch} />
           </div>
           <HallsFilter onFilter={setCurrentFilters} />
           <Link
