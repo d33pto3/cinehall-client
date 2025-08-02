@@ -73,7 +73,8 @@ export default function HallsTable() {
         {/* <ListOfListings
                 listing_tab_type="sell"
                 query={query}
-                filters={filterState}
+                filters={filterState} 
+                
                 fetchTrigger={shouldFetchInvoices}
               /> */}
         <ListOfHalls query={searchQuery} />
