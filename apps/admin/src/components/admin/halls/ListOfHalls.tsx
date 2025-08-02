@@ -28,10 +28,9 @@ interface Props {
       to: Date | null;
     };
   };
-  query: string;
 }
 
-export default function ListOfHalls({ search, filters, query }: Props) {
+export default function ListOfHalls({ search, filters }: Props) {
   const [halls, setHalls] = useState<Hall[]>([]);
   const [loading, setLoading] = useState(true);
   const [pageIndex, setPageIndex] = useState(0); // 0-based
@@ -42,13 +41,8 @@ export default function ListOfHalls({ search, filters, query }: Props) {
 
   useEffect(() => {
     const fetchHalls = async () => {
+      setLoading(true);
       try {
-        const res = await axios.get("/hall/admin", {
-          params: { search: query },
-        });
-        setHalls(res.data.data);
-        setLoading(true);
-
         const params: Record<string, any> = {
           search,
           page: pageIndex + 1,
@@ -65,7 +59,7 @@ export default function ListOfHalls({ search, filters, query }: Props) {
         if (filters.dateRange?.to)
           params.dateTo = filters.dateRange.to.toISOString();
 
-        // const res = await axios.get(`/hall/admin`, { params });
+        const res = await axios.get(`/hall/admin`, { params });
         setHalls(res.data.data);
         setPageCount(res.data.pages); // from backend
       } catch (error) {
@@ -130,6 +124,14 @@ export default function ListOfHalls({ search, filters, query }: Props) {
   });
 
   if (loading) return <div>Loading...</div>;
+
+  if (halls.length === 0) {
+    return (
+      <div className="text-center py-10 text-gray-500 text-lg">
+        No halls to show.
+      </div>
+    );
+  }
 
   return (
     <TSTable<Hall>

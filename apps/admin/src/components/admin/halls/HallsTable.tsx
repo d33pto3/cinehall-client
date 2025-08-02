@@ -7,38 +7,6 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { useState } from "react";
 
 export default function HallsTable() {
-  const [searchQuery, setSearchQuery] = useState("");
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       // Fetch contacts with their assigned users in a single query
-  //       const contactsData = await readContacts("");
-  //       setContacts(contactsData);
-
-  //       // Fetch users
-  //       const usersData = await readUsers();
-  //       setUsers(usersData.data);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
-
-  // async function onSubmit(data: FilterFormValues) {
-  //   setFilterState(data);
-  //   setShouldFetchInvoices((prev) => prev + 1);
-  // }
-
-  // const resetFilters = () => {
-  //   form.reset(defaultValues);
-  //   setFilterState(defaultValues);
-  //   setShouldFetchInvoices((prev) => prev + 1);
-  // };
-
-  // console.log("filter", filterState);
-
   const [search, setSearch] = useState("");
   const [currentFilters, setCurrentFilters] = useState({});
 
@@ -50,7 +18,9 @@ export default function HallsTable() {
           <div className="relative w-64 mr-2">
             <SearchActivity placeholder="Search..." onSearch={setSearch} />
           </div>
+
           <HallsFilter onFilter={setCurrentFilters} />
+
           <Link
             to="/admin/halls/add-hall"
             className="flex items-center ml-auto"
@@ -61,19 +31,9 @@ export default function HallsTable() {
             </Button>
           </Link>
         </div>
+
         <div className="rounded-lg overflow-hidden"></div>
-        {/* <ListOfListings
-                listing_tab_type="sell"
-                query={query}
-                filters={filterState} 
-                
-                fetchTrigger={shouldFetchInvoices}
-              /> */}
-        <ListOfHalls
-          search={search}
-          filters={currentFilters}
-          query={searchQuery}
-        />
+        <ListOfHalls search={search} filters={currentFilters} />
       </div>
     </>
   );
