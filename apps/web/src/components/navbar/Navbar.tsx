@@ -1,33 +1,46 @@
 "use client";
 
-import { useAuth } from "@/context/AuthContext";
+import React, { FC, useEffect, useState } from "react";
 import Link from "next/link";
-import React, { FC } from "react";
-import { Button } from "../ui/button";
 
-const Navbar: FC = ({}) => {
-  const { loading, user, logout } = useAuth();
-  console.log(user);
-  console.log("loading", loading);
+const Navbar: FC = () => {
+  const [len, setLen] = useState(0);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const calculateItems = () => {
+        // Use window.innerWidth instead of container width
+        const calculatedLen = Math.ceil(window.innerWidth / 40) + 2;
+        setLen(calculatedLen);
+      };
+
+      calculateItems();
+      window.addEventListener("resize", calculateItems);
+      return () => window.removeEventListener("resize", calculateItems);
+    }
+  }, []);
+
   return (
-    <div className="flex flex-row-reverse justify-between items-center pt-3">
-      <div>
-        {user ? (
-          <div className="flex items-center gap-2">
-            <Link href={"/profile"}>Welcome, {user.username}</Link>
-            <Button className="hover:cursor-pointer" onClick={logout}>
-              Logout
-            </Button>
-          </div>
-        ) : (
-          <Link href={"/login"}>Login</Link>
-        )}
+    <div className="">
+      <div className="parent-container relative overflow-hidden bg-black px-2 py-4">
+        <div className="animate-infinite-scroll flex gap-[26px] px-[12px] w-max">
+          {[...Array(2)].map((_, loopIndex) => (
+            <div key={loopIndex} className="flex gap-[26px]">
+              {Array.from({ length: len }, (_, index) => (
+                <div
+                  key={`${loopIndex}-${index}`}
+                  className="px-[7px] py-[11px] bg-[#8F8F8F] rounded-[6px]"
+                />
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
+
       <Link
-        href={"/"}
+        href="/"
         className="font-bold text-[4.7rem] flex items-center justify-center"
       >
-        {/* <TextHoverEffect text="CineHall" /> */}
         CineHall
       </Link>
     </div>

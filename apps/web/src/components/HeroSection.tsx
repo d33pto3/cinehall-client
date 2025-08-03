@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import ColourfulText from "./ui/colourful-text";
+// import ColourfulText from "./ui/colourful-text";
 
 type HeroSectionProps = object;
 
@@ -12,7 +12,7 @@ const HeroSection: FC<HeroSectionProps> = ({}) => {
       </span>
       {/* TODO: ADD CAROUSEL HERE */}
       <h1 className="text-5xl font-bold tracking-tight text-black sm:text-6xl">
-        <ColourfulText text="Experience Movies Like Never Before" />
+        {/* <ColourfulText text="Experience Movies Like Never Before" /> */}
       </h1>
       <p className="text-lg text-muted-foreground">
         Book tickets for the latest blockbusters in premium theaters near you.
