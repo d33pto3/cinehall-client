@@ -32,7 +32,7 @@ export default function HallsTable() {
           </Link>
         </div>
 
-        <div className="rounded-lg overflow-hidden"></div>
+        <div className="rounded-lg"></div>
         <ListOfHalls search={search} filters={currentFilters} />
       </div>
     </>

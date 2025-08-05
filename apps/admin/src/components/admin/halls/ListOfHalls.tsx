@@ -6,8 +6,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import TSTable from "@/components/common/TSTable";
-import axios from "../../../lib/axios";
 import HallMoreAction from "./MoreAction";
+import axios from "@/lib/axios";
 
 interface Hall {
   _id: string;
@@ -36,8 +36,6 @@ export default function ListOfHalls({ search, filters }: Props) {
   const [pageIndex, setPageIndex] = useState(0); // 0-based
   const [pageSize, setPageSize] = useState(10); // items per page
   const [pageCount, setPageCount] = useState(0); // total number of pages
-
-  console.log(halls);
 
   useEffect(() => {
     const fetchHalls = async () => {
@@ -123,18 +121,9 @@ export default function ListOfHalls({ search, filters }: Props) {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  if (loading) return <div>Loading...</div>;
-
-  if (halls.length === 0) {
-    return (
-      <div className="text-center py-10 text-gray-500 text-lg">
-        No halls to show.
-      </div>
-    );
-  }
-
   return (
     <TSTable<Hall>
+      loading={loading}
       table={table}
       pagination={{
         pageIndex: pageIndex + 1,

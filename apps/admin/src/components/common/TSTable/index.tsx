@@ -17,8 +17,10 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import TableLoading from "./loading";
 
 interface TSTableProps<TData> {
+  loading?: boolean;
   table: TanstackTable<TData>;
   pagination: {
     pageIndex: number;
@@ -27,12 +29,13 @@ interface TSTableProps<TData> {
 }
 
 export default function TSTable<TData>({
+  loading,
   table,
   pagination,
 }: TSTableProps<TData>) {
+  const columnLength = table.getAllColumns().length;
   // const t = useTranslations("UsersPage");
-
-  console.log(pagination);
+  console.log(loading);
 
   return (
     <div>
@@ -71,15 +74,13 @@ export default function TSTable<TData>({
         </TableHeader>
 
         <TableBody>
-          {table?.getRowModel().rows.length === 0 ? (
+          {loading ? (
+            <TableLoading columnLength={columnLength} />
+          ) : table?.getRowModel().rows.length === 0 ? (
             <TableRow>
-              <TableCell
-                colSpan={table.getAllColumns().length}
-                className="text-center py-4"
-              >
+              <TableCell colSpan={columnLength} className="text-center py-4">
                 <h1 className="text-[1.5rem] font-bold leading-tight">
-                  {/* {t("EmptyTableTitle")} */}
-                  table
+                  Nothing to show
                 </h1>
               </TableCell>
             </TableRow>

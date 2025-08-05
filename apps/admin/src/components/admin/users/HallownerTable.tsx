@@ -4,7 +4,6 @@ import { LuFilter } from "react-icons/lu";
 import { Link } from "react-router-dom";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import SearchActivity from "../halls/SearchActivity";
-import ListOfHalls from "../halls/ListOfHalls";
 import { useState } from "react";
 
 function HallownerTable() {

@@ -12,8 +12,12 @@ import Users from "./pages/admin/user";
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
 
-  if (loading) {
-    return <div>Loading...</div>;
+  if (!loading) {
+    return (
+      <div className="h-screen flex justify-center items-center text-center">
+        loading...
+      </div>
+    );
   }
 
   return (
