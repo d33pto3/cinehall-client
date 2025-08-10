@@ -5,15 +5,18 @@ import { Link } from "react-router-dom";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import SearchActivity from "../halls/SearchActivity";
 import ListOfHalls from "../halls/ListOfHalls";
+import { useState } from "react";
 
 function UserTable() {
+  const [search, setSearch] = useState("");
+
   return (
     <>
       <div className="container mx-auto">
         <h1 className="text-4xl font-bold mb-6">Users</h1>
         <div className="flex mb-6 items-center">
           <div className="relative w-64 mr-2">
-            <SearchActivity placeholder="Search..." />
+            <SearchActivity placeholder="Search..." onSearch={setSearch} />
           </div>
           <Sheet>
             <SheetTrigger asChild>
@@ -43,7 +46,7 @@ function UserTable() {
                 filters={filterState}
                 fetchTrigger={shouldFetchInvoices}
               /> */}
-        <ListOfHalls />
+        {/* <ListOfHalls /> */}
       </div>
     </>
   );

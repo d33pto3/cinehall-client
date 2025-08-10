@@ -13,11 +13,26 @@ function App() {
   const { loading, isAuthenticated, user } = useAuth();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="h-screen flex justify-center items-center text-center">
+        loading...
+      </div>
+    );
   }
 
   return (
     <Routes>
+      <Route
+        path="/login"
+        element={
+          isAuthenticated ? (
+            <Navigate to={user?.role === "admin" ? "/admin" : "/hallowner"} />
+          ) : (
+            <Login />
+          )
+        }
+      />
+
       <Route
         path="/"
         element={
@@ -30,7 +45,7 @@ function App() {
       />
 
       {/* All authenticated routes wrapped with Layout */}
-      {isAuthenticated && (
+      {isAuthenticated ? (
         <Route element={<Layout />}>
           {user?.role === "admin" && (
             <>
@@ -45,6 +60,8 @@ function App() {
           )}
           {/* <Route path="*" element={<NotFound />} /> */}
         </Route>
+      ) : (
+        <Route path="*" element={<Navigate to="/login" />} />
       )}
 
       <Route path="*" element={<NotFound />} />
