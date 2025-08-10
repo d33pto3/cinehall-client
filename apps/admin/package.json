@@ -14,7 +14,7 @@
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.3.4",
     "tw-animate-css": "^1.3.5",
-    "vite": "^6.2.0"
+    "vite": "^7.1.1"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
