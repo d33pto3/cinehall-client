@@ -1,13 +1,14 @@
-import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { LuFilter } from "react-icons/lu";
 import { Link } from "react-router-dom";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import SearchActivity from "../halls/SearchActivity";
 import { useState } from "react";
+import HallownerFilter from "./HallownerFilter";
+import ListOfHallowners from "./ListOfHallowners";
 
 function HallownerTable() {
   const [search, setSearch] = useState("");
+  const [currentFilters, setCurrentFilters] = useState({});
 
   return (
     <>
@@ -17,24 +18,14 @@ function HallownerTable() {
           <div className="relative w-64 mr-2">
             <SearchActivity placeholder="Search..." onSearch={setSearch} />
           </div>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                className="flex items-center text-gray-400 mr-2"
-              >
-                <LuFilter className="mr-2 w-4 h-4" />
-                Filter
-              </Button>
-            </SheetTrigger>
-          </Sheet>
+          <HallownerFilter onFilter={setCurrentFilters} />
           <Link
             to="/admin/halls/add-hall"
             className="flex items-center ml-auto"
           >
             <Button>
               <IoIosAddCircleOutline className="mr-2 w-4 h-4" />
-              Add Halls
+              Add Hallowners
             </Button>
           </Link>
         </div>
@@ -46,6 +37,7 @@ function HallownerTable() {
                 fetchTrigger={shouldFetchInvoices}
               /> */}
         {/* <ListOfHalls /> */}
+        <ListOfHallowners search={search} filters={currentFilters} />
       </div>
     </>
   );
