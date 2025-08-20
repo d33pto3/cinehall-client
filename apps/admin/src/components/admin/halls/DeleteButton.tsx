@@ -1,14 +1,16 @@
-"use client";
+import axios from "@/lib/axios";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
-// import { ListingDialog } from "./ListingDialog";
+import { HallDialog } from "./HallDialog";
 // import DeleteListingForm from "@/components/more-actions-forms/delete-listing-form";
 // import { useTranslations } from "next-intl";
 
 export function DeleteButton({ listingId }: { listingId: string }) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   // const t = useTranslations("ListingsPage");
+
+  const deleteHall = async () => {};
 
   return (
     <>
@@ -21,14 +23,14 @@ export function DeleteButton({ listingId }: { listingId: string }) {
         <RiDeleteBin6Line />
         <span>Delete</span>
       </button>
-      {/* <ListingDialog
+      <HallDialog
         isOpen={isDeleteOpen}
         setIsOpen={setIsDeleteOpen}
-        title={t("DeleteListingTitle")}
-        description={t("DeleteListingDescription")}
+        // title={t("DeleteListingTitle")}
+        // description={t("DeleteListingDescription")}
       >
-        <DeleteListingForm listingId={listingId} setIsOpen={setIsDeleteOpen} />
-      </ListingDialog> */}
+        {/* <DeleteHallForm listingId={listingId} setIsOpen={setIsDeleteOpen} /> */}
+      </HallDialog>
     </>
   );
 }
