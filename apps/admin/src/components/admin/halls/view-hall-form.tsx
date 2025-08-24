@@ -35,7 +35,7 @@ export default function ViewHallForm({
 
   const onSubmit = async () => {
     try {
-      navigate(`/halls/${hallId}`);
+      navigate(`/admin/halls/${hallId}`);
     } catch (error) {
       console.log(error);
     }

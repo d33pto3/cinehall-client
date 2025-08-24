@@ -6,8 +6,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import TSTable from "@/components/common/TSTable";
-import axios from "@/lib/axios";
 import HallownerMoreAction from "./HallownerMoreAction";
+import { getUsersByRole } from "./actions";
 
 interface Hallowner {
   _id: string;
@@ -54,9 +54,9 @@ export default function ListOfHallowners({ search, filters }: Props) {
         // if (filters.dateRange?.to)
         //   params.dateTo = filters.dateRange.to.toISOString();
 
-        const res = await axios.get(`/user?role=hallOwner`, { params });
-        setHallowners(res.data.data);
-        setPageCount(res.data.pages); // from backend
+        const res = await getUsersByRole("hallOwner", params);
+        setHallowners(res.users);
+        setPageCount(res.pages); // from backend
       } catch (error) {
         console.error("Failed to fetch users", error);
       } finally {

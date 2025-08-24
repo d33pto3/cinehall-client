@@ -6,10 +6,10 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import TSTable from "@/components/common/TSTable";
-import axios from "@/lib/axios";
 import UserMoreAction from "./UserMoreAction";
+import { getUsersByRole } from "./actions";
 
-interface User {
+export interface User {
   _id: string;
   username: string;
   email: string;
@@ -54,9 +54,9 @@ export default function ListOfUsers({ search, filters }: Props) {
         // if (filters.dateRange?.to)
         //   params.dateTo = filters.dateRange.to.toISOString();
 
-        const res = await axios.get(`/user?role=user`, { params });
-        setUsers(res.data.data);
-        setPageCount(res.data.pages); // from backend
+        const res = await getUsersByRole("user", params);
+        setUsers(res.users);
+        setPageCount(res.pages); // from backend
       } catch (error) {
         console.error("Failed to fetch users", error);
       } finally {

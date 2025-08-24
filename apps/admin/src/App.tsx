@@ -8,6 +8,7 @@ import Halls from "@/pages/admin/hall";
 import AddHall from "@/pages/admin/hall/AddHall";
 import NotFound from "@/pages/404";
 import Users from "./pages/admin/user";
+import Hall from "./pages/admin/hall/HallId";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -53,6 +54,7 @@ function App() {
               <Route path="/admin/users" element={<Users />} />
               <Route path="/admin/halls" element={<Halls />} />
               <Route path="/admin/halls/add-hall" element={<AddHall />} />
+              <Route path="/admin/halls/:hallId" element={<Hall />} />
             </>
           )}
           {user?.role === "hallOwner" && (
