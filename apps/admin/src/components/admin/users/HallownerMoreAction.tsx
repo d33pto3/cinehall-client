@@ -1,6 +1,6 @@
 import MoreAction from "@/components/common/MoreActions";
 import { ViewButton } from "../halls/ViewButton";
-import { DeleteButton } from "../halls/DeleteButton";
+import { DeleteButton } from "../halls/DeleteHallButton";
 
 export default function HallownerMoreAction({
   hallownerId,

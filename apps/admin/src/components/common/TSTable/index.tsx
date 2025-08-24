@@ -35,7 +35,6 @@ export default function TSTable<TData>({
 }: TSTableProps<TData>) {
   const columnLength = table.getAllColumns().length;
   // const t = useTranslations("UsersPage");
-  console.log(loading);
 
   return (
     <div>

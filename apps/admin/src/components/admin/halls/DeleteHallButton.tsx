@@ -1,16 +1,20 @@
-import axios from "@/lib/axios";
-
 import { useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { HallDialog } from "./HallDialog";
+import DeleteHallForm from "./delete-hall-form";
+// import { HallDialog } from "./HallDialog";
 // import DeleteListingForm from "@/components/more-actions-forms/delete-listing-form";
 // import { useTranslations } from "next-intl";
 
-export function DeleteButton({ listingId }: { listingId: string }) {
+export function DeleteButton({
+  hallId,
+  onDeleted,
+}: {
+  hallId: string;
+  onDeleted?: () => void;
+}) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   // const t = useTranslations("ListingsPage");
-
-  const deleteHall = async () => {};
 
   return (
     <>
@@ -18,7 +22,7 @@ export function DeleteButton({ listingId }: { listingId: string }) {
         onClick={() => {
           setIsDeleteOpen(true);
         }}
-        className="w-full text-left flex items-center gap-2 text-red-500"
+        className="w-full text-left flex items-center gap-2 text-red-500 cursor-pointer"
       >
         <RiDeleteBin6Line />
         <span>Delete</span>
@@ -27,9 +31,15 @@ export function DeleteButton({ listingId }: { listingId: string }) {
         isOpen={isDeleteOpen}
         setIsOpen={setIsDeleteOpen}
         // title={t("DeleteListingTitle")}
+        title={"Delete Hall"}
         // description={t("DeleteListingDescription")}
+        description="Delete Hall"
       >
-        {/* <DeleteHallForm listingId={listingId} setIsOpen={setIsDeleteOpen} /> */}
+        <DeleteHallForm
+          hallId={hallId}
+          setIsOpen={setIsDeleteOpen}
+          onDeleted={onDeleted}
+        />
       </HallDialog>
     </>
   );

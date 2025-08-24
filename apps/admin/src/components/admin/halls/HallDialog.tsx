@@ -9,7 +9,7 @@ interface ListingDialogProps {
   description?: string;
 }
 
-export function ListingDialog({
+export function HallDialog({
   children,
   isOpen,
   setIsOpen,

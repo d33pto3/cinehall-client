@@ -37,36 +37,36 @@ export default function ListOfHalls({ search, filters }: Props) {
   const [pageSize, setPageSize] = useState(10); // items per page
   const [pageCount, setPageCount] = useState(0); // total number of pages
 
-  useEffect(() => {
-    const fetchHalls = async () => {
-      setLoading(true);
-      try {
-        const params: Record<string, any> = {
-          search,
-          page: pageIndex + 1,
-          limit: pageSize,
-        };
+  const fetchHalls = async () => {
+    setLoading(true);
+    try {
+      const params: Record<string, any> = {
+        search,
+        page: pageIndex + 1,
+        limit: pageSize,
+      };
 
-        if (filters.screens && filters.screens.length > 0) {
-          params.screens = filters.screens.join(",");
-        }
-
-        if (filters.dateRange?.from)
-          params.dateFrom = filters.dateRange.from.toISOString();
-
-        if (filters.dateRange?.to)
-          params.dateTo = filters.dateRange.to.toISOString();
-
-        const res = await axios.get(`/hall/admin`, { params });
-        setHalls(res.data.data);
-        setPageCount(res.data.pages); // from backend
-      } catch (error) {
-        console.error("Failed to fetch halls", error);
-      } finally {
-        setLoading(false);
+      if (filters.screens && filters.screens.length > 0) {
+        params.screens = filters.screens.join(",");
       }
-    };
 
+      if (filters.dateRange?.from)
+        params.dateFrom = filters.dateRange.from.toISOString();
+
+      if (filters.dateRange?.to)
+        params.dateTo = filters.dateRange.to.toISOString();
+
+      const res = await axios.get(`/hall/admin`, { params });
+      setHalls(res.data.data);
+      setPageCount(res.data.pages); // from backend
+    } catch (error) {
+      console.error("Failed to fetch halls", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchHalls();
   }, [search, pageIndex, pageSize, filters]);
 
@@ -94,7 +94,9 @@ export default function ListOfHalls({ search, filters }: Props) {
     {
       id: "actions",
       header: "",
-      cell: ({ row }) => <HallMoreAction hallId={row.original._id} />,
+      cell: ({ row }) => (
+        <HallMoreAction hallId={row.original._id} onDeleted={fetchHalls} />
+      ),
     },
   ];
 
