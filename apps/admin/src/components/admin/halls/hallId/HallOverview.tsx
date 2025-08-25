@@ -1,6 +1,6 @@
 // import { Activity, Contact, Listing, User } from "@/lib/supabase/types";
-import EditHallForm from "./EditHallForm";
 // import { useTranslations } from "next-intl";
+import EditHallForm from "./EditHallForm";
 
 export type HallProps = {
   _id: string;

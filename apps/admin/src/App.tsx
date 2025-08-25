@@ -9,6 +9,7 @@ import AddHall from "@/pages/admin/hall/AddHall";
 import NotFound from "@/pages/404";
 import Users from "./pages/admin/user";
 import Hall from "./pages/admin/hall/HallId";
+import User from "./pages/admin/user/userId";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -51,10 +52,14 @@ function App() {
           {user?.role === "admin" && (
             <>
               <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/users" element={<Users />} />
+              {/* halls */}
               <Route path="/admin/halls" element={<Halls />} />
               <Route path="/admin/halls/add-hall" element={<AddHall />} />
               <Route path="/admin/halls/:hallId" element={<Hall />} />
+              {/* users */}
+              <Route path="/admin/users" element={<Users />} />
+              <Route path="/admin/users/:userId" element={<User />} />
+              {/* hallowners */}
             </>
           )}
           {user?.role === "hallOwner" && (
