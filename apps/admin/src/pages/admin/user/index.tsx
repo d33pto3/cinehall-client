@@ -1,7 +1,6 @@
 import HallownerTable from "@/components/admin/users/HallownerTable";
 import UserTable from "@/components/admin/users/UserTable";
 
-// import ListingsTable from "./components/ListingsTable";
 function Users() {
   //   {
   //   searchParams,

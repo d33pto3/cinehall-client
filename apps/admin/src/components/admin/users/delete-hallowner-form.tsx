@@ -11,22 +11,22 @@ import axios from "@/lib/axios";
 // import {useTranslations} from "next-intl";
 
 const formSchema = z.object({
-  userId: z.string(),
+  hallownerId: z.string(),
 });
 
-export default function DeleteUserForm({
-  userId,
+export default function DeleteHallownerForm({
+  hallownerId,
   setIsOpen,
   onDeleted,
 }: {
-  userId: string;
+  hallownerId: string;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   onDeleted?: () => void;
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      userId,
+      hallownerId,
     },
   });
   // const t = useTranslations("ActivityPage");
@@ -43,8 +43,7 @@ export default function DeleteUserForm({
 
     try {
       setIsOpen(false);
-      const res = await axios.delete(`/user/${userId}`);
-      console.log(res);
+      const res = await axios.delete(`/user/${hallownerId}`);
       if (res.data.success) {
         if (onDeleted) onDeleted();
       } else {

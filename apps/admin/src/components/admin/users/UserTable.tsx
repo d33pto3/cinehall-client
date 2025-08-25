@@ -19,7 +19,7 @@ function UserTable() {
             <SearchActivity placeholder="Search..." onSearch={setSearch} />
           </div>
           <UserFilter onFilter={setCurrentFilters} />
-          <Link
+          {/* <Link
             to="/admin/halls/add-hall"
             className="flex items-center ml-auto"
           >
@@ -27,9 +27,8 @@ function UserTable() {
               <IoIosAddCircleOutline className="mr-2 w-4 h-4" />
               Add Users
             </Button>
-          </Link>
+          </Link> */}
         </div>
-        {/* <div className="rounded-lg overflow-hidden"></div> */}
         <ListOfUsers search={search} filters={currentFilters} />
       </div>
     </>

@@ -1,6 +1,6 @@
 import MoreAction from "@/components/common/MoreActions";
-import { ViewButton } from "../halls/ViewButton";
-import { DeleteButton } from "../halls/DeleteHallButton";
+import { ViewButton } from "./HallownerViewButton";
+import { DeleteButton } from "./HallownerDeleteButton";
 
 export default function HallownerMoreAction({
   hallownerId,
@@ -10,14 +10,10 @@ export default function HallownerMoreAction({
   // Define the actions for the reusable MoreAction component
   const actions = [
     {
-      component: <ViewButton listingId={hallownerId} />,
+      component: <ViewButton hallownerId={hallownerId} />,
     },
-    // {
-    //   component: <AddListingImagesButton listingId={listing_id} />,
-    //   isSeparatorBefore: true,
-    // },
     {
-      component: <DeleteButton listingId={hallownerId} />,
+      component: <DeleteButton hallownerId={hallownerId} />,
       isSeparatorBefore: true,
     },
   ];

@@ -20,7 +20,7 @@ function HallownerTable() {
           </div>
           <HallownerFilter onFilter={setCurrentFilters} />
           <Link
-            to="/admin/halls/add-hall"
+            to="/admin/users/add-hallowner"
             className="flex items-center ml-auto"
           >
             <Button>
@@ -30,13 +30,6 @@ function HallownerTable() {
           </Link>
         </div>
         <div className="rounded-lg overflow-hidden"></div>
-        {/* <ListOfListings
-                listing_tab_type="sell"
-                query={query}
-                filters={filterState}
-                fetchTrigger={shouldFetchInvoices}
-              /> */}
-        {/* <ListOfHalls /> */}
         <ListOfHallowners search={search} filters={currentFilters} />
       </div>
     </>

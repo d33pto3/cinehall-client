@@ -39,13 +39,13 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             icon: IconUsers,
           },
           {
-            title: "All Halls",
+            title: "Halls",
             url: "/admin/halls",
             icon: IconListDetails,
           },
           {
-            title: "Manage Users",
-            url: "#",
+            title: "Movies",
+            url: "/admin/movies",
             icon: IconChartBar,
           },
           {
@@ -91,7 +91,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
+              <a href="/">
                 <IconInnerShadowTop className="!size-5" />
                 <span className="text-base font-semibold">CineHall</span>
               </a>

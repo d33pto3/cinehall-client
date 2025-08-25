@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { UserProps } from "./UserOverview";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "@/lib/axios";
 import { toast } from "react-toastify";
 
@@ -23,7 +23,7 @@ export const userFormSchema = z.object({
 });
 
 function EditUserForm({ userInfo }: { userInfo: UserProps | null }) {
-  console.log(userInfo);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<UpdatedUserFormValues>({
     resolver: zodResolver(userFormSchema),
@@ -45,11 +45,27 @@ function EditUserForm({ userInfo }: { userInfo: UserProps | null }) {
   }, [userInfo, form]);
 
   async function onSubmit(data: UpdatedUserFormValues) {
-    const res = await axios.put(`/user/${userInfo?._id}`, data);
+    if (!userInfo) return;
 
-    if (res.data.success) {
-      toast.success("User updated successfully!");
+    setIsSubmitting(true);
+    try {
+      const res = await axios.put(`/user/${userInfo._id}`, data);
+
+      if (res.data.success) {
+        toast.success("User updated successfully!");
+      } else {
+        toast.error(res.data.message || "Failed to update user");
+      }
+    } catch (error: any) {
+      console.error("Update error:", error);
+      toast.error(error.response?.data?.message || "Failed to update user");
+    } finally {
+      setIsSubmitting(false);
     }
+  }
+
+  if (!userInfo) {
+    return <div>User information not available</div>;
   }
 
   return (
@@ -95,9 +111,12 @@ function EditUserForm({ userInfo }: { userInfo: UserProps | null }) {
                   placeholder={"Add Phone Number here"}
                 />
                 <div className="md:col-span-2">
-                  <Button type="submit" className="w-full">
-                    {/* {t("UpdateButton")} */}
-                    Update
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Updating..." : "Update"}
                   </Button>
                 </div>
                 {/* Type, Date, Duration */}

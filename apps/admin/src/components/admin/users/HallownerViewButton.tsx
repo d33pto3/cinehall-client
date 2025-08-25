@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { MdViewList } from "react-icons/md";
-import { UserDialog } from "./UserDialog";
-import ViewUserForm from "./view-user-form";
+import { HallownerDialog } from "./HallownerDialog";
+import ViewHallownerForm from "./view-hallowner-form";
 // import ViewListingForm from "@/components/more-actions-forms/view-listing-form";
 // import { ListingDialog } from "./ListingDialog";
 
-export function ViewButton({ userId }: { userId: string }) {
+export function ViewButton({ hallownerId }: { hallownerId: string }) {
   const [isViewOpen, setIsViewOpen] = useState(false);
 
   return (
@@ -20,16 +20,19 @@ export function ViewButton({ userId }: { userId: string }) {
         <MdViewList />
         <span>View</span>
       </button>
-      <UserDialog
+      <HallownerDialog
         isOpen={isViewOpen}
         setIsOpen={setIsViewOpen}
         // title={t("ViewListingTitle")}
-        title="View & Edit User"
+        title="View & Edit Hallowner"
         // description={t("ViewListingDescription")}
-        description="Click to view the user description"
+        description="Click to view the Hallowner description"
       >
-        <ViewUserForm userId={userId} setIsOpen={setIsViewOpen} />
-      </UserDialog>
+        <ViewHallownerForm
+          hallownerId={hallownerId}
+          setIsOpen={setIsViewOpen}
+        />
+      </HallownerDialog>
     </>
   );
 }

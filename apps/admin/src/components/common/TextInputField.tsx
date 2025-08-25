@@ -32,6 +32,7 @@ interface TextInputFieldProps<T extends FieldValues> {
   rightText?: string;
   isDisabled?: boolean;
   descPos?: "top" | "bottom";
+  autocomplete?: string;
 }
 
 export const TextInputField = <T extends FieldValues>({
@@ -48,6 +49,7 @@ export const TextInputField = <T extends FieldValues>({
   rightText,
   isDisabled = false,
   descPos = "top",
+  autocomplete,
 }: TextInputFieldProps<T>) => (
   <FormField
     control={form.control}
@@ -75,6 +77,7 @@ export const TextInputField = <T extends FieldValues>({
                   field.onChange(value);
                 }
               }}
+              autoComplete={autocomplete}
             />
             {rightText && (
               <span className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-muted-foreground">

@@ -10,6 +10,7 @@ import NotFound from "@/pages/404";
 import Users from "./pages/admin/user";
 import Hall from "./pages/admin/hall/HallId";
 import User from "./pages/admin/user/userId";
+import AddHallOwner from "./pages/admin/user/AddHallowner";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -59,13 +60,16 @@ function App() {
               {/* users */}
               <Route path="/admin/users" element={<Users />} />
               <Route path="/admin/users/:userId" element={<User />} />
+              <Route
+                path="/admin/users/add-hallowner"
+                element={<AddHallOwner />}
+              />
               {/* hallowners */}
             </>
           )}
           {user?.role === "hallOwner" && (
             <Route path="/hallowner" element={<AdminDashboard />} />
           )}
-          {/* <Route path="*" element={<NotFound />} /> */}
         </Route>
       ) : (
         <Route path="*" element={<Navigate to="/login" />} />
