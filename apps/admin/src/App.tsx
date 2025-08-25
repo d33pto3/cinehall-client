@@ -11,6 +11,8 @@ import Users from "./pages/admin/user";
 import Hall from "./pages/admin/hall/HallId";
 import User from "./pages/admin/user/userId";
 import AddHallOwner from "./pages/admin/user/AddHallowner";
+import Movies from "./pages/admin/movie";
+import AddMovie from "./pages/admin/movie/AddMovie";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -60,11 +62,14 @@ function App() {
               {/* users */}
               <Route path="/admin/users" element={<Users />} />
               <Route path="/admin/users/:userId" element={<User />} />
+              {/* hallowners */}
               <Route
                 path="/admin/users/add-hallowner"
                 element={<AddHallOwner />}
               />
-              {/* hallowners */}
+              {/* movies */}
+              <Route path="/admin/movies" element={<Movies />} />
+              <Route path="/admin/movies/add-movie" element={<AddMovie />} />
             </>
           )}
           {user?.role === "hallOwner" && (

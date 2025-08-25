@@ -1,11 +1,11 @@
-import AddNewHallForm from "@/components/admin/halls/add-new-hall/AddNewHallForm";
+import AddNewMovieForm from "@/components/admin/movies/add-new-movie/AddNewMovieForm";
 
-export default function AddNewHall() {
+export default function AddMovie() {
   return (
     <>
       <div className="space-y-5 w-full overflow-y-auto px-3">
         <div className="flex justify-center gap-2">
-          <AddNewHallForm />
+          <AddNewMovieForm />
         </div>
       </div>
     </>
