@@ -9,6 +9,8 @@ import { HallProps } from "./HallOverview";
 import { getUsersByRole } from "../../users/actions";
 import { useEffect, useState } from "react";
 import { User } from "../../users/ListOfUsers";
+import axios from "@/lib/axios";
+import { toast } from "react-toastify";
 
 type UpdatedHallFormValues = z.infer<typeof hallFormSchema>;
 
@@ -25,42 +27,54 @@ export const hallFormSchema = z.object({
 
 function EditHallForm({ hallInfo }: { hallInfo: HallProps | null }) {
   const [hallOwners, setHallOwners] = useState<User[]>([]);
-
-  const defaultValues = {
-    hall_title: hallInfo?.name || "",
-    address: hallInfo?.address || "",
-    hallowner: hallInfo?.ownerId || "",
-  };
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const form = useForm<UpdatedHallFormValues>({
     resolver: zodResolver(hallFormSchema),
-    defaultValues,
+    defaultValues: {
+      hall_title: "",
+      address: "",
+      hallowner: "",
+    },
   });
 
   useEffect(() => {
-    if (hallInfo) {
-      form.reset({
-        hall_title: hallInfo.name,
-        address: hallInfo.address,
-        hallowner: hallInfo.ownerId,
-      });
-    }
-  }, [hallInfo]);
-
-  useEffect(() => {
     const getHallOwners = async () => {
-      const res = await getUsersByRole("hallOwner");
-
-      setHallOwners(res.users);
+      try {
+        const res = await getUsersByRole("hallOwner");
+        setHallOwners(res.users);
+      } catch (error) {
+        console.log("Failed to fetch hall owners", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     getHallOwners();
   }, []);
 
-  //   console.log(hallInfo);
+  useEffect(() => {
+    if (hallInfo && hallOwners.length > 0) {
+      const owner = hallOwners.find((ho) => ho._id === hallInfo.ownerId);
+
+      form.reset({
+        hall_title: hallInfo.name,
+        address: hallInfo.address,
+        hallowner: owner?._id || "",
+      });
+    }
+  }, [hallInfo, hallOwners, form]);
 
   async function onSubmit(data: UpdatedHallFormValues) {
-    console.log("Updating Halls: ", data);
+    const res = await axios.put(`/hall/${hallInfo?._id}`, data);
+
+    if (res.data.success) {
+      toast.success("Hall updated successfully!");
+    }
+  }
+
+  if (isLoading) {
+    return <>Loading...</>;
   }
 
   return (

@@ -41,7 +41,7 @@ export const SelectField = <T extends FieldValues>({
   placeholder,
   formItemClassName,
   formLabelClassName,
-  onValueChange, // Accept the custom onValueChange prop
+  onValueChange,
   description,
   descriptionPosition = "up",
   formDescriptionClassName,
@@ -64,7 +64,7 @@ export const SelectField = <T extends FieldValues>({
           field.onChange(value);
           if (onValueChange) onValueChange(value); // Call the custom onValueChange if passed
         }}
-        defaultValue={field.value || ""}
+        value={field.value || ""}
       >
         <FormControl>
           <SelectTrigger className="w-full">

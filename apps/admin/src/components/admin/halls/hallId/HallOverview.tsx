@@ -3,6 +3,7 @@ import EditHallForm from "./EditHallForm";
 // import { useTranslations } from "next-intl";
 
 export type HallProps = {
+  _id: string;
   name: string;
   address: string;
   ownerId: string;
