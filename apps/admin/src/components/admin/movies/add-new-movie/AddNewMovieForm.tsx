@@ -16,7 +16,7 @@ export const movieFormSchema = z.object({
   title: z
     .string()
     .min(2, { message: "Title must be at least 2 characters" })
-    .max(100, { message: "Title must not be longer than 100 characters" }),
+    .max(150, { message: "Title must not be longer than 150 characters" }),
   duration: z
     .string()
     .min(1, { message: "Duration is required" })
@@ -48,6 +48,7 @@ interface AddMovieFormProps {
 function AddMovieForm({ onSuccess }: AddMovieFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imageId, setImageId] = useState<string>("");
 
   const form = useForm<MovieFormValues>({
     resolver: zodResolver(movieFormSchema),
@@ -57,7 +58,6 @@ function AddMovieForm({ onSuccess }: AddMovieFormProps) {
       genre: "",
       releaseDate: "",
       director: "",
-      // imageUrl: "",
     },
   });
 
@@ -79,7 +79,9 @@ function AddMovieForm({ onSuccess }: AddMovieFormProps) {
         );
 
         const imgUploadData = await imgUploadResponse.json();
-        imageUrl = imgUploadData.url;
+        console.log("img id", imgUploadData);
+        imageUrl = imgUploadData.secure_url;
+        setImageId(imgUploadData.asset_id);
       } else {
         toast.error("Please select an image");
         setIsSubmitting(false);
@@ -91,6 +93,7 @@ function AddMovieForm({ onSuccess }: AddMovieFormProps) {
         ...data,
         duration: parseInt(data.duration),
         imageUrl,
+        imageId,
       };
 
       // Create the movie
@@ -119,6 +122,8 @@ function AddMovieForm({ onSuccess }: AddMovieFormProps) {
       setIsSubmitting(false);
     }
   }
+
+  console.log(imageId);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -177,7 +182,7 @@ function AddMovieForm({ onSuccess }: AddMovieFormProps) {
                   form={form}
                   type="number"
                   isDisabled={isSubmitting}
-                  //   autoComplete="off"
+                  autoComplete="off"
                 />
 
                 <TextInputField
@@ -186,7 +191,7 @@ function AddMovieForm({ onSuccess }: AddMovieFormProps) {
                   placeholder="Enter genre (e.g., Action, Drama)"
                   form={form}
                   isDisabled={isSubmitting}
-                  //   autoComplete="off"
+                  autoComplete="off"
                 />
 
                 <TextInputField
@@ -195,7 +200,7 @@ function AddMovieForm({ onSuccess }: AddMovieFormProps) {
                   placeholder="YYYY-MM-DD"
                   form={form}
                   isDisabled={isSubmitting}
-                  //   autoComplete="off"
+                  autoComplete="off"
                 />
               </div>
 

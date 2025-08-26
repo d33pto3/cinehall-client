@@ -13,6 +13,7 @@ import User from "./pages/admin/user/userId";
 import AddHallOwner from "./pages/admin/user/AddHallowner";
 import Movies from "./pages/admin/movie";
 import AddMovie from "./pages/admin/movie/AddMovie";
+import Movie from "./pages/admin/movie/movieId";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -70,6 +71,7 @@ function App() {
               {/* movies */}
               <Route path="/admin/movies" element={<Movies />} />
               <Route path="/admin/movies/add-movie" element={<AddMovie />} />
+              <Route path="/admin/movies/:movieId" element={<Movie />} />
             </>
           )}
           {user?.role === "hallOwner" && (

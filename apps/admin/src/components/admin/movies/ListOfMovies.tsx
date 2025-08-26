@@ -39,6 +39,8 @@ export default function ListOfMovies({ search, filters }: Props) {
   const [pageSize, setPageSize] = useState(10); // items per page
   const [pageCount, setPageCount] = useState(0); // total number of pages
 
+  console.log(movies);
+
   const fetchMovies = async () => {
     setLoading(true);
     try {
@@ -97,6 +99,19 @@ export default function ListOfMovies({ search, filters }: Props) {
       accessorKey: "director",
       header: "Director",
       cell: ({ row }) => row.original.director,
+    },
+    {
+      accessorKey: "image",
+      header: "Image",
+      cell: ({ row }) => (
+        <>
+          <img
+            src={row.original.imageUrl || "/public/fallback_img.png"}
+            width={50}
+            height={50}
+          />
+        </>
+      ),
     },
     {
       id: "actions",
