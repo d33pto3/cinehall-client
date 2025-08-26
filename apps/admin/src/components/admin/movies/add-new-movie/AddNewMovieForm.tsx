@@ -6,8 +6,10 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import axios from "@/lib/axios";
 import { toast } from "react-toastify";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 // Schema for movie creation
 export const movieFormSchema = z.object({
@@ -35,10 +37,6 @@ export const movieFormSchema = z.object({
     .max(50, {
       message: "Director name must not be longer than 50 characters",
     }),
-  imageUrl: z
-    .string()
-    .url({ message: "Please enter a valid URL" })
-    .min(5, { message: "Image URL must be at least 5 characters" }),
 });
 
 type MovieFormValues = z.infer<typeof movieFormSchema>;
@@ -49,6 +47,7 @@ interface AddMovieFormProps {
 
 function AddMovieForm({ onSuccess }: AddMovieFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const form = useForm<MovieFormValues>({
     resolver: zodResolver(movieFormSchema),
@@ -58,26 +57,50 @@ function AddMovieForm({ onSuccess }: AddMovieFormProps) {
       genre: "",
       releaseDate: "",
       director: "",
-      imageUrl: "",
+      // imageUrl: "",
     },
   });
 
   async function onSubmit(data: MovieFormValues) {
     setIsSubmitting(true);
     try {
-      // Convert duration to number
+      let imageUrl = ""; // Initialize image URL
+
+      // Upload image to Cloudinary if selected
+      if (selectedImage) {
+        const imgData = new FormData();
+        imgData.append("file", selectedImage);
+        imgData.append("upload_preset", "cinehall");
+        imgData.append("cloud_name", "dgrna1ki2");
+
+        const imgUploadResponse = await fetch(
+          `https://api.cloudinary.com/v1_1/dgrna1ki2/image/upload`,
+          { method: "POST", body: imgData }
+        );
+
+        const imgUploadData = await imgUploadResponse.json();
+        imageUrl = imgUploadData.url;
+      } else {
+        toast.error("Please select an image");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Convert duration to number and prepare payload
       const payload = {
         ...data,
-        duration: parseInt(data.duration), // Convert string to number
+        duration: parseInt(data.duration),
+        imageUrl,
       };
 
-      const res = await axios.post("/movies", payload); // Changed endpoint to /movies
+      // Create the movie
+      const response = await axios.post("/movie", payload);
 
-      if (res.data.success) {
+      if (response.data.success) {
         toast.success("Movie created successfully!");
         if (onSuccess) onSuccess();
       } else {
-        toast.error(res.data.message || "Failed to create movie");
+        toast.error(response.data.message || "Failed to create movie");
       }
     } catch (error: any) {
       console.error("Create movie error:", error);
@@ -96,6 +119,26 @@ function AddMovieForm({ onSuccess }: AddMovieFormProps) {
       setIsSubmitting(false);
     }
   }
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please select an image file");
+        return;
+      }
+
+      // Validate file size (e.g., 5MB max)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image size should be less than 5MB");
+        return;
+      }
+
+      setSelectedImage(file);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -171,20 +214,26 @@ function AddMovieForm({ onSuccess }: AddMovieFormProps) {
                   //   autoComplete="off"
                 />
 
-                <TextInputField
+                {/* <TextInputField
                   name="imageUrl"
                   label="Image URL"
                   placeholder="Enter movie poster URL"
                   form={form}
                   isDisabled={isSubmitting}
                   //   autoComplete="off"
+                /> */}
+                <Label>Upload Image</Label>
+                <Input
+                  type="file"
+                  className="cursor-pointer"
+                  onChange={handleFileChange}
                 />
               </div>
 
               <div className="md:col-span-2 pt-4">
                 <Button
                   type="submit"
-                  className="w-full relative"
+                  className="flex items-center space-between w-[50%] relative"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
