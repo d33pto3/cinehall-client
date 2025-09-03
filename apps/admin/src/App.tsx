@@ -14,6 +14,7 @@ import AddHallOwner from "./pages/admin/user/AddHallowner";
 import Movies from "./pages/admin/movie";
 import AddMovie from "./pages/admin/movie/AddMovie";
 import Movie from "./pages/admin/movie/movieId";
+import Screens from "./pages/admin/screen";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -60,6 +61,8 @@ function App() {
               <Route path="/admin/halls" element={<Halls />} />
               <Route path="/admin/halls/add-hall" element={<AddHall />} />
               <Route path="/admin/halls/:hallId" element={<Hall />} />
+              {/* halls */}
+              <Route path="/admin/screens" element={<Screens />} />
               {/* users */}
               <Route path="/admin/users" element={<Users />} />
               <Route path="/admin/users/:userId" element={<User />} />

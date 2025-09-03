@@ -1,21 +1,21 @@
 import MoreAction from "@/components/common/MoreActions";
 import { ViewButton } from "./ViewButton";
-import { DeleteButton } from "./DeleteHallButton";
+import { DeleteButton } from "./DeleteScreenButton";
 
 export default function HallMoreAction({
-  hallId,
+  screenId,
   onDeleted,
 }: {
-  hallId: string;
+  screenId: string;
   onDeleted?: () => void;
 }) {
   // Define the actions for the reusable MoreAction component
   const actions = [
     {
-      component: <ViewButton hallId={hallId} />,
+      component: <ViewButton screenId={screenId} />,
     },
     {
-      component: <DeleteButton hallId={hallId} onDeleted={onDeleted} />,
+      component: <DeleteButton screenId={screenId} onDeleted={onDeleted} />,
       isSeparatorBefore: true,
     },
   ];

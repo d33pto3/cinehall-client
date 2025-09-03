@@ -6,27 +6,24 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import axios from "@/lib/axios";
-// import {toast} from "@/components/ui/use-toast";
-// import {deleteActivityById} from "@/app/[locale]/(dashboard)/activities/actions";
-// import {useTranslations} from "next-intl";
 
 const formSchema = z.object({
-  movieId: z.string(),
+  screenId: z.string(),
 });
 
-export default function DeleteMovieForm({
-  movieId,
+export default function DeleteScreenForm({
+  screenId,
   setIsOpen,
   onDeleted,
 }: {
-  movieId: string;
+  screenId: string;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   onDeleted?: () => void;
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      movieId,
+      screenId,
     },
   });
   // const t = useTranslations("ActivityPage");
@@ -43,7 +40,8 @@ export default function DeleteMovieForm({
 
     try {
       setIsOpen(false);
-      const res = await axios.delete(`/movie/${movieId}`);
+      const res = await axios.delete(`/screen/${screenId}`);
+      console.log(res);
       if (res.data.success) {
         if (onDeleted) onDeleted();
       } else {

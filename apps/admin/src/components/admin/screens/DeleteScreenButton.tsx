@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { HallDialog } from "./HallDialog";
-import DeleteHallForm from "./delete-hall-form";
+import { ScreenDialog } from "./ScreenDialog";
+import DeleteScreenForm from "./delete-screen-form";
 
 export function DeleteButton({
-  hallId,
+  screenId,
   onDeleted,
 }: {
-  hallId: string;
+  screenId: string;
   onDeleted?: () => void;
 }) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -24,7 +24,7 @@ export function DeleteButton({
         <RiDeleteBin6Line />
         <span>Delete</span>
       </button>
-      <HallDialog
+      <ScreenDialog
         isOpen={isDeleteOpen}
         setIsOpen={setIsDeleteOpen}
         // title={t("DeleteListingTitle")}
@@ -32,12 +32,12 @@ export function DeleteButton({
         // description={t("DeleteListingDescription")}
         description="Delete Hall"
       >
-        <DeleteHallForm
-          hallId={hallId}
+        <DeleteScreenForm
+          screenId={screenId}
           setIsOpen={setIsDeleteOpen}
           onDeleted={onDeleted}
         />
-      </HallDialog>
+      </ScreenDialog>
     </>
   );
 }

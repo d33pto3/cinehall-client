@@ -1,59 +1,47 @@
 import { Dispatch, SetStateAction } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import axios from "@/lib/axios";
-// import {toast} from "@/components/ui/use-toast";
-// import {deleteActivityById} from "@/app/[locale]/(dashboard)/activities/actions";
+import { useNavigate } from "react-router-dom";
+// import {useRouter} from "@/lib/i18n/config/navigation"
 // import {useTranslations} from "next-intl";
 
 const formSchema = z.object({
-  movieId: z.string(),
+  screenId: z.string(),
 });
 
-export default function DeleteMovieForm({
-  movieId,
+export default function ViewScreenForm({
+  screenId,
   setIsOpen,
-  onDeleted,
 }: {
-  movieId: string;
+  screenId: string;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  onDeleted?: () => void;
 }) {
+  // const t = useTranslations("HallPage");
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      movieId,
+      screenId,
     },
   });
-  // const t = useTranslations("ActivityPage");
 
   const isLoading = form.formState.isSubmitting;
+  const navigate = useNavigate();
 
   const onSubmit = async () => {
-    // const result = JSON.parse(await deleteActivityById(activityId));
-    // if (result?.error?.message) {
-    //     toast({title: t("FailedDeleteActivityMessageTitle")});
-    // } else {
-    //     toast({title: t("SuccessfullyDeleteActivityMessageTitle")});
-    // }
-
     try {
-      setIsOpen(false);
-      const res = await axios.delete(`/movie/${movieId}`);
-      if (res.data.success) {
-        if (onDeleted) onDeleted();
-      } else {
-        // toast for error
-      }
+      navigate(`/admin/screens/${screenId}`);
     } catch (error) {
-      // toast for error - An error occured during deletion
       console.log(error);
     }
+    setIsOpen(false);
   };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 px-4">
@@ -66,25 +54,21 @@ export default function DeleteMovieForm({
             type="button"
             onClick={() => setIsOpen(false)}
           >
-            {/* {t("Cancel")} */}
             Cancel
           </Button>
           <Button
             size="lg"
             type="submit"
             disabled={isLoading}
-            className="w-full md:w-auto bg-black hover:bg-rose-950"
+            className="w-full md:w-auto bg-black hover:bg-red-950"
           >
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Deleting
+                Opening overview
               </>
             ) : (
-              <span>
-                {/* {t("Delete")} */}
-                Delete
-              </span>
+              <span>View</span>
             )}
           </Button>
         </div>

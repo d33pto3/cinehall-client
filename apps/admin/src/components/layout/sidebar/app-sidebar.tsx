@@ -5,6 +5,7 @@ import {
   IconInnerShadowTop,
   IconListDetails,
   IconUsers,
+  IconCrop169,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/layout/sidebar/nav-main";
@@ -42,6 +43,11 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             title: "Halls",
             url: "/admin/halls",
             icon: IconListDetails,
+          },
+          {
+            title: "Screens",
+            url: "/admin/screens",
+            icon: IconCrop169,
           },
           {
             title: "Movies",
