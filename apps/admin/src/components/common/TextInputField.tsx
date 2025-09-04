@@ -71,6 +71,13 @@ export const TextInputField = <T extends FieldValues>({
               value={field?.value ?? ""}
               onChange={(e) => {
                 const value = e.target.value;
+                let processedValue: string | number = value;
+
+                // Convert to number if type is number
+                if (type === "number") {
+                  processedValue = value === "" ? "" : Number(value);
+                }
+
                 if (onChangeOverride) {
                   onChangeOverride(value, field);
                 } else {
