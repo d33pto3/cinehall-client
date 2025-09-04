@@ -1,13 +1,12 @@
 import {
   IconChartBar,
   IconDashboard,
-  IconFolder,
   IconInnerShadowTop,
   IconListDetails,
   IconUsers,
   IconCrop169,
+  IconTheater,
 } from "@tabler/icons-react";
-
 import { NavMain } from "@/components/layout/sidebar/nav-main";
 import { NavUser } from "@/components/layout/sidebar/nav-user";
 import {
@@ -52,12 +51,12 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
           {
             title: "Movies",
             url: "/admin/movies",
-            icon: IconChartBar,
+            icon: IconTheater,
           },
           {
-            title: "Movie Library",
-            url: "#",
-            icon: IconFolder,
+            title: "Shows",
+            url: "/admin/shows",
+            icon: IconCrop169,
           },
         ]
       : [
@@ -79,7 +78,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
           {
             title: "My movies",
             url: "#",
-            icon: IconFolder,
+            icon: IconTheater,
           },
           {
             title: "Staff",
