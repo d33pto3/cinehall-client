@@ -15,6 +15,7 @@ import Movies from "./pages/admin/movie";
 import AddMovie from "./pages/admin/movie/AddMovie";
 import Movie from "./pages/admin/movie/movieId";
 import Screens from "./pages/admin/screen";
+import AddScreen from "./pages/admin/screen/AddScreen";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -63,6 +64,7 @@ function App() {
               <Route path="/admin/halls/:hallId" element={<Hall />} />
               {/* halls */}
               <Route path="/admin/screens" element={<Screens />} />
+              <Route path="/admin/screens/add-screen" element={<AddScreen />} />
               {/* users */}
               <Route path="/admin/users" element={<Users />} />
               <Route path="/admin/users/:userId" element={<User />} />
