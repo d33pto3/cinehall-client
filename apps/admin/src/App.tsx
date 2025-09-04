@@ -18,6 +18,8 @@ import Screens from "./pages/admin/screen";
 import AddScreen from "./pages/admin/screen/AddScreen";
 import Screen from "./pages/admin/screen/ScreenId";
 import Shows from "./pages/admin/show";
+import AddShow from "./pages/admin/show/AddShow";
+import Show from "./pages/admin/show/ShowId";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -70,8 +72,8 @@ function App() {
               <Route path="/admin/screens/:screenId" element={<Screen />} />
               {/* shows */}
               <Route path="/admin/shows" element={<Shows />} />
-              {/* <Route path="/admin/screens/add-screen" element={<AddScreen />} />
-              <Route path="/admin/screens/:screenId" element={<Screen />} /> */}
+              <Route path="/admin/shows/add-show" element={<AddShow />} />
+              <Route path="/admin/shows/:showId" element={<Show />} />
               {/* users */}
               <Route path="/admin/users" element={<Users />} />
               <Route path="/admin/users/:userId" element={<User />} />

@@ -22,7 +22,7 @@ export default function ShowsTable() {
           <ShowsFilter onFilter={setCurrentFilters} />
 
           <Link
-            to="/admin/halls/add-hall"
+            to="/admin/shows/add-show"
             className="flex items-center ml-auto"
           >
             <Button>
