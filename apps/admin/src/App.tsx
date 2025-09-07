@@ -8,16 +8,43 @@ import Halls from "@/pages/admin/hall";
 import AddHall from "@/pages/admin/hall/AddHall";
 import NotFound from "@/pages/404";
 import Users from "./pages/admin/user";
+import Hall from "./pages/admin/hall/HallId";
+import User from "./pages/admin/user/userId";
+import AddHallOwner from "./pages/admin/user/AddHallowner";
+import Movies from "./pages/admin/movie";
+import AddMovie from "./pages/admin/movie/AddMovie";
+import Movie from "./pages/admin/movie/movieId";
+import Screens from "./pages/admin/screen";
+import AddScreen from "./pages/admin/screen/AddScreen";
+import Screen from "./pages/admin/screen/ScreenId";
+import Shows from "./pages/admin/show";
+import AddShow from "./pages/admin/show/AddShow";
+import Show from "./pages/admin/show/ShowId";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="h-screen flex justify-center items-center text-center">
+        loading...
+      </div>
+    );
   }
 
   return (
     <Routes>
+      <Route
+        path="/login"
+        element={
+          isAuthenticated ? (
+            <Navigate to={user?.role === "admin" ? "/admin" : "/hallowner"} />
+          ) : (
+            <Login />
+          )
+        }
+      />
+
       <Route
         path="/"
         element={
@@ -30,21 +57,43 @@ function App() {
       />
 
       {/* All authenticated routes wrapped with Layout */}
-      {isAuthenticated && (
+      {isAuthenticated ? (
         <Route element={<Layout />}>
           {user?.role === "admin" && (
             <>
               <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/users" element={<Users />} />
+              {/* halls */}
               <Route path="/admin/halls" element={<Halls />} />
               <Route path="/admin/halls/add-hall" element={<AddHall />} />
+              <Route path="/admin/halls/:hallId" element={<Hall />} />
+              {/* screens */}
+              <Route path="/admin/screens" element={<Screens />} />
+              <Route path="/admin/screens/add-screen" element={<AddScreen />} />
+              <Route path="/admin/screens/:screenId" element={<Screen />} />
+              {/* shows */}
+              <Route path="/admin/shows" element={<Shows />} />
+              <Route path="/admin/shows/add-show" element={<AddShow />} />
+              <Route path="/admin/shows/:showId" element={<Show />} />
+              {/* users */}
+              <Route path="/admin/users" element={<Users />} />
+              <Route path="/admin/users/:userId" element={<User />} />
+              {/* hallowners */}
+              <Route
+                path="/admin/users/add-hallowner"
+                element={<AddHallOwner />}
+              />
+              {/* movies */}
+              <Route path="/admin/movies" element={<Movies />} />
+              <Route path="/admin/movies/add-movie" element={<AddMovie />} />
+              <Route path="/admin/movies/:movieId" element={<Movie />} />
             </>
           )}
           {user?.role === "hallOwner" && (
             <Route path="/hallowner" element={<AdminDashboard />} />
           )}
-          {/* <Route path="*" element={<NotFound />} /> */}
         </Route>
+      ) : (
+        <Route path="*" element={<Navigate to="/login" />} />
       )}
 
       <Route path="*" element={<NotFound />} />
