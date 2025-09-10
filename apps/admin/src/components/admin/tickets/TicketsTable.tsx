@@ -22,7 +22,7 @@ export default function TicketsTable() {
           <TicketsFilter onFilter={setCurrentFilters} />
 
           <Link
-            to="/admin/shows/add-show"
+            to="/admin/tickets/add-ticket"
             className="flex items-center ml-auto"
           >
             <Button>

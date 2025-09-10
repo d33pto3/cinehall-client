@@ -77,8 +77,6 @@ function App() {
               <Route path="/admin/shows/:showId" element={<Show />} />
               {/* tickets */}
               <Route path="/admin/tickets" element={<Tickets />} />
-              {/* <Route path="/admin/shows/add-show" element={<AddShow />} /> */}
-              {/* <Route path="/admin/shows/:showId" element={<Show />} /> */}
               {/* users */}
               <Route path="/admin/users" element={<Users />} />
               <Route path="/admin/users/:userId" element={<User />} />

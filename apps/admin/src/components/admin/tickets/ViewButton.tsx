@@ -25,9 +25,9 @@ export function ViewButton({ ticketId }: { ticketId: string }) {
         isOpen={isViewOpen}
         setIsOpen={setIsViewOpen}
         // title={t("ViewListingTitle")}
-        title="View & Edit Show"
+        title="View & Edit Ticket"
         // description={t("ViewListingDescription")}
-        description="Click to view the show description"
+        description="Click to view the ticket description"
       >
         <ViewTicketForm ticketId={ticketId} setIsOpen={setIsViewOpen} />
       </TicketDialog>

@@ -41,7 +41,6 @@ export default function DeleteTicketForm({
     try {
       setIsOpen(false);
       const res = await axios.delete(`/ticket/${ticketId}`);
-      console.log(res);
       if (res.data.success) {
         if (onDeleted) onDeleted();
       } else {
