@@ -20,6 +20,7 @@ import Screen from "./pages/admin/screen/ScreenId";
 import Shows from "./pages/admin/show";
 import AddShow from "./pages/admin/show/AddShow";
 import Show from "./pages/admin/show/ShowId";
+import Tickets from "./pages/admin/ticket";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -74,6 +75,10 @@ function App() {
               <Route path="/admin/shows" element={<Shows />} />
               <Route path="/admin/shows/add-show" element={<AddShow />} />
               <Route path="/admin/shows/:showId" element={<Show />} />
+              {/* tickets */}
+              <Route path="/admin/tickets" element={<Tickets />} />
+              {/* <Route path="/admin/shows/add-show" element={<AddShow />} /> */}
+              {/* <Route path="/admin/shows/:showId" element={<Show />} /> */}
               {/* users */}
               <Route path="/admin/users" element={<Users />} />
               <Route path="/admin/users/:userId" element={<User />} />

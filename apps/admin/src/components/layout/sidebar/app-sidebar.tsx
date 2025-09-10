@@ -6,6 +6,7 @@ import {
   IconUsers,
   IconCrop169,
   IconTheater,
+  IconTicket,
 } from "@tabler/icons-react";
 import { NavMain } from "@/components/layout/sidebar/nav-main";
 import { NavUser } from "@/components/layout/sidebar/nav-user";
@@ -57,6 +58,11 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             title: "Shows",
             url: "/admin/shows",
             icon: IconCrop169,
+          },
+          {
+            title: "Tickets",
+            url: "/admin/tickets",
+            icon: IconTicket,
           },
         ]
       : [
