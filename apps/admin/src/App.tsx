@@ -22,6 +22,8 @@ import AddShow from "./pages/admin/show/AddShow";
 import Show from "./pages/admin/show/ShowId";
 import Tickets from "./pages/admin/ticket";
 import HallownerHalls from "./pages/hallowner/hall";
+import HallOwnerAddScreenForm from "./components/hallowner/screens/add-new-screen/AddNewScreenForm";
+import HallownerHall from "./pages/hallowner/hall/hallId";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -97,6 +99,15 @@ function App() {
               <Route path="/hallowner" element={<AdminDashboard />} />
               {/* halls */}
               <Route path="/hallowner/halls" element={<HallownerHalls />} />
+              <Route
+                path="/hallowner/halls/:hallId"
+                element={<HallownerHall />}
+              />
+              {/* screens */}
+              <Route
+                path="hallowner/screens/add-screen"
+                element={<HallOwnerAddScreenForm />}
+              />
             </>
           )}
         </Route>
