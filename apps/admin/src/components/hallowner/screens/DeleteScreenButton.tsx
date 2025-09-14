@@ -28,9 +28,9 @@ export function DeleteButton({
         isOpen={isDeleteOpen}
         setIsOpen={setIsDeleteOpen}
         // title={t("DeleteListingTitle")}
-        title={"Delete Hall"}
+        title={"Delete Screen"}
         // description={t("DeleteListingDescription")}
-        description="Delete Hall"
+        description="Delete Screen"
       >
         <DeleteScreenForm
           screenId={screenId}

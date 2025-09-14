@@ -22,7 +22,7 @@ export default function HallownerScreensTable() {
           <ScreensFilter onFilter={setCurrentFilters} />
 
           <Link
-            to="/admin/screens/add-screen"
+            to="/hallowner/screens/add-screen"
             className="flex items-center ml-auto"
           >
             <Button>

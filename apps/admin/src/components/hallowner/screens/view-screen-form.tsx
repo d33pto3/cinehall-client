@@ -35,7 +35,7 @@ export default function ViewScreenForm({
 
   const onSubmit = async () => {
     try {
-      navigate(`/admin/screens/${screenId}`);
+      navigate(`/hallowner/screens/${screenId}`);
     } catch (error) {
       console.log(error);
     }

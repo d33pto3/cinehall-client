@@ -40,7 +40,7 @@ export default function DeleteScreenForm({
 
     try {
       setIsOpen(false);
-      const res = await axios.delete(`/screen/${screenId}`);
+      const res = await axios.delete(`/screen/hallowner/${screenId}`);
       console.log(res);
       if (res.data.success) {
         if (onDeleted) onDeleted();
