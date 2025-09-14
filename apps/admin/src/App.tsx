@@ -20,6 +20,8 @@ import Screen from "./pages/admin/screen/ScreenId";
 import Shows from "./pages/admin/show";
 import AddShow from "./pages/admin/show/AddShow";
 import Show from "./pages/admin/show/ShowId";
+import Tickets from "./pages/admin/ticket";
+import HallownerHalls from "./pages/hallowner/hall";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -74,6 +76,8 @@ function App() {
               <Route path="/admin/shows" element={<Shows />} />
               <Route path="/admin/shows/add-show" element={<AddShow />} />
               <Route path="/admin/shows/:showId" element={<Show />} />
+              {/* tickets */}
+              <Route path="/admin/tickets" element={<Tickets />} />
               {/* users */}
               <Route path="/admin/users" element={<Users />} />
               <Route path="/admin/users/:userId" element={<User />} />
@@ -89,7 +93,11 @@ function App() {
             </>
           )}
           {user?.role === "hallOwner" && (
-            <Route path="/hallowner" element={<AdminDashboard />} />
+            <>
+              <Route path="/hallowner" element={<AdminDashboard />} />
+              {/* halls */}
+              <Route path="/hallowner/halls" element={<HallownerHalls />} />
+            </>
           )}
         </Route>
       ) : (
