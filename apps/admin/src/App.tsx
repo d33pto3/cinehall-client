@@ -21,6 +21,7 @@ import Shows from "./pages/admin/show";
 import AddShow from "./pages/admin/show/AddShow";
 import Show from "./pages/admin/show/ShowId";
 import Tickets from "./pages/admin/ticket";
+import HallownerHalls from "./pages/hallowner/hall";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -92,7 +93,11 @@ function App() {
             </>
           )}
           {user?.role === "hallOwner" && (
-            <Route path="/hallowner" element={<AdminDashboard />} />
+            <>
+              <Route path="/hallowner" element={<AdminDashboard />} />
+              {/* halls */}
+              <Route path="/hallowner/halls" element={<HallownerHalls />} />
+            </>
           )}
         </Route>
       ) : (

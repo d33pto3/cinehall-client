@@ -72,8 +72,8 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             icon: IconDashboard,
           },
           {
-            title: "My Showtimes",
-            url: "#",
+            title: "My Halls",
+            url: "/hallowner/halls",
             icon: IconListDetails,
           },
           {
