@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-table";
 import TSTable from "@/components/common/TSTable";
 import axios from "@/lib/axios";
+import HallMoreAction from "./MoreAction";
 
 interface Hall {
   _id: string;
@@ -92,13 +93,11 @@ export default function ListOfHalls({ search, filters }: Props) {
       header: "Screens",
       cell: ({ row }) => row.original.screens,
     },
-    // {
-    //   id: "actions",
-    //   header: "",
-    //   cell: ({ row }) => (
-    //     <HallMoreAction hallId={row.original._id} onDeleted={fetchHalls} />
-    //   ),
-    // },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => <HallMoreAction hallId={row.original._id} />,
+    },
   ];
 
   const table = useReactTable<Hall>({
