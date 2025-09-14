@@ -68,7 +68,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       : [
           {
             title: "Dashboard",
-            url: "#",
+            url: "/hallowner",
             icon: IconDashboard,
           },
           {
@@ -77,14 +77,14 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             icon: IconListDetails,
           },
           {
-            title: "Bookings",
-            url: "#",
+            title: "My Screens",
+            url: "/hallowner/screens",
             icon: IconChartBar,
           },
           {
-            title: "My movies",
-            url: "#",
-            icon: IconTheater,
+            title: "My Shows",
+            url: "/hallowner/shows",
+            icon: IconCrop169,
           },
           {
             title: "Staff",
