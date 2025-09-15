@@ -26,6 +26,7 @@ import HallOwnerAddScreenForm from "./components/hallowner/screens/add-new-scree
 import HallownerHall from "./pages/hallowner/hall/hallId";
 import HallownerScreens from "./pages/hallowner/screen";
 import HallownerScreen from "./pages/hallowner/screen/screenId";
+import HallownerShows from "./pages/hallowner/shows";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -115,6 +116,8 @@ function App() {
                 path="hallowner/screens/add-screen"
                 element={<HallOwnerAddScreenForm />}
               />
+              {/* shows */}
+              <Route path="/hallowner/shows" element={<HallownerShows />} />
             </>
           )}
         </Route>
