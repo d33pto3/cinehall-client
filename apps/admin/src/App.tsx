@@ -27,6 +27,7 @@ import HallownerHall from "./pages/hallowner/hall/hallId";
 import HallownerScreens from "./pages/hallowner/screen";
 import HallownerScreen from "./pages/hallowner/screen/screenId";
 import HallownerShows from "./pages/hallowner/shows";
+import HallownerShow from "./pages/hallowner/shows/showId";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -121,6 +122,11 @@ function App() {
               />
               {/* shows */}
               <Route path="/hallowner/shows" element={<HallownerShows />} />
+              <Route path="/hallowner/shows/add-show" element={<AddShow />} />
+              <Route
+                path="/hallowner/shows/:showId"
+                element={<HallownerShow />}
+              />
             </>
           )}
         </Route>
