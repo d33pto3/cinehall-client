@@ -26,6 +26,9 @@ import HallOwnerAddScreenForm from "./components/hallowner/screens/add-new-scree
 import HallownerHall from "./pages/hallowner/hall/hallId";
 import HallownerScreens from "./pages/hallowner/screen";
 import HallownerScreen from "./pages/hallowner/screen/screenId";
+import HallownerShows from "./pages/hallowner/show";
+import HallownerShow from "./pages/hallowner/show/showId";
+import HallownerAddShow from "./pages/hallowner/show/AddShow";
 
 function App() {
   const { loading, isAuthenticated, user } = useAuth();
@@ -94,6 +97,9 @@ function App() {
               <Route path="/admin/movies" element={<Movies />} />
               <Route path="/admin/movies/add-movie" element={<AddMovie />} />
               <Route path="/admin/movies/:movieId" element={<Movie />} />
+              {/* seats */}
+              {/* bookings */}
+              {/* tickets */}
             </>
           )}
           {user?.role === "hallOwner" && (
@@ -114,6 +120,16 @@ function App() {
               <Route
                 path="hallowner/screens/add-screen"
                 element={<HallOwnerAddScreenForm />}
+              />
+              {/* shows */}
+              <Route path="/hallowner/shows" element={<HallownerShows />} />
+              <Route
+                path="/hallowner/shows/add-show"
+                element={<HallownerAddShow />}
+              />
+              <Route
+                path="/hallowner/shows/:showId"
+                element={<HallownerShow />}
               />
             </>
           )}
