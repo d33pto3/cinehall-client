@@ -95,6 +95,9 @@ function App() {
               <Route path="/admin/movies" element={<Movies />} />
               <Route path="/admin/movies/add-movie" element={<AddMovie />} />
               <Route path="/admin/movies/:movieId" element={<Movie />} />
+              {/* seats */}
+              {/* bookings */}
+              {/* tickets */}
             </>
           )}
           {user?.role === "hallOwner" && (
