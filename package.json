@@ -22,5 +22,12 @@
     "@tailwindcss/vite": "^4.0.11",
     "tailwindcss": "^4.0.11",
     "turbo": "^2.4.4"
+  },
+  "dependencies": {
+    "expo-router": "^5.1.3",
+    "expo-splash-screen": "^0.30.10"
+  },
+  "resolutions": {
+    "react": "19.1.0"
   }
 }
