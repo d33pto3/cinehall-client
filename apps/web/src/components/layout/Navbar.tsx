@@ -18,7 +18,7 @@ function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="text-white px-6 py-2 my-4 flex items-center justify-between">
+    <nav className="text-white px-6 py-2 my-12 flex items-center justify-between">
       <div className="flex items-center gap-8">
         {/* Logo */}
         <Link href="/" className="relative">

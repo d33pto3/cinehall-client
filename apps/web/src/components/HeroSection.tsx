@@ -1,27 +1,43 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import MovieCarousel from "./MovieCarousel";
+import axiosInstance from "@/lib/axios";
 
 interface HeroSectionProps {
-  title?: string;
-  subtitle?: string;
+  empty?: true;
 }
 
-const HeroSection = ({
-  title = "Experience Movies Like Never Before",
-  subtitle,
-}: HeroSectionProps) => {
+interface Movie {
+  _id: string;
+  title: string;
+  imageUrl: string;
+  duration: number;
+  genre: string;
+  releaseDate: string;
+  director: string;
+}
+
+const HeroSection = ({}: HeroSectionProps) => {
+  const [imageUrls, setImageUrls] = useState([]);
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      const res = await axiosInstance.get("/movie");
+      const movies = res.data.data;
+
+      console.log(movies);
+
+      setImageUrls(movies.map((movie: Movie) => movie.imageUrl));
+    };
+
+    fetchMovies();
+  }, []);
+
   return (
     <section className="relative h-screen w-full overflow-hidden">
       {/* Content */}
-      <span className="inline-block rounded-full bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
-        Now Streaming
-      </span>
-      <h1 className="text-5xl font-bold tracking-tight text-black sm:text-6xl">
-        {title}
-      </h1>
-      <p className="text-lg text-muted-foreground">
-        {subtitle ||
-          "Book tickets for the latest blockbusters in premium theaters near you. Enjoy crystal-clear visuals and immersive sound."}
-      </p>
+      <MovieCarousel slides={imageUrls} />
     </section>
   );
 };
