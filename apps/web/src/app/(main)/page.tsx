@@ -1,8 +1,8 @@
-import HeroSection from "@/components/HeroSection";
+import HeroSection from "@/components/homepage/HeroSection";
 
 export default function Home() {
   return (
-    <div className="web">
+    <div className="">
       <HeroSection />
     </div>
   );

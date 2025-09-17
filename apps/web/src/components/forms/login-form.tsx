@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-import InputFormField from "../shared/InputFormField";
+import InputFormField from "../shared/molecules/InputFormField";
 import { Form } from "../ui/form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

@@ -3,12 +3,13 @@
 import React, { useEffect, useState } from "react";
 import MovieCarousel from "./MovieCarousel";
 import axiosInstance from "@/lib/axios";
+import NowShowing from "./NowShowing";
 
 interface HeroSectionProps {
   empty?: true;
 }
 
-interface Movie {
+export interface Movie {
   _id: string;
   title: string;
   imageUrl: string;
@@ -19,25 +20,26 @@ interface Movie {
 }
 
 const HeroSection = ({}: HeroSectionProps) => {
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [imageUrls, setImageUrls] = useState([]);
 
   useEffect(() => {
     const fetchMovies = async () => {
       const res = await axiosInstance.get("/movie");
-      const movies = res.data.data;
+      const moviesList = res.data.data;
 
-      console.log(movies);
-
-      setImageUrls(movies.map((movie: Movie) => movie.imageUrl));
+      setMovies(moviesList);
+      setImageUrls(moviesList.map((movie: Movie) => movie.imageUrl));
     };
 
     fetchMovies();
   }, []);
 
   return (
-    <section className="relative h-screen w-full overflow-hidden">
+    <section className="">
       {/* Content */}
       <MovieCarousel slides={imageUrls} />
+      <NowShowing movies={movies} />
     </section>
   );
 };

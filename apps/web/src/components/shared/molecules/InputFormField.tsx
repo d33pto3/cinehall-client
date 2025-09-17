@@ -5,8 +5,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
+} from "../../ui/form";
+import { Input } from "../../ui/input";
 import { UseFormReturn, FieldValues, Path } from "react-hook-form";
 import { InputTypes } from "@/lib/types";
 

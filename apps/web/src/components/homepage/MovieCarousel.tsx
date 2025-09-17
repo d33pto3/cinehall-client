@@ -20,6 +20,8 @@ function MovieCarousel(props: PropType) {
   ]);
   const [isPlaying, setIsPlaying] = useState(false);
 
+  console.log(isPlaying);
+
   const {
     prevBtnDisabled,
     nextBtnDisabled,
@@ -43,15 +45,15 @@ function MovieCarousel(props: PropType) {
     [emblaApi]
   );
 
-  const toggleAutoplay = useCallback(() => {
-    const autoScroll = emblaApi?.plugins()?.autoScroll;
-    if (!autoScroll) return;
+  //   const toggleAutoplay = useCallback(() => {
+  //     const autoScroll = emblaApi?.plugins()?.autoScroll;
+  //     if (!autoScroll) return;
 
-    const playOrStop = autoScroll.isPlaying()
-      ? autoScroll.stop
-      : autoScroll.play;
-    playOrStop();
-  }, [emblaApi]);
+  //     const playOrStop = autoScroll.isPlaying()
+  //       ? autoScroll.stop
+  //       : autoScroll.play;
+  //     playOrStop();
+  //   }, [emblaApi]);
 
   useEffect(() => {
     const autoScroll = emblaApi?.plugins()?.autoScroll;
@@ -90,9 +92,9 @@ function MovieCarousel(props: PropType) {
           />
         </div>
 
-        <button className="embla__play" onClick={toggleAutoplay} type="button">
+        {/* <button className="embla__play" onClick={toggleAutoplay} type="button">
           {isPlaying ? "Stop" : "Start"}
-        </button>
+        </button> */}
       </div>
     </div>
   );
