@@ -14,7 +14,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "../ui/form";
-import InputFormField from "../shared/InputFormField";
+import InputFormField from "../shared/molecules/InputFormField";
 import axios from "axios";
 
 const formSchema = z.object({
