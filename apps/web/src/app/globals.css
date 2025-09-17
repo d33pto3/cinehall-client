@@ -119,7 +119,7 @@
   }
 }
 
-@keyframes infinite-scroll {
+@keyframes infinite-scroll-left {
   0% {
     transform: translateX(0);
   }
@@ -128,10 +128,37 @@
   }
 }
 
-.animate-infinite-scroll {
-  animation: infinite-scroll 20s linear infinite;
+@keyframes infinite-scroll-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
-.parent-container:hover .animate-infinite-scroll {
+/* ---------- Header (scrolls left) ---------- */
+.scroll-top,
+.scroll-middle,
+.scroll-bottom {
+  animation: infinite-scroll-left 20s linear infinite;
+}
+
+.parent-container:hover .scroll-top,
+.parent-container:hover .scroll-middle,
+.parent-container:hover .scroll-bottom {
+  animation-play-state: paused;
+}
+
+/* ---------- Footer (scrolls right) ---------- */
+.scroll-top-footer,
+.scroll-middle-footer,
+.scroll-bottom-footer {
+  animation: infinite-scroll-right 20s linear infinite;
+}
+
+.parent-container-footer:hover .scroll-top-footer,
+.parent-container-footer:hover .scroll-middle-footer,
+.parent-container-footer:hover .scroll-bottom-footer {
   animation-play-state: paused;
 }
