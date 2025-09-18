@@ -23,51 +23,53 @@ const Footer: FC = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-0 left-0 w-full z-50">
-      <div className="parent-container-footer relative overflow-hidden bg-black py-1 flex flex-col gap-[2px]">
-        {/* Top reel (faster) */}
-        <div className="scroll-top-footer flex w-max">
-          {[...Array(2)].map((_, loopIndex) => (
-            <div key={loopIndex} className="flex">
-              {Array.from({ length: lenSmall }, (_, index) => (
-                <div
-                  key={`top-${loopIndex}-${index}`}
-                  className="px-[2px] py-[2px] mx-[2px] bg-white rounded-[1px]"
-                />
-              ))}
-            </div>
-          ))}
-        </div>
+    <>
+      <div className="fixed bottom-0 left-0 w-full z-50">
+        <div className="parent-container-footer relative overflow-hidden bg-black py-1 flex flex-col gap-[2px]">
+          {/* Top reel (faster) */}
+          <div className="scroll-top-footer flex w-max">
+            {[...Array(2)].map((_, loopIndex) => (
+              <div key={loopIndex} className="flex">
+                {Array.from({ length: lenSmall }, (_, index) => (
+                  <div
+                    key={`top-${loopIndex}-${index}`}
+                    className="px-[2px] py-[2px] mx-[2px] bg-white rounded-[1px]"
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
 
-        {/* Middle reel (slower, main blocks) */}
-        <div className="scroll-middle-footer flex w-max">
-          {[...Array(2)].map((_, loopIndex) => (
-            <div key={loopIndex} className="flex">
-              {Array.from({ length: lenMid }, (_, index) => (
-                <div
-                  key={`mid-${loopIndex}-${index}`}
-                  className="px-[12px] py-[8px] mx-[4px] bg-[#8F8F8F] rounded-[2px]"
-                />
-              ))}
-            </div>
-          ))}
-        </div>
+          {/* Middle reel (slower, main blocks) */}
+          <div className="scroll-middle-footer flex w-max">
+            {[...Array(2)].map((_, loopIndex) => (
+              <div key={loopIndex} className="flex">
+                {Array.from({ length: lenMid }, (_, index) => (
+                  <div
+                    key={`mid-${loopIndex}-${index}`}
+                    className="px-[12px] py-[8px] mx-[4px] bg-[#8F8F8F] rounded-[2px]"
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
 
-        {/* Bottom reel (faster again) */}
-        <div className="scroll-bottom-footer flex w-max">
-          {[...Array(2)].map((_, loopIndex) => (
-            <div key={loopIndex} className="flex">
-              {Array.from({ length: lenSmall }, (_, index) => (
-                <div
-                  key={`bot-${loopIndex}-${index}`}
-                  className="px-[2px] py-[2px] mx-[2px] bg-white rounded-[1px]"
-                />
-              ))}
-            </div>
-          ))}
+          {/* Bottom reel (faster again) */}
+          <div className="scroll-bottom-footer flex w-max">
+            {[...Array(2)].map((_, loopIndex) => (
+              <div key={loopIndex} className="flex">
+                {Array.from({ length: lenSmall }, (_, index) => (
+                  <div
+                    key={`bot-${loopIndex}-${index}`}
+                    className="px-[2px] py-[2px] mx-[2px] bg-white rounded-[1px]"
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
