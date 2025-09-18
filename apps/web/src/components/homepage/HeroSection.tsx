@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import MovieCarousel from "./MovieCarousel";
 import axiosInstance from "@/lib/axios";
 import NowShowing from "./NowShowing";
+import ComingSoon from "./ComingSoon";
 
 interface HeroSectionProps {
   empty?: true;
@@ -36,10 +37,11 @@ const HeroSection = ({}: HeroSectionProps) => {
   }, []);
 
   return (
-    <section className="">
+    <section className="min-h-screen">
       {/* Content */}
       <MovieCarousel slides={imageUrls} />
       <NowShowing movies={movies} />
+      <ComingSoon movies={movies} />
     </section>
   );
 };

@@ -1,13 +1,24 @@
 import React from "react";
 import Image from "next/image";
 import { Movie } from "@/components/homepage/HeroSection";
+import { cn } from "@/lib/utils";
 
-function MovieGridList({ movies }: { movies: Movie[] }) {
+function MovieGridList({
+  movies,
+  bgColor,
+  title = "Showing",
+  wrapperClassName,
+}: {
+  movies: Movie[];
+  title: string;
+  bgColor?: string;
+  wrapperClassName?: string;
+}) {
   return (
-    <div className="p-6 my-24 bg-[#322F2F91] mx-4 rounded-[40px]">
+    <div className={cn(`p-6 ${bgColor} mx-4 rounded-[40px]`, wrapperClassName)}>
       <div className="px-6">
         <div className="flex justify-between items-center text-[#FAAA47]">
-          <h4 className="font-medium text-[2.25rem]">Now Showing</h4>
+          <h4 className="font-medium text-[2.25rem]">{title}</h4>
           <p className="text-base cursor-pointer hover:underline">See all</p>
         </div>
         <div className="mt-7 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
@@ -17,7 +28,7 @@ function MovieGridList({ movies }: { movies: Movie[] }) {
               className="flex flex-col items-center p-3 transition-transform hover:scale-105"
               style={{ minWidth: 201, maxWidth: 201, minHeight: 360 }}
             >
-              <div className="w-[201px] h-[296px] relative">
+              <div className="flex justify-between w-[201px] lg:w-[250px] h-[296px] lg:h-[396px] relative">
                 <Image
                   src={movie?.imageUrl}
                   alt={movie?.title}
