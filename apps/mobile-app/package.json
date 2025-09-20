@@ -1,5 +1,5 @@
 {
-  "name": "mobile",
+  "name": "mobile-app",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
@@ -50,6 +50,8 @@
     "@types/react": "~19.0.10",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
+    "prettier-plugin-tailwindcss": "^0.5.11",
+    "tailwindcss": "^3.4.17",
     "typescript": "~5.8.3"
   },
   "private": true
