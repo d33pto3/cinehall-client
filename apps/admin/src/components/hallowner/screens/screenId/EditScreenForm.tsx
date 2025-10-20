@@ -77,7 +77,7 @@ function EditScreenForm({ screenInfo }: { screenInfo: ScreenProps | null }) {
     }
   }
 
-  const handleNumberChange = (value: string, field: any) => {
+  const handleNumberChange = (value: string | number, field: any) => {
     const numericValue = value === "" ? "" : Number(value);
     field.onChange(numericValue);
   };

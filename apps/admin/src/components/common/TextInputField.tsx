@@ -25,7 +25,7 @@ interface TextInputFieldProps<T extends FieldValues> {
   formLabelClass?: string;
   inputClass?: string;
   onChangeOverride?: (
-    value: string,
+    value: string | number,
     field: ControllerRenderProps<T, Path<T>>
   ) => void;
   formDescription?: string;
@@ -70,19 +70,26 @@ export const TextInputField = <T extends FieldValues>({
               {...field}
               value={field?.value ?? ""}
               onChange={(e) => {
-                const value = e.target.value;
-                let processedValue: string | number = value;
+                // const value = e.target.value;
+                // let processedValue: string | number = value;
+                const processedValue =
+                  type === "number" && e.target.value !== ""
+                    ? Number(e.target.value)
+                    : e.target.value;
+
+                onChangeOverride?.(String(processedValue), field);
+                field.onChange(processedValue);
 
                 // Convert to number if type is number
-                if (type === "number") {
-                  processedValue = value === "" ? "" : Number(value);
-                }
+                // if (type === "number") {
+                //   processedValue = value === "" ? "" : Number(value);
+                // }
 
-                if (onChangeOverride) {
-                  onChangeOverride(value, field);
-                } else {
-                  field.onChange(value);
-                }
+                // if (onChangeOverride) {
+                //   onChangeOverride(value, field);
+                // } else {
+                //   field.onChange(value);
+                // }
               }}
               autoComplete={autoComplete}
             />
