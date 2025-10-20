@@ -94,7 +94,7 @@ function EditScreenForm({ screenInfo }: { screenInfo: ScreenProps | null }) {
   }
 
   // Handle number input changes properly
-  const handleNumberChange = (value: string, field: any) => {
+  const handleNumberChange = (value: string | number, field: any) => {
     // Convert to number if not empty, otherwise set to empty string for validation
     const numericValue = value === "" ? "" : Number(value);
     field.onChange(numericValue);

@@ -52,7 +52,7 @@ export default function ListOfHallownerScreens({ search, filters }: Props) {
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [pageCount, setPageCount] = useState(0);
-  const [totalCount, setTotalCount] = useState(0);
+  // const [totalCount, setTotalCount] = useState(0);
 
   const fetchScreens = async () => {
     setLoading(true);
@@ -84,7 +84,7 @@ export default function ListOfHallownerScreens({ search, filters }: Props) {
       const res = await axios.get(`/screen/hallowner`, { params });
       setScreens(res.data.data);
       setPageCount(res.data.pages);
-      setTotalCount(res.data.count);
+      // setTotalCount(res.data.count);
     } catch (error) {
       console.error("Failed to fetch screens", error);
     } finally {

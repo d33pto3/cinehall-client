@@ -1,6 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { IoIosAddCircleOutline } from "react-icons/io";
 import SearchActivity from "../halls/SearchActivity";
 import { useState } from "react";
 import UserFilter from "./UserFilter";

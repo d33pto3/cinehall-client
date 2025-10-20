@@ -20,7 +20,7 @@ export interface ICardData {
 }
 
 export function SectionCards({
-  user,
+  // user,
   cardData,
 }: {
   user: User | null;
