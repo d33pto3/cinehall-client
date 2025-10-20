@@ -1,12 +1,13 @@
 import {
   IconChartBar,
   IconDashboard,
-  IconFolder,
   IconInnerShadowTop,
   IconListDetails,
   IconUsers,
+  IconCrop169,
+  IconTheater,
+  IconTicket,
 } from "@tabler/icons-react";
-
 import { NavMain } from "@/components/layout/sidebar/nav-main";
 import { NavUser } from "@/components/layout/sidebar/nav-user";
 import {
@@ -39,41 +40,51 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             icon: IconUsers,
           },
           {
-            title: "All Halls",
+            title: "Halls",
             url: "/admin/halls",
             icon: IconListDetails,
           },
           {
-            title: "Manage Users",
-            url: "#",
-            icon: IconChartBar,
+            title: "Screens",
+            url: "/admin/screens",
+            icon: IconCrop169,
           },
           {
-            title: "Movie Library",
-            url: "#",
-            icon: IconFolder,
+            title: "Movies",
+            url: "/admin/movies",
+            icon: IconTheater,
+          },
+          {
+            title: "Shows",
+            url: "/admin/shows",
+            icon: IconCrop169,
+          },
+          {
+            title: "Tickets",
+            url: "/admin/tickets",
+            icon: IconTicket,
           },
         ]
       : [
           {
             title: "Dashboard",
-            url: "#",
+            url: "/hallowner",
             icon: IconDashboard,
           },
           {
-            title: "My Showtimes",
-            url: "#",
+            title: "My Halls",
+            url: "/hallowner/halls",
             icon: IconListDetails,
           },
           {
-            title: "Bookings",
-            url: "#",
+            title: "My Screens",
+            url: "/hallowner/screens",
             icon: IconChartBar,
           },
           {
-            title: "My movies",
-            url: "#",
-            icon: IconFolder,
+            title: "My Shows",
+            url: "/hallowner/shows",
+            icon: IconCrop169,
           },
           {
             title: "Staff",
@@ -91,7 +102,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
+              <a href="/">
                 <IconInnerShadowTop className="!size-5" />
                 <span className="text-base font-semibold">CineHall</span>
               </a>
