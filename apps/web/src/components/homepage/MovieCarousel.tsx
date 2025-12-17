@@ -66,6 +66,8 @@ function MovieCarousel(props: PropType) {
       .on("reInit", () => setIsPlaying(autoScroll.isPlaying()));
   }, [emblaApi]);
 
+  console.log(slides);
+
   return (
     <div className="embla text-white">
       <div className="embla__viewport" ref={emblaRef}>
