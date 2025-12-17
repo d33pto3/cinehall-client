@@ -42,7 +42,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [idToken, setIdToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -59,15 +58,59 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         withCredentials: true,
       });
 
-      setUser(response.data.user);
+      const userData = response.data.user;
+      setUser(userData);
       setIsAuthenticated(true);
+      
+      // Store user data in localStorage as backup
+      if (typeof window !== "undefined") {
+        localStorage.setItem("user", JSON.stringify(userData));
+        localStorage.setItem("isAuthenticated", "true");
+      }
     } catch (error) {
+      console.error("Auth check failed:", error);
+      
+      // Try to restore from localStorage if API call fails
+      // Only if it's NOT a 401 (Unauthorized) error
+      const isUnauthorized = axios.isAxiosError(error) && error.response?.status === 401;
+      
+      if (typeof window !== "undefined" && !isUnauthorized) {
+        const storedUser = localStorage.getItem("user");
+        const storedAuth = localStorage.getItem("isAuthenticated");
+        
+        if (storedUser && storedAuth === "true") {
+          console.log("Restoring auth from localStorage");
+          setUser(JSON.parse(storedUser));
+          setIsAuthenticated(true);
+          setLoading(false); // Ensure loading is set to false if restored
+          return; // Don't clear the state
+        }
+      }
+      
       setIsAuthenticated(false);
       setUser(null);
-      if (axios.isAxiosError(error)) {
-        // setError(error.response?.data?.message || "Session expired");
-        console.log(error);
+      
+      // Clear localStorage on auth failure
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("user");
+        localStorage.removeItem("isAuthenticated");
       }
+      
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          // If we get a 401, the cookie might be invalid or expired.
+          // We should try to call logout to clear the cookie if possible.
+          try {
+            const url = process.env.NEXT_PUBLIC_API_URL;
+            if (url) {
+                await axios.post(`${url}/auth/logout`, {}, { withCredentials: true });
+            }
+          } catch (e) {
+            // Ignore logout error
+          }
+        }
+      }
+
     } finally {
       setLoading(false);
     }
@@ -91,12 +134,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         { withCredentials: true } // Include cookies in the request
       );
 
-      setUser(response.data.user);
+      const userData = response.data.user;
+      setUser(userData);
       setIsAuthenticated(true);
+      
+      // Store in localStorage
+      if (typeof window !== "undefined") {
+        localStorage.setItem("user", JSON.stringify(userData));
+        localStorage.setItem("isAuthenticated", "true");
+      }
+      
       router.push("/");
     } catch (error) {
       setIsAuthenticated(false);
       setUser(null);
+      
+      // Clear localStorage on login failure
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("user");
+        localStorage.removeItem("isAuthenticated");
+      }
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.message || "Login failed");
       }
@@ -111,8 +168,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       clearError();
       const userCredential = await signInWithPopup(auth, googleProvider);
-      const token = await userCredential.user.getIdToken();
-      setIdToken(token);
+      const idToken = await userCredential.user.getIdToken();
 
       const url = process.env.NEXT_PUBLIC_API_URL;
       if (!url) throw new Error("API URL is not defined");
@@ -124,12 +180,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         { withCredentials: true }
       );
 
-      setUser(response.data.user);
+      const userData = response.data.user;
+      setUser(userData);
       setIsAuthenticated(true);
+      
+      // Store in localStorage
+      if (typeof window !== "undefined") {
+        localStorage.setItem("user", JSON.stringify(userData));
+        localStorage.setItem("isAuthenticated", "true");
+      }
+      
       router.push("/");
     } catch (error) {
       setIsAuthenticated(false);
       setUser(null);
+      
+      // Clear localStorage on firebase login failure
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("user");
+        localStorage.removeItem("isAuthenticated");
+      }
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.message || "Firebase login failed");
       }
@@ -153,12 +223,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         withCredentials: true, // Include cookies in the request
       });
 
-      setUser(response.data.user);
+      const registeredUser = response.data.user;
+      setUser(registeredUser);
       setIsAuthenticated(true);
+      
+      // Store in localStorage
+      if (typeof window !== "undefined") {
+        localStorage.setItem("user", JSON.stringify(registeredUser));
+        localStorage.setItem("isAuthenticated", "true");
+      }
+      
       router.push("/");
     } catch (error) {
       setIsAuthenticated(false);
       setUser(null);
+      
+      // Clear localStorage on registration failure
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("user");
+        localStorage.removeItem("isAuthenticated");
+      }
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.message || "Registration failed");
       }
@@ -180,6 +264,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setIsAuthenticated(false);
       setUser(null);
+      
+      // Clear localStorage on logout
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("user");
+        localStorage.removeItem("isAuthenticated");
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.message || "Logout failed");

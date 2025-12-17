@@ -4,8 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { Input } from "../ui/input";
-import { IconSearch, IconUserCircle } from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
+import UserDropdown from "./UserDropdown";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -54,11 +55,8 @@ function Navbar() {
           </Link>
         ))}
 
-        {/* Profile Icon */}
-        <IconUserCircle
-          size={24}
-          className="ml-4 cursor-pointer text-[#CAC1C1] hover:text-#FAAA47"
-        />
+        {/* User Dropdown */}
+        <UserDropdown />
       </div>
     </nav>
   );
