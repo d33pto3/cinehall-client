@@ -1,4 +1,3 @@
-// src/context/AuthContext.tsx
 "use client";
 
 import {
@@ -8,206 +7,57 @@ import {
   ReactNode,
   useEffect,
   useCallback,
+  useMemo,
 } from "react";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "@/lib/firebase/client";
-
-interface User {
-  _id: string;
-  username: string;
-  email: string;
-  phone: string;
-  role?: string;
-}
+import { User, fetchCurrentUser } from "@/lib/auth-actions";
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  isAuthenticated: boolean;
-  error: string | null;
-  register: (
-    userData: Omit<User, "_id" | "role"> & { password: string }
-  ) => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
-  firebaseLogin: () => Promise<void>;
-  logout: () => Promise<void>;
-  checkAuth: () => Promise<void>;
-  clearError: () => void;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [idToken, setIdToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
-  const clearError = useCallback(() => setError(null), []);
-
-  const checkAuth = useCallback(async () => {
+  // Core function to sync state with server
+  const refreshUser = useCallback(async () => {
+    // Only set loading true if it's the very first load or explicit refresh if needed.
+    // However, to keep it "boring", let's just fetch.
+    // We might NOT want to set loading=true on every background refresh to avoid UI flickering.
+    // For now, let's keep it simple: initial load sets loading, manual refresh waits for promise.
+    
     try {
-      setLoading(true);
-      const url = process.env.NEXT_PUBLIC_API_URL;
-      if (!url) throw new Error("API URL is not defined");
-
-      const response = await axios.get(`${url}/auth/me`, {
-        withCredentials: true,
-      });
-
-      setUser(response.data.user);
-      setIsAuthenticated(true);
+      console.log("AuthContext: refreshUser starting...");
+      const userData = await fetchCurrentUser();
+      console.log("AuthContext: fetchCurrentUser result:", userData);
+      setUser(userData);
     } catch (error) {
-      setIsAuthenticated(false);
+      console.error("AuthContext: refreshUser error:", error);
       setUser(null);
-      if (axios.isAxiosError(error)) {
-        // setError(error.response?.data?.message || "Session expired");
-        console.log(error);
-      }
     } finally {
       setLoading(false);
     }
   }, []);
 
+  // Initial check on mount
   useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
+    refreshUser();
+  }, [refreshUser]);
 
-  const login = async (email: string, password: string) => {
-    try {
-      setLoading(true);
-      clearError();
-      const url = process.env.NEXT_PUBLIC_API_URL;
-      if (!url)
-        throw new Error("API URL is not defined in environment variables.");
-
-      const response = await axios.post(
-        `${url}/auth/login/email`,
-        { email, password },
-        { withCredentials: true } // Include cookies in the request
-      );
-
-      setUser(response.data.user);
-      setIsAuthenticated(true);
-      router.push("/");
-    } catch (error) {
-      setIsAuthenticated(false);
-      setUser(null);
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || "Login failed");
-      }
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const firebaseLogin = async () => {
-    try {
-      setLoading(true);
-      clearError();
-      const userCredential = await signInWithPopup(auth, googleProvider);
-      const token = await userCredential.user.getIdToken();
-      setIdToken(token);
-
-      const url = process.env.NEXT_PUBLIC_API_URL;
-      if (!url) throw new Error("API URL is not defined");
-
-      // send token to backend
-      const response = await axios.post(
-        `${url}/auth/login/firebase`,
-        { idToken },
-        { withCredentials: true }
-      );
-
-      setUser(response.data.user);
-      setIsAuthenticated(true);
-      router.push("/");
-    } catch (error) {
-      setIsAuthenticated(false);
-      setUser(null);
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || "Firebase login failed");
-      }
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const register = async (
-    userData: Omit<User, "_id" | "role"> & { password: string }
-  ) => {
-    try {
-      setLoading(true);
-      clearError();
-      const url = process.env.NEXT_PUBLIC_API_URL;
-      if (!url)
-        throw new Error("API URL is not defined in environment variables.");
-
-      const response = await axios.post(`${url}/auth/register`, userData, {
-        withCredentials: true, // Include cookies in the request
-      });
-
-      setUser(response.data.user);
-      setIsAuthenticated(true);
-      router.push("/");
-    } catch (error) {
-      setIsAuthenticated(false);
-      setUser(null);
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || "Registration failed");
-      }
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const logout = async () => {
-    try {
-      setLoading(true);
-      clearError();
-      const url = process.env.NEXT_PUBLIC_API_URL;
-      if (!url)
-        throw new Error("API URL is not defined in environment variables.");
-
-      await axios.post(`${url}/auth/logout`, {}, { withCredentials: true });
-
-      setIsAuthenticated(false);
-      setUser(null);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || "Logout failed");
-      }
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        isAuthenticated,
-        error,
-        register,
-        login,
-        firebaseLogin,
-        logout,
-        checkAuth,
-        clearError,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      loading,
+      refreshUser,
+    }),
+    [user, loading, refreshUser]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

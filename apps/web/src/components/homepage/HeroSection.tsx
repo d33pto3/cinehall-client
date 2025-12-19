@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import MovieCarousel from "./MovieCarousel";
-import axiosInstance from "@/lib/axios";
+
 import NowShowing from "./NowShowing";
 import ComingSoon from "./ComingSoon";
 
@@ -26,11 +26,25 @@ const HeroSection = ({}: HeroSectionProps) => {
 
   useEffect(() => {
     const fetchMovies = async () => {
-      const res = await axiosInstance.get("/movie");
-      const moviesList = res.data.data;
+      try {
+        const url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+        const res = await fetch(`${url}/movie`, {
+          // Include credentials if needed, but be careful if backend strictly requires them for non-auth endpoints
+          // mode: 'cors', // default
+        });
+        
+        if (!res.ok) {
+           throw new Error(`HTTP error! status: ${res.status}`);
+        }
 
-      setMovies(moviesList);
-      setImageUrls(moviesList.map((movie: Movie) => movie.imageUrl));
+        const data = await res.json();
+        const moviesList = data.data;
+
+        setMovies(moviesList);
+        setImageUrls(moviesList.map((movie: Movie) => movie.imageUrl));
+      } catch (error) {
+        console.error("Failed to fetch movies:", error);
+      }
     };
 
     fetchMovies();
