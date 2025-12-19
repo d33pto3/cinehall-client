@@ -38,6 +38,7 @@ const InputFormField = <T extends FieldValues>({
               {...field}
               type={type}
               value={field.value ?? ""}
+              className="text-black"
             />
           </FormControl>
           <FormMessage className="text-xs font-normal" />

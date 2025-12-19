@@ -9,7 +9,15 @@ const authRoutes = ["/login", "/signup"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Fail-safe: Always allow homepage
+  if (pathname === "/") {
+    return NextResponse.next();
+  }
   
+  // Get the auth token from cookies
+  const token = request.cookies.get("token")?.value;
+
   // Check if the current path is a protected route
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)
@@ -18,23 +26,15 @@ export function middleware(request: NextRequest) {
   // Check if the current path is an auth route
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
   
-  // Get the auth token from cookies
-  const token = request.cookies.get("token")?.value;
-  
-  // Redirect to login if accessing protected route without token
   if (isProtectedRoute && !token) {
     const url = new URL("/login", request.url);
     url.searchParams.set("redirect", pathname);
     return NextResponse.redirect(url);
   }
   
-  /* 
-  // Redirect to home if accessing auth routes with valid token
-  // Commented out to prevent users from being locked out if client-side auth state is out of sync with cookies
   if (isAuthRoute && token) {
-    return NextResponse.redirect(new URL("/", request.url));
+     return NextResponse.redirect(new URL("/", request.url));
   }
-  */
   
   return NextResponse.next();
 }

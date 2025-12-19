@@ -25,17 +25,16 @@ import axiosInstance from "@/lib/axios";
 
 export default function ProfilePage() {
   const { id } = useParams();
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
 
   useEffect(() => {
-    // Redirect if not authenticated or accessing another user's profile
-    if (!authLoading && (!isAuthenticated || user?._id !== id)) {
-      router.push("/login");
+    if (!authLoading && (!user || user._id !== id)) {
+      // router.push("/login");
     }
-  }, [authLoading, isAuthenticated, user, id, router]);
+  }, [authLoading, user, id, router]);
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -51,10 +50,10 @@ export default function ProfilePage() {
       }
     };
 
-    if (isAuthenticated && user?._id === id) {
+    if (user && user._id === id) {
       fetchBookings();
     }
-  }, [isAuthenticated, user, id]);
+  }, [user, id]);
 
   if (authLoading) {
     return (
@@ -64,7 +63,7 @@ export default function ProfilePage() {
     );
   }
 
-  if (!isAuthenticated || !user || user._id !== id) {
+  if (!user || user._id !== id) {
     return null; // Will redirect in useEffect
   }
 
