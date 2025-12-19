@@ -20,6 +20,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { loginWithEmail, loginWithFirebase } from "@/lib/auth-actions";
+import axios from "axios";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -32,10 +34,11 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { login, error, clearError, loading, firebaseLogin } = useAuth();
+  const { refreshUser } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const redirectUrl = searchParams.get("redirect") || "/";
 
   const form = useForm<LoginFormData>({
@@ -49,12 +52,24 @@ export function LoginForm({
   const onSubmit = async (data: LoginFormData) => {
     try {
       setIsSubmitting(true);
-      clearError();
+      setError(null);
       const { email, password } = data;
-      await login(email, password);
+      
+      // 1. Perform Login Action
+      await loginWithEmail(email, password);
+      
+      // 2. Refresh Auth Context to flip "user" state
+      await refreshUser();
+      
+      // 3. Navigate
       router.push(redirectUrl);
     } catch (error) {
-      console.error("Error during API call:", error);
+      console.error("Login failed:", error);
+      if (axios.isAxiosError(error)) {
+         setError(error.response?.data?.message || "Login failed. Please check your credentials.");
+      } else {
+         setError("An unexpected error occurred.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -63,11 +78,15 @@ export function LoginForm({
   const handleFirebaseLogin = async () => {
     try {
       setIsSubmitting(true);
-      clearError();
-      await firebaseLogin();
+      setError(null);
+      
+      await loginWithFirebase();
+      await refreshUser();
+      
       router.push(redirectUrl);
     } catch (error) {
-      console.log("Error during google login: ", error);
+      console.error("Google login failed:", error);
+      setError("Google login failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -103,12 +122,13 @@ export function LoginForm({
                   name="password"
                   label="Password"
                   placeholder="******"
+                  type="password"
                 />
                 <div className="flex flex-col gap-3">
                   <Button
                     type="submit"
                     className="w-full"
-                    disabled={isSubmitting || loading}
+                    disabled={isSubmitting}
                   >
                     {isSubmitting ? "Logging in..." : "Login"}
                   </Button>
@@ -117,7 +137,7 @@ export function LoginForm({
                     className="w-full hover:cursor-pointer"
                     type="button"
                     onClick={handleFirebaseLogin}
-                    disabled={isSubmitting || loading}
+                    disabled={isSubmitting}
                   >
                     Login with Google
                   </Button>
