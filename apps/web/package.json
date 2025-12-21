@@ -23,6 +23,7 @@
     "embla-carousel-react": "^8.6.0",
     "firebase": "^11.5.0",
     "framer-motion": "^12.6.2",
+    "gsap": "^3.14.2",
     "lucide-react": "^0.485.0",
     "motion": "^12.6.2",
     "next": "15.2.2",

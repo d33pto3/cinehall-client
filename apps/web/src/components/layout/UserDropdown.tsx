@@ -10,18 +10,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { IconUserCircle, IconUser, IconLogout, IconLogin } from "@tabler/icons-react";
+import {
+  IconUserCircle,
+  IconUser,
+  IconLogout,
+  IconLogin,
+} from "@tabler/icons-react";
 import Link from "next/link";
 import { logoutUser } from "@/lib/auth-actions";
-import { useRouter } from "next/navigation";
 
 export default function UserDropdown() {
   const { user, refreshUser, loading } = useAuth();
-  const router = useRouter();
 
   // Derived state from user object
   const isAuthenticated = !!user;
-  
+
   console.log("UserDropdown State:", { user, isAuthenticated, loading });
 
   const handleLogout = async () => {
@@ -34,8 +37,8 @@ export default function UserDropdown() {
   };
 
   if (loading) {
-     // Show a passive state or skeleton. 
-     // For a navbar icon, pulsing is fine or just rendering the circle.
+    // Show a passive state or skeleton.
+    // For a navbar icon, pulsing is fine or just rendering the circle.
     return (
       <IconUserCircle
         size={24}

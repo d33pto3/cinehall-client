@@ -31,12 +31,6 @@ export default function ProfilePage() {
   const [loadingBookings, setLoadingBookings] = useState(true);
 
   useEffect(() => {
-    if (!authLoading && (!user || user._id !== id)) {
-      // router.push("/login");
-    }
-  }, [authLoading, user, id, router]);
-
-  useEffect(() => {
     const fetchBookings = async () => {
       try {
         setLoadingBookings(true);
@@ -67,18 +61,18 @@ export default function ProfilePage() {
     return null; // Will redirect in useEffect
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "confirmed":
-        return "text-green-400";
-      case "pending":
-        return "text-yellow-400";
-      case "cancelled":
-        return "text-red-400";
-      default:
-        return "text-gray-400";
-    }
-  };
+  // const getStatusColor = (status: string) => {
+  //   switch (status) {
+  //     case "confirmed":
+  //       return "text-green-400";
+  //     case "pending":
+  //       return "text-yellow-400";
+  //     case "cancelled":
+  //       return "text-red-400";
+  //     default:
+  //       return "text-gray-400";
+  //   }
+  // };
 
   const getStatusBadge = (status: string) => {
     const baseClasses = "px-3 py-1 rounded-full text-xs font-semibold";
@@ -99,7 +93,9 @@ export default function ProfilePage() {
       {/* Header Section */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-white mb-2">My Profile</h1>
-        <p className="text-[#CAC1C1]">Manage your account and view your bookings</p>
+        <p className="text-[#CAC1C1]">
+          Manage your account and view your bookings
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -160,7 +156,10 @@ export default function ProfilePage() {
                 </div>
               ) : bookings.length === 0 ? (
                 <div className="text-center py-12">
-                  <IconTicket size={64} className="mx-auto text-[#3A3A3A] mb-4" />
+                  <IconTicket
+                    size={64}
+                    className="mx-auto text-[#3A3A3A] mb-4"
+                  />
                   <p className="text-[#CAC1C1] text-lg mb-2">No bookings yet</p>
                   <p className="text-[#6A6A6A] text-sm mb-6">
                     Start booking your favorite movies now!
@@ -186,15 +185,24 @@ export default function ProfilePage() {
                           </h3>
                           <div className="flex items-center space-x-4 text-sm text-[#CAC1C1]">
                             <div className="flex items-center">
-                              <IconCalendar size={16} className="mr-1 text-[#FAAA47]" />
+                              <IconCalendar
+                                size={16}
+                                className="mr-1 text-[#FAAA47]"
+                              />
                               {new Date(booking.showtime).toLocaleDateString()}
                             </div>
                             <div className="flex items-center">
-                              <IconClock size={16} className="mr-1 text-[#FAAA47]" />
-                              {new Date(booking.showtime).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
+                              <IconClock
+                                size={16}
+                                className="mr-1 text-[#FAAA47]"
+                              />
+                              {new Date(booking.showtime).toLocaleTimeString(
+                                [],
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )}
                             </div>
                           </div>
                         </div>
@@ -205,8 +213,14 @@ export default function ProfilePage() {
                       <div className="flex items-center justify-between pt-3 border-t border-[#3A3A3A]">
                         <div className="flex items-center space-x-4 text-sm">
                           <div className="text-[#CAC1C1]">
-                            <IconMapPin size={16} className="inline mr-1 text-[#FAAA47]" />
-                            Seats: <span className="text-white font-medium">{booking.seats.join(", ")}</span>
+                            <IconMapPin
+                              size={16}
+                              className="inline mr-1 text-[#FAAA47]"
+                            />
+                            Seats:{" "}
+                            <span className="text-white font-medium">
+                              {booking.seats.join(", ")}
+                            </span>
                           </div>
                         </div>
                         <div className="text-right">

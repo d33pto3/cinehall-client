@@ -32,38 +32,7 @@ const Footer: FC = () => {
 
   return (
     <div>
-      <div className="w-full h-[228] lg:h-[328px] relative overflow-hidden">
-        <Image
-          src={"/footer-top.jpg"}
-          alt="cinehall-footertop"
-          fill
-          style={{
-            objectFit: "cover",
-            objectPosition: "center 60%",
-          }}
-        />
-        <div className="absolute left-[2%] bottom-[55%] lg:bottom-[115%] h-full w-[228px]  lg:w-auto">
-          <Image
-            src={"/popcorn.png"}
-            alt="cinehall-popcorn"
-            width={528}
-            height={428}
-            style={{ objectFit: "contain" }}
-          />
-        </div>
-        <div className="absolute lg:right-[10%] px-8 py-4 text-[26px] lg:text-[56px] text-[#FAAA47] font-bold leading-[1.1]">
-          <h4>
-            Some scenes stay with you.
-            <br />
-            So does our popcorn.
-          </h4>
-        </div>
-        <div className="absolute bottom-[30%] right-[5%] text-[32px] text-[#ccc] leading-[1.1]">
-          <h4>Pop it, Love it and Repeat....cause every scene</h4>
-          <h4>needs a crunch !</h4>
-        </div>
-      </div>
-      <div className="relative py-12 px-8 flex justify-between items-center">
+      <div className="relative py-12 px-8 flex md:flex-row flex-col gap-4 md:gap-0 justify-between items-center">
         <div className="text-[#D7A65E] font-bold">
           <div className="leading-[1.1]">
             <p className="text-[48px]">Great MOVIES don&apos;t wait.</p>
@@ -97,49 +66,51 @@ const Footer: FC = () => {
           </div>
         </div>
       </div>
-      <div className="mb-8 pb-8 px-8 flex justify-between items-center">
-        <div className="flex flex-col justify-end items-end text-[#D7A65E] font-bold min-h-[100px]">
-          <div className="flex gap-6">
-            <IconBrandGoogleFilled color="#D7A65E" />
-            <IconBrandFacebookFilled color="#D7A65E" />
-            <IconBrandLinkedinFilled color="#D7A65E" />
-            <IconBrandYoutubeFilled color="#D7A65E" />
-            <IconBrandWhatsappFilled color="#D7A65E" />
-            <p className="text-[10px] text-[#8F8F8F] flex flex-col-reverse">
-              2025 © CINEHALL
-            </p>
-          </div>
-        </div>
-        <div className="flex gap-24">
-          <div className="text-[#CAC1C1] text-[16px] font-semibold">
-            <p>Movie Booking</p>
-            <div className="text-[12px]">
-              <p>Now Showing</p>
-              <p>Coming Soon</p>
-              <p>Book Tickets</p>
-              <p>Offers and Promotions</p>
-            </div>
-          </div>
-          <div className="text-[#CAC1C1] text-[16px] font-semibold">
-            <p>My Account</p>
-            <div className="text-[12px]">
-              <p>Booking History</p>
-              <p>Sign In</p>
-              <p>Register</p>
-              <p>Favourites</p>
-            </div>
-          </div>
-          <div className="text-[#CAC1C1] text-[16px] font-semibold">
-            <p>Policies</p>
-            <div className="text-[12px]">
-              <p>Terms and Conditions</p>
-              <p>Privacy Policy</p>
-              <p>Data Safety</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div className="mb-8 pb-8 px-4 sm:px-8 flex flex-col-reverse md:flex-row-reverse justify-between items-center md:items-end gap-8 md:gap-4">
+              {/* Footer Links */}
+              <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center md:justify-start gap-8 sm:gap-12 md:gap-16 lg:gap-24 w-full md:w-auto">
+                <div className="text-[#CAC1C1] text-[16px] font-semibold text-center sm:text-left">
+                  <p className="mb-3">Movie Booking</p>
+                  <div className="text-[12px] space-y-2 font-normal">
+                    <p>Now Showing</p>
+                    <p>Coming Soon</p>
+                    <p>Book Tickets</p>
+                    <p>Offers and Promotions</p>
+                  </div>
+                </div>
+                <div className="text-[#CAC1C1] text-[16px] font-semibold text-center sm:text-left">
+                  <p className="mb-3">My Account</p>
+                  <div className="text-[12px] space-y-2 font-normal">
+                    <p>Booking History</p>
+                    <p>Sign In</p>
+                    <p>Register</p>
+                    <p>Favourites</p>
+                  </div>
+                </div>
+                <div className="text-[#CAC1C1] text-[16px] font-semibold text-center sm:text-left">
+                  <p className="mb-3">Policies</p>
+                  <div className="text-[12px] space-y-2 font-normal">
+                    <p>Terms and Conditions</p>
+                    <p>Privacy Policy</p>
+                    <p>Data Safety</p>
+                  </div>
+                </div>
+              </div>
 
+              {/* Social Icons & Copyright */}
+              <div className="flex flex-col items-center md:items-end justify-end gap-4 md:h-full">
+                <div className="flex gap-4 sm:gap-6">
+                  <IconBrandGoogleFilled color="#D7A65E" className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <IconBrandFacebookFilled color="#D7A65E" className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <IconBrandLinkedinFilled color="#D7A65E" className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <IconBrandYoutubeFilled color="#D7A65E" className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <IconBrandWhatsappFilled color="#D7A65E" className="w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
+                <p className="text-[10px] sm:text-xs text-[#8F8F8F]">
+                  2025 © CINEHALL
+                </p>
+              </div>
+      </div>
       <div className="fixed bottom-0 left-0 w-full z-50">
         <div className="parent-container-footer relative overflow-hidden bg-black py-1 flex flex-col gap-[2px]">
           {/* Top reel (faster) */}
