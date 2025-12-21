@@ -10,6 +10,7 @@ import {
   useMemo,
 } from "react";
 import { User, fetchCurrentUser } from "@/lib/auth-actions";
+import { validateAndCleanupCookies } from "@/lib/cookie-utils";
 
 interface AuthContextType {
   user: User | null;
@@ -45,6 +46,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Initial check on mount
   useEffect(() => {
+    // 1. Cleanup stale cookies before attempting to fetch user
+    validateAndCleanupCookies();
+    
+    // 2. Refresh user state
     refreshUser();
   }, [refreshUser]);
 

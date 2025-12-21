@@ -23,7 +23,7 @@ const Header: FC = () => {
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 w-full z-50">
+    <div className="fixed top-0 left-0 w-full z-50 overflow-x-hidden">
       <div className="parent-container relative overflow-hidden bg-black py-1 flex flex-col gap-[2px]">
         {/* Top reel (faster) */}
         <div className="scroll-top flex w-max">
