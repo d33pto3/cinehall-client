@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
   if (pathname === "/") {
     return NextResponse.next();
   }
-  
+
   // Get the auth token from cookies
   const token = request.cookies.get("token")?.value;
 
@@ -22,20 +22,20 @@ export function middleware(request: NextRequest) {
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)
   );
-  
+
   // Check if the current path is an auth route
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
-  
+
   if (isProtectedRoute && !token) {
     const url = new URL("/login", request.url);
     url.searchParams.set("redirect", pathname);
     return NextResponse.redirect(url);
   }
-  
+
   if (isAuthRoute && token) {
-     return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/", request.url));
   }
-  
+
   return NextResponse.next();
 }
 
