@@ -12,7 +12,7 @@ import { useParams } from "next/navigation";
 
 export default function MoviesPage() {
   const { id } = useParams();
-  const [movie, setMovie] = useState<any>(null);
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [comingSoonMovies, setComingSoonMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
 

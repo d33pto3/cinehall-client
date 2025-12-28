@@ -36,9 +36,8 @@ const HallSelectionModal: React.FC<HallSelectionModalProps> = ({
         setLoading(true);
         setError(null);
         try {
-          // As per requirement: {{baseUrl}}/hall/by-movie/?movieId=...
           const response = await axiosInstance.get(`/hall/by-movie/?movieId=${movieId}`);
-          // Adjust based on common API response structures if necessary
+          
           const data = response.data;
           if (data && Array.isArray(data.data)) {
             setHalls(data.data);
@@ -110,7 +109,7 @@ const HallSelectionModal: React.FC<HallSelectionModalProps> = ({
               ) : halls.length === 0 ? (
                 <div className="text-center py-20">
                   <p className="text-2xl font-bold text-[#4A2C2C] italic">
-                    "there is no upcoming show for this movie"
+                    &quot;there is no upcoming show for this movie&quot;
                   </p>
                 </div>
               ) : (
