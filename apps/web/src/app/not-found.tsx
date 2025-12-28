@@ -100,7 +100,7 @@ export default function NotFound() {
             The Curtain Has Fallen
           </h2>
           <p className="text-xl text-[#CAC1C1] mb-12 max-w-xl mx-auto font-medium">
-            It looks like we've reached the end of the reel. The page you're searching for is currently out of focus or has been cut from the final edit.
+            It look like we&apos;ve reached the end of the reel. The page you&apos;re searching for is currently out of focus or has been cut from the final edit.
           </p>
         </div>
 
@@ -113,7 +113,7 @@ export default function NotFound() {
             <IconHome size={24} />
             Return Home
           </Link>
-          
+
           <Link 
             href="/movies"
             className="nav-btn group flex items-center gap-3 px-8 py-4 border-2 border-[#FAAA47] text-[#FAAA47] font-black uppercase rounded-2xl hover:bg-[#FAAA47] hover:text-black hover:scale-105 active:scale-95 transition-all shadow-2xl"

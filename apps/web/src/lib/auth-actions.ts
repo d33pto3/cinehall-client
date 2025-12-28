@@ -45,13 +45,20 @@ export const fetchCurrentUser = async (): Promise<User | null> => {
 };
 
 export const loginWithEmail = async (email: string, password: string): Promise<User> => {
-  const url = getApiUrl();
-  const response = await axios.post(
-    `${url}/auth/login/email`,
-    { email, password },
-    { withCredentials: true }
-  );
-  return response.data.user;
+  try {
+    const url = getApiUrl();
+    const response = await axios.post(
+      `${url}/auth/login/email`,
+      { email, password },
+      { withCredentials: true }
+    );
+    return response.data.user;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      throw new Error("Invalid email or password");
+    }
+    throw error;
+  }
 };
 
 export const loginWithFirebase = async (): Promise<User> => {
