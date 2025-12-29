@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IShow, IFetchSeatsResponse, IHoldSeatsResponse, IScreen, ISlot } from "./booking-types";
+import { IShow, IFetchSeatsResponse, IHoldSeatsResponse, IScreen, ISlot, ICreateBookingRequest, IBookingResponse, IPaymentInitiateResponse } from "./booking-types";
 
 const getApiUrl = () => {
   const url = process.env.NEXT_PUBLIC_API_URL;
@@ -63,6 +63,13 @@ export const bookSeats = async (
   return response.data;
 };
 
+// Fetch show by ID
+export const fetchShowById = async (showId: string): Promise<IShow> => {
+   const url = getApiUrl();
+   const response = await axios.get(`${url}/show/${showId}`);
+   return response.data.data;
+};
+
 // Fetch a specific show by date, slot, and screen
 export const fetchShowByDetails = async (params: { date: string, slot: string, screenId: string }): Promise<IShow | null> => {
   const url = getApiUrl();
@@ -104,4 +111,36 @@ export const holdSeats = async (
     { withCredentials: true }
   );
   return response.data;
+};
+
+// Create a new booking
+export const createBooking = async (
+  bookingData: ICreateBookingRequest
+): Promise<IBookingResponse> => {
+  const url = getApiUrl();
+  const response = await axios.post(`${url}/booking`, bookingData);
+  return response.data;
+};
+
+// Initiate payment for a booking
+export const initiatePayment = async (
+  bookingId: string
+): Promise<IPaymentInitiateResponse> => {
+  const url = getApiUrl();
+  const response = await axios.post(`${url}/booking/initiate/${bookingId}`);
+  return response.data;
+};
+
+// Fetch global show schedule
+export const fetchSchedule = async (params: { date?: string, hallId?: string }): Promise<IShow[]> => {
+  const url = getApiUrl();
+  const response = await axios.get(`${url}/show/schedule`, { params });
+  return response.data.data;
+};
+
+// Fetch all halls
+export const fetchHalls = async (): Promise<any[]> => {
+  const url = getApiUrl();
+  const response = await axios.get(`${url}/hall`);
+  return response.data.data;
 };

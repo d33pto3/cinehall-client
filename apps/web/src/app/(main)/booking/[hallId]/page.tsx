@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Star, Clock } from "lucide-react";
 import Image from "next/image";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
-import { fetchSeatsByShow, holdSeats, fetchScreensByHallMovieDate, fetchAvailableSlots, fetchShowByDetails } from "@/lib/booking-actions";
+import { fetchSeatsByShow, holdSeats, releaseSeats, fetchScreensByHallMovieDate, fetchAvailableSlots, fetchShowByDetails } from "@/lib/booking-actions";
 import { IShow, ISeat, SeatStatus, IScreen, ISlot, Slots, SlotDisplay } from "@/lib/booking-types";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
@@ -20,10 +20,39 @@ const BookingPage = () => {
   const movieId = searchParams.get("movieId");
   const router = useRouter();
 
+  // Guest ID management
+  const [guestId, setGuestId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      let id = sessionStorage.getItem("cinehall-guest-id");
+      if (!id) {
+        id = `guest_${Math.random().toString(36).substring(2, 11)}_${Date.now()}`;
+        sessionStorage.setItem("cinehall-guest-id", id);
+      }
+      setGuestId(id);
+    }
+  }, []);
+
+  const currentIdentifier = user?._id || guestId;
+
   const [availableSlots, setAvailableSlots] = useState<ISlot[]>([]);
   const [screens, setScreens] = useState<IScreen[]>([]);
   const [loadingOptions, setLoadingOptions] = useState(false);
   
+  // Fetch movie details
+  useEffect(() => {
+    if (movieId) {
+      setLoadingMovie(true);
+      const url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+      fetch(`${url}/movie/${movieId}`)
+        .then(res => res.json())
+        .then(data => setMovie(data.data))
+        .catch(err => console.error("Error fetching movie:", err))
+        .finally(() => setLoadingMovie(false));
+    }
+  }, [movieId]);
+
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedSlot, setSelectedSlot] = useState<Slots | null>(null);
   const [selectedScreenId, setSelectedScreenId] = useState<string>("");
@@ -31,8 +60,13 @@ const BookingPage = () => {
 
   const [seats, setSeats] = useState<ISeat[]>([]);
   const [loadingSeats, setLoadingSeats] = useState(false);
+  const [movie, setMovie] = useState<any>(null);
+  const [loadingMovie, setLoadingMovie] = useState(false);
   const [selectedSeatIds, setSelectedSeatIds] = useState<string[]>([]);
   const [processingPayment, setProcessingPayment] = useState(false);
+  const [holdingSeats, setHoldingSeats] = useState(false);
+  const [heldUntil, setHeldUntil] = useState<Date | null>(null);
+  const [timeRemaining, setTimeRemaining] = useState<number>(0);
 
   // Generate next 5 days
   const availableDates = React.useMemo(() => {
@@ -104,35 +138,144 @@ const BookingPage = () => {
     }
   }, [selectedShow]);
 
-  const toggleSeat = (seat: ISeat) => {
-    if (seat.status !== SeatStatus.AVAILABLE && seat.status !== SeatStatus.BLOCKED && !seat.isHeld) return; // Basic check
-    // If held by someone else
-    if (seat.isHeld && seat.heldBy !== user?._id) return;
+  // Periodic refresh for seat status (every 10s)
+  useEffect(() => {
+    if (!selectedShow) return;
+    
+    const intervalId = setInterval(() => {
+      fetchSeatsByShow(selectedShow._id)
+        .then((res) => {
+          setSeats(res.data.seats);
+        })
+        .catch((err) => console.error("Failed to refresh seats:", err));
+    }, 10000); // Refresh every 10 seconds
+
+    return () => clearInterval(intervalId);
+  }, [selectedShow]);
+
+  // Countdown timer for held seats
+  useEffect(() => {
+    if (!heldUntil) {
+      setTimeRemaining(0);
+      return;
+    }
+
+    const updateTimer = () => {
+      const now = new Date().getTime();
+      const untilTime = new Date(heldUntil).getTime();
+      const diff = Math.max(0, Math.floor((untilTime - now) / 1000));
+      setTimeRemaining(diff);
+
+      if (diff === 0) {
+        // Hold expired, refresh seats
+        if (selectedShow) {
+          fetchSeatsByShow(selectedShow._id)
+            .then((res) => {
+              setSeats(res.data.seats);
+              setSelectedSeatIds([]);
+              setHeldUntil(null);
+            })
+            .catch((err) => console.error("Failed to refresh seats:", err));
+        }
+      }
+    };
+
+    updateTimer();
+    const timerId = setInterval(updateTimer, 1000);
+    return () => clearInterval(timerId);
+  }, [heldUntil, selectedShow]);
+
+  // Release seats on component unmount
+  useEffect(() => {
+    return () => {
+      if (selectedShow && selectedSeatIds.length > 0 && currentIdentifier) {
+        releaseSeats(selectedShow._id, selectedSeatIds, currentIdentifier).catch((err) =>
+          console.error("Failed to release seats on unmount:", err)
+        );
+      }
+    };
+  }, [selectedShow, selectedSeatIds, currentIdentifier]);
+
+  const toggleSeat = async (seat: ISeat) => {
+    if (!currentIdentifier) return;
+
+    // Don't allow selection if seat is booked or held by someone else
+    if (seat.status === SeatStatus.BOOKED) return;
+    if (seat.isHeld && seat.heldBy && seat.heldBy !== currentIdentifier) return;
 
     const seatId = seat._id;
-    setSelectedSeatIds((prev) =>
-      prev.includes(seatId) ? prev.filter((id) => id !== seatId) : [...prev, seatId]
-    );
+    const isCurrentlySelected = selectedSeatIds.includes(seatId);
+
+    try {
+      if (isCurrentlySelected) {
+        // Release this seat
+        setHoldingSeats(true);
+        await releaseSeats(selectedShow!._id, [seatId], currentIdentifier);
+        
+        // Update local state
+        setSelectedSeatIds((prev) => prev.filter((id) => id !== seatId));
+        
+        // Refresh seats to get updated status
+        const res = await fetchSeatsByShow(selectedShow!._id);
+        setSeats(res.data.seats);
+        
+        // If no more seats selected, clear hold timer
+        if (selectedSeatIds.length === 1) {
+          setHeldUntil(null);
+        }
+      } else {
+        // Hold this seat
+        setHoldingSeats(true);
+        const response = await holdSeats(selectedShow!._id, [seatId], currentIdentifier);
+        
+        // Update local state
+        setSelectedSeatIds((prev) => [...prev, seatId]);
+        setHeldUntil(new Date(response.data.heldUntil));
+        
+        // Refresh seats to get updated status
+        const res = await fetchSeatsByShow(selectedShow!._id);
+        setSeats(res.data.seats);
+      }
+    } catch (err) {
+      console.error("Seat toggle failed:", err);
+      if (axios.isAxiosError(err)) {
+        alert(err.response?.data?.message || "Failed to select/deselect seat");
+      } else {
+        alert("An error occurred");
+      }
+      
+      // Refresh seats to ensure UI is in sync with server
+      if (selectedShow) {
+        fetchSeatsByShow(selectedShow._id)
+          .then((res) => setSeats(res.data.seats))
+          .catch((err) => console.error("Failed to refresh seats:", err));
+      }
+    } finally {
+      setHoldingSeats(false);
+    }
   };
 
   const handlePayNow = async () => {
-    if (!selectedShow || selectedSeatIds.length === 0 || !user) {
-      if (!user) alert("Please login to book tickets");
+    if (!selectedShow || selectedSeatIds.length === 0 || !currentIdentifier) return;
+
+    // Verify seats are still held
+    if (timeRemaining === 0) {
+      alert("Your seat hold has expired. Please select seats again.");
+      setSelectedSeatIds([]);
+      setHeldUntil(null);
       return;
     }
+
     try {
       setProcessingPayment(true);
-      const res = await holdSeats(selectedShow._id, selectedSeatIds, user._id);
-      if (res.success) {
-         // Redirect to payment page with showId and held seats
-         // The backend bookSeats will be called after successful payment
-         const seatsParam = selectedSeatIds.join(",");
-         router.push(`/payment?showId=${selectedShow._id}&seatIds=${seatsParam}&amount=${totalAmount}`);
-      }
+      
+      // Seats are already held, just redirect to payment
+      const seatsParam = selectedSeatIds.join(",");
+      router.push(`/payment?showId=${selectedShow._id}&seatIds=${seatsParam}&amount=${totalAmount}${!user ? `&guestId=${guestId}` : ""}`);
     } catch (err) {
-      console.error("Hold failed:", err);
+      console.error("Payment initiation failed:", err);
       if (axios.isAxiosError(err)) {
-        alert(err.response?.data?.message || "Failed to hold seats");
+        alert(err.response?.data?.message || "Failed to initiate payment");
       }
     } finally {
       setProcessingPayment(false);
@@ -163,14 +306,7 @@ const BookingPage = () => {
   // Calculate total
   const totalAmount = selectedShow ? selectedSeatIds.length * selectedShow.basePrice : 0;
 
-  // Mock data for the UI
-  const movieData = {
-    title: "Superman (2025)",
-    genre: "Action/Sci-fi",
-    duration: "2 hr 9 min",
-    rating: "7.2/10",
-    imageUrl: "/movie_banner_placeholder.jpg", 
-  };
+
 
   return (
     <div className="min-h-screen bg-[#1A0A0A] text-[#FAAA47] p-6 md:p-12 font-sans selection:bg-[#FAAA47] selection:text-[#1A0A0A]">
@@ -187,21 +323,21 @@ const BookingPage = () => {
             <div className="relative w-full md:w-64 h-48 md:h-full overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#4A2C2C] z-10 hidden md:block" />
                 <Image 
-                    src="/superman-banner.jpg" 
-                    alt="Movie Banner"
+                    src={movie?.imageUrl || "/movie_banner_placeholder.jpg"} 
+                    alt={movie?.title || "Movie Banner"}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                 />
             </div>
             <div className="flex-1 p-8 flex flex-col justify-center gap-2">
-              <h3 className="text-4xl font-extrabold text-white">{movieData.title}</h3>
-              <p className="text-[#FAAA47] font-medium text-lg">{movieData.genre}</p>
+              <h3 className="text-4xl font-extrabold text-white">{movie?.title || "Loading..."}</h3>
+              <p className="text-[#FAAA47] font-medium text-lg">{movie?.genre || ""}</p>
               <div className="flex items-center gap-6 text-sm text-neutral-400 font-bold uppercase tracking-widest mt-2">
                 <span className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/5">
-                  <Clock size={16} className="text-[#FAAA47]" /> {movieData.duration}
+                  <Clock size={16} className="text-[#FAAA47]" /> {movie?.duration ? `${Math.floor(movie.duration / 60)}h ${movie.duration % 60}m` : "N/A"}
                 </span>
                 <span className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/5">
-                  <Star size={16} className="text-[#FAAA47] fill-[#FAAA47]" /> {movieData.rating}
+                  <Star size={16} className="text-[#FAAA47] fill-[#FAAA47]" /> {movie?.rating || "N/A"}
                 </span>
               </div>
             </div>
@@ -308,6 +444,26 @@ const BookingPage = () => {
                 </div>
             </div>
 
+            {/* Hold Timer Display */}
+            {selectedSeatIds.length > 0 && timeRemaining > 0 && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`text-center p-4 rounded-xl border-2 ${
+                  timeRemaining <= 60 
+                    ? 'bg-red-900/20 border-red-500/50 text-red-400' 
+                    : 'bg-[#4A2C2C]/40 border-[#FAAA47]/30 text-[#FAAA47]'
+                }`}
+              >
+                <p className="text-sm font-bold uppercase tracking-widest">
+                  Seats Reserved - Time Remaining: {Math.floor(timeRemaining / 60)}:{(timeRemaining % 60).toString().padStart(2, '0')}
+                </p>
+                {timeRemaining <= 60 && (
+                  <p className="text-xs mt-1 text-red-300">⚠️ Hurry! Your reservation will expire soon</p>
+                )}
+              </motion.div>
+            )}
+
             <div className="overflow-x-auto pb-8 custom-scrollbar">
                 <div className="min-w-[900px] bg-[#2D1B1B] p-12 rounded-[40px] border border-white/5 shadow-inner relative">
                     <div className="text-center mb-16 space-y-2">
@@ -328,8 +484,8 @@ const BookingPage = () => {
                                             const isSelected = selectedSeatIds.includes(seat._id);
                                             // Check status
                                             const isBooked = seat.status === SeatStatus.BOOKED;
-                                            const isHeldByOthers = seat.isHeld && seat.heldBy && seat.heldBy.toString() !== user?._id;
-                                            const isHeldByMe = seat.isHeld && seat.heldBy && seat.heldBy.toString() === user?._id;
+                                            const isHeldByOthers = seat.isHeld && seat.heldBy && seat.heldBy.toString() !== currentIdentifier;
+                                            const isHeldByMe = seat.isHeld && seat.heldBy && seat.heldBy.toString() === currentIdentifier;
                                             
                                             const isTaken = isBooked || isHeldByOthers;
                                             
@@ -346,7 +502,7 @@ const BookingPage = () => {
                                             return (
                                                 <button
                                                     key={seat._id}
-                                                    disabled={!!isTaken}
+                                                    disabled={!!isTaken || holdingSeats}
                                                     onClick={() => toggleSeat(seat)}
                                                     className={`w-8 h-8 rounded-[4px] text-[10px] flex items-center justify-center font-bold transition-all duration-300 transform ${
                                                         !isTaken ? 'hover:scale-110 active:scale-90' : ''

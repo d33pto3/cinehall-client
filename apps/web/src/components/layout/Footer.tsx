@@ -48,11 +48,11 @@ const Footer: FC = () => {
         </div>
         <div className="flex flex-col items-center gap-2">
           <Image
-            src={"/logo.png"}
+            src={"/cinehall-logo.svg"}
             alt="cinehall-logo"
-            width={120}
-            height={120}
-            className="object-contain"
+            width={160}
+            height={80}
+            className="w-auto h-16 sm:h-20 object-contain"
             priority
           />
           <div className="text-center text-[#CAC1C1] text-[16px] font-semibold">
