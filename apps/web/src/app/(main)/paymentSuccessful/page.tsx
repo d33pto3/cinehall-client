@@ -5,10 +5,14 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { CheckCircle2, Ticket, Home, ArrowRight } from "lucide-react";
 
+import { useAuth } from "@/context/AuthContext";
+
 const SuccessContent = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
+    const { user } = useAuth();
     const bookingId = searchParams.get("bookingId");
+
 
     return (
         <div className="min-h-screen bg-[#1A0A0A] flex items-center justify-center p-6 text-white overflow-hidden">
@@ -44,7 +48,7 @@ const SuccessContent = () => {
 
                 <div className="flex flex-col gap-4">
                     <button 
-                        onClick={() => router.push(`/tickets/${bookingId}`)}
+                        onClick={() => router.push(`/profile/${user?._id}`)}
                         className="w-full bg-white text-[#1A0A0A] py-4 rounded-xl font-black uppercase tracking-widest text-sm hover:bg-[#FAAA47] transition-all flex items-center justify-center gap-2 group"
                     >
                         View My Tickets

@@ -18,6 +18,7 @@ const PaymentContent = () => {
     const showId = searchParams.get("showId");
     const seatIdsString = searchParams.get("seatIds");
     const seatIds = seatIdsString ? seatIdsString.split(",") : [];
+    const guestId = searchParams.get("guestId");
     
     const [show, setShow] = useState<IShow | null>(null);
     const [seats, setSeats] = useState<ISeat[]>([]);
@@ -51,7 +52,14 @@ const PaymentContent = () => {
     }, [showId, seatIdsString, router]);
 
     const handleConfirmPayment = async () => {
-        if (!show || !user || seats.length === 0) return;
+        if (!show || seats.length === 0) return;
+
+        // If user is not logged in, redirect to login with return URL
+        if (!user) {
+            const currentUrl = window.location.pathname + window.location.search;
+            router.push(`/login?redirect=${encodeURIComponent(currentUrl)}`);
+            return;
+        }
 
         try {
             setProcessing(true);
@@ -59,6 +67,7 @@ const PaymentContent = () => {
             // 1. Create Booking
             const bookingRes = await createBooking({
                 userId: user._id,
+                guestId: guestId || undefined,
                 showId: show._id,
                 movieId: typeof show.movieId === 'string' ? show.movieId : show.movieId._id,
                 screenId: typeof show.screenId === 'string' ? show.screenId : show.screenId._id,
@@ -99,7 +108,7 @@ const PaymentContent = () => {
 
     if (!show || seats.length === 0) return null;
 
-    const movie = typeof show.movieId === 'string' ? { title: "Movie", genre: "", posterUrl: "" } : show.movieId;
+    const movie = typeof show.movieId === 'string' ? { title: "Movie", genre: "", imageUrl: "" } : show.movieId;
     const screen = typeof show.screenId === 'string' ? { name: "Screen" } : show.screenId;
     const date = new Date(show.startTime).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
     const time = new Date(show.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -135,7 +144,7 @@ const PaymentContent = () => {
                                 <div className="flex flex-col md:flex-row gap-8 items-start">
                                     <div className="relative w-full md:w-32 aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-white/5">
                                         <Image 
-                                            src={movie?.posterUrl || "/movie_banner_placeholder.jpg"} 
+                                            src={movie?.imageUrl || "/movie_banner_placeholder.jpg"} 
                                             alt="Movie Poster"
                                             fill
                                             className="object-cover"

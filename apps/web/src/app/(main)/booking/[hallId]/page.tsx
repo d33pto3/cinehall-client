@@ -20,10 +20,39 @@ const BookingPage = () => {
   const movieId = searchParams.get("movieId");
   const router = useRouter();
 
+  // Guest ID management
+  const [guestId, setGuestId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      let id = sessionStorage.getItem("cinehall-guest-id");
+      if (!id) {
+        id = `guest_${Math.random().toString(36).substring(2, 11)}_${Date.now()}`;
+        sessionStorage.setItem("cinehall-guest-id", id);
+      }
+      setGuestId(id);
+    }
+  }, []);
+
+  const currentIdentifier = user?._id || guestId;
+
   const [availableSlots, setAvailableSlots] = useState<ISlot[]>([]);
   const [screens, setScreens] = useState<IScreen[]>([]);
   const [loadingOptions, setLoadingOptions] = useState(false);
   
+  // Fetch movie details
+  useEffect(() => {
+    if (movieId) {
+      setLoadingMovie(true);
+      const url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+      fetch(`${url}/movie/${movieId}`)
+        .then(res => res.json())
+        .then(data => setMovie(data.data))
+        .catch(err => console.error("Error fetching movie:", err))
+        .finally(() => setLoadingMovie(false));
+    }
+  }, [movieId]);
+
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedSlot, setSelectedSlot] = useState<Slots | null>(null);
   const [selectedScreenId, setSelectedScreenId] = useState<string>("");
@@ -31,6 +60,8 @@ const BookingPage = () => {
 
   const [seats, setSeats] = useState<ISeat[]>([]);
   const [loadingSeats, setLoadingSeats] = useState(false);
+  const [movie, setMovie] = useState<any>(null);
+  const [loadingMovie, setLoadingMovie] = useState(false);
   const [selectedSeatIds, setSelectedSeatIds] = useState<string[]>([]);
   const [processingPayment, setProcessingPayment] = useState(false);
   const [holdingSeats, setHoldingSeats] = useState(false);
@@ -157,23 +188,20 @@ const BookingPage = () => {
   // Release seats on component unmount
   useEffect(() => {
     return () => {
-      if (selectedShow && selectedSeatIds.length > 0 && user?._id) {
-        releaseSeats(selectedShow._id, selectedSeatIds, user._id).catch((err) =>
+      if (selectedShow && selectedSeatIds.length > 0 && currentIdentifier) {
+        releaseSeats(selectedShow._id, selectedSeatIds, currentIdentifier).catch((err) =>
           console.error("Failed to release seats on unmount:", err)
         );
       }
     };
-  }, [selectedShow, selectedSeatIds, user]);
+  }, [selectedShow, selectedSeatIds, currentIdentifier]);
 
   const toggleSeat = async (seat: ISeat) => {
-    if (!user) {
-      alert("Please login to select seats");
-      return;
-    }
+    if (!currentIdentifier) return;
 
     // Don't allow selection if seat is booked or held by someone else
     if (seat.status === SeatStatus.BOOKED) return;
-    if (seat.isHeld && seat.heldBy && seat.heldBy !== user._id) return;
+    if (seat.isHeld && seat.heldBy && seat.heldBy !== currentIdentifier) return;
 
     const seatId = seat._id;
     const isCurrentlySelected = selectedSeatIds.includes(seatId);
@@ -182,7 +210,7 @@ const BookingPage = () => {
       if (isCurrentlySelected) {
         // Release this seat
         setHoldingSeats(true);
-        await releaseSeats(selectedShow!._id, [seatId], user._id);
+        await releaseSeats(selectedShow!._id, [seatId], currentIdentifier);
         
         // Update local state
         setSelectedSeatIds((prev) => prev.filter((id) => id !== seatId));
@@ -198,7 +226,7 @@ const BookingPage = () => {
       } else {
         // Hold this seat
         setHoldingSeats(true);
-        const response = await holdSeats(selectedShow!._id, [seatId], user._id);
+        const response = await holdSeats(selectedShow!._id, [seatId], currentIdentifier);
         
         // Update local state
         setSelectedSeatIds((prev) => [...prev, seatId]);
@@ -228,10 +256,7 @@ const BookingPage = () => {
   };
 
   const handlePayNow = async () => {
-    if (!selectedShow || selectedSeatIds.length === 0 || !user) {
-      if (!user) alert("Please login to book tickets");
-      return;
-    }
+    if (!selectedShow || selectedSeatIds.length === 0 || !currentIdentifier) return;
 
     // Verify seats are still held
     if (timeRemaining === 0) {
@@ -246,7 +271,7 @@ const BookingPage = () => {
       
       // Seats are already held, just redirect to payment
       const seatsParam = selectedSeatIds.join(",");
-      router.push(`/payment?showId=${selectedShow._id}&seatIds=${seatsParam}&amount=${totalAmount}`);
+      router.push(`/payment?showId=${selectedShow._id}&seatIds=${seatsParam}&amount=${totalAmount}${!user ? `&guestId=${guestId}` : ""}`);
     } catch (err) {
       console.error("Payment initiation failed:", err);
       if (axios.isAxiosError(err)) {
@@ -281,14 +306,7 @@ const BookingPage = () => {
   // Calculate total
   const totalAmount = selectedShow ? selectedSeatIds.length * selectedShow.basePrice : 0;
 
-  // Mock data for the UI
-  const movieData = {
-    title: "Superman (2025)",
-    genre: "Action/Sci-fi",
-    duration: "2 hr 9 min",
-    rating: "7.2/10",
-    imageUrl: "/movie_banner_placeholder.jpg", 
-  };
+
 
   return (
     <div className="min-h-screen bg-[#1A0A0A] text-[#FAAA47] p-6 md:p-12 font-sans selection:bg-[#FAAA47] selection:text-[#1A0A0A]">
@@ -305,21 +323,21 @@ const BookingPage = () => {
             <div className="relative w-full md:w-64 h-48 md:h-full overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#4A2C2C] z-10 hidden md:block" />
                 <Image 
-                    src="/superman-banner.jpg" 
-                    alt="Movie Banner"
+                    src={movie?.imageUrl || "/movie_banner_placeholder.jpg"} 
+                    alt={movie?.title || "Movie Banner"}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                 />
             </div>
             <div className="flex-1 p-8 flex flex-col justify-center gap-2">
-              <h3 className="text-4xl font-extrabold text-white">{movieData.title}</h3>
-              <p className="text-[#FAAA47] font-medium text-lg">{movieData.genre}</p>
+              <h3 className="text-4xl font-extrabold text-white">{movie?.title || "Loading..."}</h3>
+              <p className="text-[#FAAA47] font-medium text-lg">{movie?.genre || ""}</p>
               <div className="flex items-center gap-6 text-sm text-neutral-400 font-bold uppercase tracking-widest mt-2">
                 <span className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/5">
-                  <Clock size={16} className="text-[#FAAA47]" /> {movieData.duration}
+                  <Clock size={16} className="text-[#FAAA47]" /> {movie?.duration ? `${Math.floor(movie.duration / 60)}h ${movie.duration % 60}m` : "N/A"}
                 </span>
                 <span className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/5">
-                  <Star size={16} className="text-[#FAAA47] fill-[#FAAA47]" /> {movieData.rating}
+                  <Star size={16} className="text-[#FAAA47] fill-[#FAAA47]" /> {movie?.rating || "N/A"}
                 </span>
               </div>
             </div>
@@ -466,8 +484,8 @@ const BookingPage = () => {
                                             const isSelected = selectedSeatIds.includes(seat._id);
                                             // Check status
                                             const isBooked = seat.status === SeatStatus.BOOKED;
-                                            const isHeldByOthers = seat.isHeld && seat.heldBy && seat.heldBy.toString() !== user?._id;
-                                            const isHeldByMe = seat.isHeld && seat.heldBy && seat.heldBy.toString() === user?._id;
+                                            const isHeldByOthers = seat.isHeld && seat.heldBy && seat.heldBy.toString() !== currentIdentifier;
+                                            const isHeldByMe = seat.isHeld && seat.heldBy && seat.heldBy.toString() === currentIdentifier;
                                             
                                             const isTaken = isBooked || isHeldByOthers;
                                             
