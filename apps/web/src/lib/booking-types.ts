@@ -18,9 +18,22 @@ export enum SeatStatus {
   BLOCKED = "blocked",
 }
 
+export enum PaymentStatus {
+  PENDING = "pending",
+  PAID = "paid",
+  FAILED = "failed",
+  CANCELLED = "cancelled",
+}
+
+export enum PaymentMethod {
+  CARD = "card",
+  BKASH = "bkash",
+  NAGAD = "nagad",
+}
+
 export interface IShow {
   _id: string;
-  movieId: string | { _id: string; title: string };
+  movieId: string | { _id: string; title: string; duration: number; genre: string; posterUrl?: string };
   screenId: string | { _id: string; name: string; hallId: string }; // Updated to include hallId potentially
   startTime: string; // ISO Date string
   endTime: string; // ISO Date string
@@ -75,4 +88,41 @@ export interface IFetchSeatsResponse {
 export interface ISlot {
   slot: Slots;
   showCount: number;
+}
+
+export interface IBooking {
+  _id: string;
+  userId?: string;
+  guestId?: string;
+  showId: string;
+  screenId: string;
+  movieId: string;
+  seats: string[];
+  totalPrice: number;
+  paymentStatus: PaymentStatus;
+  paymentMethod?: PaymentMethod;
+  isCancelled: boolean;
+  tran_id?: string;
+  expiresAt: string;
+}
+
+export interface ICreateBookingRequest {
+  userId?: string;
+  guestId?: string;
+  showId: string;
+  screenId: string;
+  movieId: string;
+  seats: string[];
+}
+
+export interface IBookingResponse {
+  success: boolean;
+  message: string;
+  data: IBooking;
+}
+
+export interface IPaymentInitiateResponse {
+  success: boolean;
+  message: string;
+  url: string;
 }
