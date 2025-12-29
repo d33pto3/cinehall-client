@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Star, Clock } from "lucide-react";
 import Image from "next/image";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
-import { fetchSeatsByShow, holdSeats, fetchScreensByHallMovieDate, fetchAvailableSlots, fetchShowByDetails } from "@/lib/booking-actions";
+import { fetchSeatsByShow, holdSeats, releaseSeats, fetchScreensByHallMovieDate, fetchAvailableSlots, fetchShowByDetails } from "@/lib/booking-actions";
 import { IShow, ISeat, SeatStatus, IScreen, ISlot, Slots, SlotDisplay } from "@/lib/booking-types";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
@@ -33,6 +33,9 @@ const BookingPage = () => {
   const [loadingSeats, setLoadingSeats] = useState(false);
   const [selectedSeatIds, setSelectedSeatIds] = useState<string[]>([]);
   const [processingPayment, setProcessingPayment] = useState(false);
+  const [holdingSeats, setHoldingSeats] = useState(false);
+  const [heldUntil, setHeldUntil] = useState<Date | null>(null);
+  const [timeRemaining, setTimeRemaining] = useState<number>(0);
 
   // Generate next 5 days
   const availableDates = React.useMemo(() => {
@@ -104,15 +107,124 @@ const BookingPage = () => {
     }
   }, [selectedShow]);
 
-  const toggleSeat = (seat: ISeat) => {
-    if (seat.status !== SeatStatus.AVAILABLE && seat.status !== SeatStatus.BLOCKED && !seat.isHeld) return; // Basic check
-    // If held by someone else
-    if (seat.isHeld && seat.heldBy !== user?._id) return;
+  // Periodic refresh for seat status (every 10s)
+  useEffect(() => {
+    if (!selectedShow) return;
+    
+    const intervalId = setInterval(() => {
+      fetchSeatsByShow(selectedShow._id)
+        .then((res) => {
+          setSeats(res.data.seats);
+        })
+        .catch((err) => console.error("Failed to refresh seats:", err));
+    }, 10000); // Refresh every 10 seconds
+
+    return () => clearInterval(intervalId);
+  }, [selectedShow]);
+
+  // Countdown timer for held seats
+  useEffect(() => {
+    if (!heldUntil) {
+      setTimeRemaining(0);
+      return;
+    }
+
+    const updateTimer = () => {
+      const now = new Date().getTime();
+      const untilTime = new Date(heldUntil).getTime();
+      const diff = Math.max(0, Math.floor((untilTime - now) / 1000));
+      setTimeRemaining(diff);
+
+      if (diff === 0) {
+        // Hold expired, refresh seats
+        if (selectedShow) {
+          fetchSeatsByShow(selectedShow._id)
+            .then((res) => {
+              setSeats(res.data.seats);
+              setSelectedSeatIds([]);
+              setHeldUntil(null);
+            })
+            .catch((err) => console.error("Failed to refresh seats:", err));
+        }
+      }
+    };
+
+    updateTimer();
+    const timerId = setInterval(updateTimer, 1000);
+    return () => clearInterval(timerId);
+  }, [heldUntil, selectedShow]);
+
+  // Release seats on component unmount
+  useEffect(() => {
+    return () => {
+      if (selectedShow && selectedSeatIds.length > 0 && user?._id) {
+        releaseSeats(selectedShow._id, selectedSeatIds, user._id).catch((err) =>
+          console.error("Failed to release seats on unmount:", err)
+        );
+      }
+    };
+  }, [selectedShow, selectedSeatIds, user]);
+
+  const toggleSeat = async (seat: ISeat) => {
+    if (!user) {
+      alert("Please login to select seats");
+      return;
+    }
+
+    // Don't allow selection if seat is booked or held by someone else
+    if (seat.status === SeatStatus.BOOKED) return;
+    if (seat.isHeld && seat.heldBy && seat.heldBy !== user._id) return;
 
     const seatId = seat._id;
-    setSelectedSeatIds((prev) =>
-      prev.includes(seatId) ? prev.filter((id) => id !== seatId) : [...prev, seatId]
-    );
+    const isCurrentlySelected = selectedSeatIds.includes(seatId);
+
+    try {
+      if (isCurrentlySelected) {
+        // Release this seat
+        setHoldingSeats(true);
+        await releaseSeats(selectedShow!._id, [seatId], user._id);
+        
+        // Update local state
+        setSelectedSeatIds((prev) => prev.filter((id) => id !== seatId));
+        
+        // Refresh seats to get updated status
+        const res = await fetchSeatsByShow(selectedShow!._id);
+        setSeats(res.data.seats);
+        
+        // If no more seats selected, clear hold timer
+        if (selectedSeatIds.length === 1) {
+          setHeldUntil(null);
+        }
+      } else {
+        // Hold this seat
+        setHoldingSeats(true);
+        const response = await holdSeats(selectedShow!._id, [seatId], user._id);
+        
+        // Update local state
+        setSelectedSeatIds((prev) => [...prev, seatId]);
+        setHeldUntil(new Date(response.data.heldUntil));
+        
+        // Refresh seats to get updated status
+        const res = await fetchSeatsByShow(selectedShow!._id);
+        setSeats(res.data.seats);
+      }
+    } catch (err) {
+      console.error("Seat toggle failed:", err);
+      if (axios.isAxiosError(err)) {
+        alert(err.response?.data?.message || "Failed to select/deselect seat");
+      } else {
+        alert("An error occurred");
+      }
+      
+      // Refresh seats to ensure UI is in sync with server
+      if (selectedShow) {
+        fetchSeatsByShow(selectedShow._id)
+          .then((res) => setSeats(res.data.seats))
+          .catch((err) => console.error("Failed to refresh seats:", err));
+      }
+    } finally {
+      setHoldingSeats(false);
+    }
   };
 
   const handlePayNow = async () => {
@@ -120,19 +232,25 @@ const BookingPage = () => {
       if (!user) alert("Please login to book tickets");
       return;
     }
+
+    // Verify seats are still held
+    if (timeRemaining === 0) {
+      alert("Your seat hold has expired. Please select seats again.");
+      setSelectedSeatIds([]);
+      setHeldUntil(null);
+      return;
+    }
+
     try {
       setProcessingPayment(true);
-      const res = await holdSeats(selectedShow._id, selectedSeatIds, user._id);
-      if (res.success) {
-         // Redirect to payment page with showId and held seats
-         // The backend bookSeats will be called after successful payment
-         const seatsParam = selectedSeatIds.join(",");
-         router.push(`/payment?showId=${selectedShow._id}&seatIds=${seatsParam}&amount=${totalAmount}`);
-      }
+      
+      // Seats are already held, just redirect to payment
+      const seatsParam = selectedSeatIds.join(",");
+      router.push(`/payment?showId=${selectedShow._id}&seatIds=${seatsParam}&amount=${totalAmount}`);
     } catch (err) {
-      console.error("Hold failed:", err);
+      console.error("Payment initiation failed:", err);
       if (axios.isAxiosError(err)) {
-        alert(err.response?.data?.message || "Failed to hold seats");
+        alert(err.response?.data?.message || "Failed to initiate payment");
       }
     } finally {
       setProcessingPayment(false);
@@ -308,6 +426,26 @@ const BookingPage = () => {
                 </div>
             </div>
 
+            {/* Hold Timer Display */}
+            {selectedSeatIds.length > 0 && timeRemaining > 0 && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`text-center p-4 rounded-xl border-2 ${
+                  timeRemaining <= 60 
+                    ? 'bg-red-900/20 border-red-500/50 text-red-400' 
+                    : 'bg-[#4A2C2C]/40 border-[#FAAA47]/30 text-[#FAAA47]'
+                }`}
+              >
+                <p className="text-sm font-bold uppercase tracking-widest">
+                  Seats Reserved - Time Remaining: {Math.floor(timeRemaining / 60)}:{(timeRemaining % 60).toString().padStart(2, '0')}
+                </p>
+                {timeRemaining <= 60 && (
+                  <p className="text-xs mt-1 text-red-300">⚠️ Hurry! Your reservation will expire soon</p>
+                )}
+              </motion.div>
+            )}
+
             <div className="overflow-x-auto pb-8 custom-scrollbar">
                 <div className="min-w-[900px] bg-[#2D1B1B] p-12 rounded-[40px] border border-white/5 shadow-inner relative">
                     <div className="text-center mb-16 space-y-2">
@@ -346,7 +484,7 @@ const BookingPage = () => {
                                             return (
                                                 <button
                                                     key={seat._id}
-                                                    disabled={!!isTaken}
+                                                    disabled={!!isTaken || holdingSeats}
                                                     onClick={() => toggleSeat(seat)}
                                                     className={`w-8 h-8 rounded-[4px] text-[10px] flex items-center justify-center font-bold transition-all duration-300 transform ${
                                                         !isTaken ? 'hover:scale-110 active:scale-90' : ''
