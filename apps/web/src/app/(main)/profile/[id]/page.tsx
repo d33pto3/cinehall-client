@@ -28,6 +28,8 @@ import axiosInstance from "@/lib/axios";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { logoutUser } from "@/lib/auth-actions";
 import Image from "next/image";
+import { Loader } from "@/components/shared/Loader";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface PopulatedBooking {
   _id: string;
@@ -99,7 +101,7 @@ export default function ProfilePage() {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#1A1A1A]">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#FAAA47]"></div>
+        <Loader />
       </div>
     );
   }
@@ -148,13 +150,13 @@ export default function ProfilePage() {
             <div className="flex gap-3">
               <Button 
                 variant="outline" 
-                className="border-[#3A3A3A] text-white hover:bg-[#3A3A3A]"
+                className="border-[#3A3A3A] text-black hover:bg-[#3A3A3A] hover:text-white hover:cursor-pointer"
                 onClick={() => router.push("/")}
               >
                 Browse Movies
               </Button>
               <Button 
-                className="bg-gradient-to-r from-[#FAAA47] to-[#F97316] text-white hover:opacity-90"
+                className="bg-gradient-to-r from-[#FAAA47] to-[#F97316] text-white hover:opacity-90 hover:cursor-pointer"
                 onClick={handleLogout}
               >
                 <IconLogout size={18} className="mr-2" />
@@ -185,9 +187,19 @@ export default function ProfilePage() {
           <TabsContent value="bookings" className="space-y-6">
             <div className="grid grid-cols-1 gap-6">
               {loadingBookings ? (
-                <div className="flex flex-col items-center justify-center py-20">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FAAA47]"></div>
-                  <p className="text-[#CAC1C1] mt-4">Gathering your cinema history...</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="bg-[#2A2A2A]/40 border border-[#3A3A3A] rounded-2xl p-4 flex gap-4">
+                      <Skeleton className="w-24 h-36 rounded-lg shrink-0" />
+                      <div className="flex-1 space-y-4">
+                        <Skeleton className="h-6 w-3/4" />
+                        <div className="space-y-2">
+                          <Skeleton className="h-4 w-1/2" />
+                          <Skeleton className="h-4 w-2/3" />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : bookings.length === 0 ? (
                 <Card className="bg-[#2A2A2A]/40 border-[#3A3A3A] text-center py-16">

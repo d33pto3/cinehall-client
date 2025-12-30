@@ -44,7 +44,7 @@ const CastAndCrew: React.FC = () => {
           {castData.map((member) => (
             <div
               key={member.id}
-              className="embla__slide flex flex-col items-center max-w-[120px] min-w-[110px] flex-shrink-0 text-center space-y-3"
+              className="min-w-[150px] flex flex-col items-center flex-shrink-0 text-center space-y-3"
             >
               <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-[#FAAA47] bg-gray-800">
                 <div className="absolute inset-0 flex items-center justify-center text-[#FAAA47] text-xs">
