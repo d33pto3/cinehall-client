@@ -8,7 +8,7 @@ const protectedRoutes = ["/profile"];
 const authRoutes = ["/login", "/signup"];
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, searchParams } = request.nextUrl;
 
   // Fail-safe: Always allow homepage
   if (pathname === "/") {
@@ -28,12 +28,16 @@ export function middleware(request: NextRequest) {
 
   if (isProtectedRoute && !token) {
     const url = new URL("/login", request.url);
+    // Preserving the original pathname to redirect back after login
     url.searchParams.set("redirect", pathname);
     return NextResponse.redirect(url);
   }
 
   if (isAuthRoute && token) {
-    return NextResponse.redirect(new URL("/", request.url));
+    // If user is already authenticated and visits login/signup,
+    // redirect them to the home page or the intended 'redirect' target
+    const redirectTo = searchParams.get("redirect") || "/";
+    return NextResponse.redirect(new URL(redirectTo, request.url));
   }
 
   return NextResponse.next();
