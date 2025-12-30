@@ -67,10 +67,12 @@ export function LoginForm({
       
       // 4. Navigate
       router.push(redirectUrl);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login failed:", error);
       if (axios.isAxiosError(error)) {
          setError(error.response?.data?.message || "Login failed. Please check your credentials.");
+      } else if (error instanceof Error) {
+         setError(error.message);
       } else {
          setError("An unexpected error occurred.");
       }
