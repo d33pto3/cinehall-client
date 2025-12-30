@@ -9,6 +9,7 @@ function NowShowing({ movies }: { movies: Movie[] }) {
       bgColor="bg-[#322F2F91]"
       title={"Now Showing"}
       wrapperClassName="mt-12"
+      seeAllHref="/movies/list/now-showing"
     />
   );
 }

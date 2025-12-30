@@ -9,6 +9,7 @@ import { fetchSeatsByShow, holdSeats, releaseSeats, fetchScreensByHallMovieDate,
 import { IShow, ISeat, SeatStatus, IScreen, ISlot, Slots, SlotDisplay } from "@/lib/booking-types";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const BookingPage = () => {
   const params = useParams();
@@ -330,14 +331,20 @@ const BookingPage = () => {
                 />
             </div>
             <div className="flex-1 p-8 flex flex-col justify-center gap-2">
-              <h3 className="text-4xl font-extrabold text-white">{movie?.title || "Loading..."}</h3>
-              <p className="text-[#FAAA47] font-medium text-lg">{movie?.genre || ""}</p>
+              <h3 className="text-4xl font-extrabold text-white">
+                {loadingMovie ? <Skeleton className="h-10 w-64" /> : movie?.title || "N/A"}
+              </h3>
+              <p className="text-[#FAAA47] font-medium text-lg">
+                {loadingMovie ? <Skeleton className="h-6 w-32" /> : movie?.genre || ""}
+              </p>
               <div className="flex items-center gap-6 text-sm text-neutral-400 font-bold uppercase tracking-widest mt-2">
                 <span className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/5">
-                  <Clock size={16} className="text-[#FAAA47]" /> {movie?.duration ? `${Math.floor(movie.duration / 60)}h ${movie.duration % 60}m` : "N/A"}
+                  <Clock size={16} className="text-[#FAAA47]" /> 
+                  {loadingMovie ? <Skeleton className="h-4 w-16" /> : movie?.duration ? `${Math.floor(movie.duration / 60)}h ${movie.duration % 60}m` : "N/A"}
                 </span>
                 <span className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/5">
-                  <Star size={16} className="text-[#FAAA47] fill-[#FAAA47]" /> {movie?.rating || "N/A"}
+                  <Star size={16} className="text-[#FAAA47] fill-[#FAAA47]" /> 
+                  {loadingMovie ? <Skeleton className="h-4 w-8" /> : movie?.rating || "N/A"}
                 </span>
               </div>
             </div>
@@ -348,7 +355,21 @@ const BookingPage = () => {
         <section className="space-y-8">
           <h2 className="text-2xl font-bold tracking-wider uppercase">Select Date and Time</h2>
           {loadingOptions ? (
-             <div className="text-white">Loading...</div>
+             <div className="space-y-8">
+                <div className="flex flex-wrap gap-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Skeleton key={i} className="h-12 w-32 rounded-xl" />
+                  ))}
+                </div>
+                <div className="space-y-4">
+                  <Skeleton className="h-4 w-32" />
+                  <div className="flex flex-wrap gap-4">
+                    {[...Array(4)].map((_, i) => (
+                      <Skeleton key={i} className="h-16 w-32 rounded-xl" />
+                    ))}
+                  </div>
+                </div>
+             </div>
           ) : (
             <div className="space-y-8">
                 {/* Date Picker */}
@@ -468,12 +489,23 @@ const BookingPage = () => {
                 <div className="min-w-[900px] bg-[#2D1B1B] p-12 rounded-[40px] border border-white/5 shadow-inner relative">
                     <div className="text-center mb-16 space-y-2">
                         <p className="text-xs font-bold text-neutral-500 uppercase tracking-[0.5em]">
-                            Base Price : BDT {selectedShow.basePrice}
+                            Base Price : ৳{selectedShow.basePrice}
                         </p>
                     </div>
 
                     {loadingSeats ? (
-                        <div className="text-center text-white">Loading seats...</div>
+                        <div className="space-y-4">
+                             {[...Array(8)].map((_, r) => (
+                                 <div key={r} className="flex items-center justify-center gap-2">
+                                     <Skeleton className="w-8 h-4 mr-4" />
+                                     <div className="flex gap-1">
+                                         {[...Array(12)].map((_, c) => (
+                                             <Skeleton key={c} className="w-8 h-8 rounded-[4px]" />
+                                         ))}
+                                     </div>
+                                 </div>
+                             ))}
+                        </div>
                     ) : (
                         <div className="space-y-4">
                             {sortedRows.map(row => (
@@ -539,7 +571,7 @@ const BookingPage = () => {
                       >
                            <div className="text-center space-y-4">
                                <p className="text-[#4A2C2C] text-2xl font-black">{selectedSeatIds.length} Seats Selected</p>
-                               <p className="text-[#4A2C2C]/70 text-lg font-bold">Total: BDT {totalAmount}</p>
+                               <p className="text-[#4A2C2C]/70 text-lg font-bold">Total: ৳{totalAmount}</p>
                                <button 
                                 onClick={handlePayNow}
                                 disabled={processingPayment}

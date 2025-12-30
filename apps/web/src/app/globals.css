@@ -168,8 +168,8 @@
 .embla {
   /* max-width: 48rem; */
   margin: auto;
-  --slide-spacing: 0px;
-  --slide-size: 250px;
+  --slide-spacing: 12px;
+  --slide-size: 85%;
   position: relative;
 }
 .embla__viewport {
@@ -188,20 +188,23 @@
 }
 .embla__slide__number {
   box-shadow: inset 0 0 0 0.2rem var(--detail-medium-contrast);
-  border-radius: 0;
+  /* border-radius: 20px; */
   font-size: 4rem;
   font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: auto;
-  aspect-ratio: 16/10;
+  height: 400px;
+  width: 100%;
   user-select: none;
 }
 
 @media (min-width: 1024px) {
   .embla {
-    --slide-size: 450px;
+    --slide-size: 60%;
+  }
+  .embla__slide__number {
+    height: 600px;
   }
 }
 .embla__controls {

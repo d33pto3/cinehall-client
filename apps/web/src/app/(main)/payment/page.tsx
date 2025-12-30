@@ -230,17 +230,17 @@ const PaymentContent = () => {
                             <div className="space-y-4 font-bold">
                                 <div className="flex justify-between items-center text-neutral-400">
                                     <span>Tickets x {seats.length}</span>
-                                    <span className="text-white">BDT {totalAmount}</span>
+                                    <span className="text-white">৳{totalAmount}</span>
                                 </div>
                                 <div className="flex justify-between items-center text-neutral-400">
                                     <span>Service Fee</span>
-                                    <span className="text-white">BDT 0</span>
+                                    <span className="text-white">৳0</span>
                                 </div>
                                 <div className="h-px bg-white/10 my-4" />
                                 <div className="flex justify-between items-end">
                                     <div className="space-y-1">
                                         <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-500">Total Payable</p>
-                                        <p className="text-4xl font-black text-[#FAAA47]">BDT {totalAmount}</p>
+                                        <p className="text-4xl font-black text-[#FAAA47]">৳{totalAmount}</p>
                                     </div>
                                 </div>
                             </div>
@@ -272,13 +272,11 @@ const PaymentContent = () => {
     );
 };
 
+import Loading from "../loading";
+
 const PaymentPage = () => {
     return (
-        <Suspense fallback={
-            <div className="min-h-screen bg-[#1A0A0A] flex items-center justify-center text-[#FAAA47]">
-                Loading...
-            </div>
-        }>
+        <Suspense fallback={<Loading />}>
             <PaymentContent />
         </Suspense>
     );

@@ -172,7 +172,7 @@ export default function FoodDrinkPage() {
                 className="object-cover group-hover:scale-110 transition-transform duration-700"
               />
               <div className="absolute top-4 right-4 bg-[#FAAA47] text-black px-4 py-1 rounded-full text-sm font-bold shadow-lg">
-                ${item.price.toFixed(2)}
+                ৳{item.price.toFixed(2)}
               </div>
             </div>
             
@@ -207,7 +207,7 @@ export default function FoodDrinkPage() {
               Everything you need for a truly legendary movie marathon.
             </p>
             <div className="flex items-center gap-6">
-              <span className="text-5xl font-black text-[#FAAA47]">$29.99</span>
+              <span className="text-5xl font-black text-[#FAAA47]">৳29.99</span>
               <button className="px-10 py-5 bg-white text-black font-black uppercase rounded-2xl hover:bg-[#FAAA47] transition-colors shadow-2xl">
                 Grab the Deal
               </button>

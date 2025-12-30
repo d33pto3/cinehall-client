@@ -9,6 +9,7 @@ import ComingSoon from "@/components/homepage/ComingSoon";
 import { Movie } from "@/components/homepage/HeroSection";
 
 import { useParams } from "next/navigation";
+import { MovieGridSkeleton, Skeleton } from "@/components/ui/skeleton";
 
 export default function MoviesPage() {
   const { id } = useParams();
@@ -47,7 +48,30 @@ export default function MoviesPage() {
   }, [id]);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-[#FAAA47] text-2xl">Loading...</div>;
+    return (
+      <main className="max-w-7xl mx-auto pb-20 px-4">
+        {/* Hero Skeleton */}
+        <div className="relative w-full h-[400px] md:h-[600px] rounded-3xl overflow-hidden mt-8">
+          <Skeleton className="w-full h-full" />
+          <div className="absolute bottom-0 left-0 p-8 space-y-4 w-full bg-gradient-to-t from-black/80 to-transparent">
+             <Skeleton className="h-12 w-1/2" />
+             <Skeleton className="h-6 w-1/4" />
+             <div className="flex gap-4">
+                <Skeleton className="h-12 w-32 rounded-full" />
+                <Skeleton className="h-12 w-32 rounded-full" />
+             </div>
+          </div>
+        </div>
+        <div className="mt-12 space-y-6">
+           <Skeleton className="h-8 w-48" />
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <Skeleton className="h-64 rounded-2xl md:col-span-2" />
+              <Skeleton className="h-64 rounded-2xl" />
+           </div>
+        </div>
+        <MovieGridSkeleton title="More to Explore" />
+      </main>
+    );
   }
 
   if (!movie) {

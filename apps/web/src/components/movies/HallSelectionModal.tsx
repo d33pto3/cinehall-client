@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, MapPin, Loader2 } from "lucide-react";
 import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation";
+import { Loader } from "@/components/shared/Loader";
 
 interface Hall {
   _id: string;
@@ -100,9 +101,8 @@ const HallSelectionModal: React.FC<HallSelectionModalProps> = ({
             {/* List Content */}
             <div className="flex-1 overflow-y-auto px-8 pb-12 custom-scrollbar">
               {loading ? (
-                <div className="flex flex-col items-center justify-center py-20 gap-4">
-                  <Loader2 className="animate-spin text-[#FAAA47]" size={48} />
-                  <p className="text-[#4A2C2C] font-medium">Fetching available theatres...</p>
+                <div className="py-20">
+                  <Loader />
                 </div>
               ) : error ? (
                 <div className="text-center py-20 text-red-600 font-bold">{error}</div>
