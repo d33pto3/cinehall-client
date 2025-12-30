@@ -6,6 +6,7 @@ import MovieCarousel from "./MovieCarousel";
 import NowShowing from "./NowShowing";
 import ComingSoon from "./ComingSoon";
 import Image from "next/image";
+import { CarouselSkeleton, MovieGridSkeleton } from "@/components/ui/skeleton";
 
 interface HeroSectionProps {
   empty?: true;
@@ -24,10 +25,12 @@ export interface Movie {
 const HeroSection = ({}: HeroSectionProps) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [imageUrls, setImageUrls] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
+        setLoading(true);
         const url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
         const res = await fetch(`${url}/movie`, {
           // Include credentials if needed, but be careful if backend strictly requires them for non-auth endpoints
@@ -45,11 +48,23 @@ const HeroSection = ({}: HeroSectionProps) => {
         setImageUrls(moviesList.map((movie: Movie) => movie.imageUrl));
       } catch (error) {
         console.error("Failed to fetch movies:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchMovies();
   }, []);
+
+  if (loading) {
+    return (
+      <section className="min-h-screen">
+        <CarouselSkeleton />
+        <MovieGridSkeleton title="Now Showing" />
+        <MovieGridSkeleton title="Coming Soon" />
+      </section>
+    );
+  }
 
   return (
     <section className="min-h-screen">

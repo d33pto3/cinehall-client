@@ -272,13 +272,11 @@ const PaymentContent = () => {
     );
 };
 
+import Loading from "../loading";
+
 const PaymentPage = () => {
     return (
-        <Suspense fallback={
-            <div className="min-h-screen bg-[#1A0A0A] flex items-center justify-center text-[#FAAA47]">
-                Loading...
-            </div>
-        }>
+        <Suspense fallback={<Loading />}>
             <PaymentContent />
         </Suspense>
     );
