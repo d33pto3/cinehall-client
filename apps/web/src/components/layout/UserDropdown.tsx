@@ -18,6 +18,7 @@ import {
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { logoutUser } from "@/lib/auth-actions";
+import { removeAuthCookie } from "@/lib/auth-server-actions";
 
 export default function UserDropdown() {
   const { user, refreshUser, loading } = useAuth();
@@ -30,6 +31,7 @@ export default function UserDropdown() {
   const handleLogout = async () => {
     try {
       await logoutUser();
+      await removeAuthCookie();
       await refreshUser();
     } catch (error) {
       console.error("Logout failed:", error);
