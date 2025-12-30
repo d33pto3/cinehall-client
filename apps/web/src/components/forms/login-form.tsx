@@ -21,6 +21,7 @@ import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { loginWithEmail, loginWithFirebase } from "@/lib/auth-actions";
+import { setAuthCookie } from "@/lib/auth-server-actions";
 import axios from "axios";
 
 const formSchema = z.object({
@@ -56,12 +57,15 @@ export function LoginForm({
       const { email, password } = data;
       
       // 1. Perform Login Action
-      await loginWithEmail(email, password);
+      const { token } = await loginWithEmail(email, password);
       
-      // 2. Refresh Auth Context to flip "user" state
+      // 2. Set Cookie on Frontend Domain (for middleware)
+      await setAuthCookie(token);
+
+      // 3. Refresh Auth Context to flip "user" state
       await refreshUser();
       
-      // 3. Navigate
+      // 4. Navigate
       router.push(redirectUrl);
     } catch (error) {
       console.error("Login failed:", error);
@@ -80,7 +84,8 @@ export function LoginForm({
       setIsSubmitting(true);
       setError(null);
       
-      await loginWithFirebase();
+      const { token } = await loginWithFirebase();
+      await setAuthCookie(token);
       await refreshUser();
       
       router.push(redirectUrl);

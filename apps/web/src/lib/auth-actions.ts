@@ -44,7 +44,7 @@ export const fetchCurrentUser = async (): Promise<User | null> => {
   }
 };
 
-export const loginWithEmail = async (email: string, password: string): Promise<User> => {
+export const loginWithEmail = async (email: string, password: string): Promise<{ user: User, token: string }> => {
   try {
     const url = getApiUrl();
     const response = await axios.post(
@@ -52,7 +52,10 @@ export const loginWithEmail = async (email: string, password: string): Promise<U
       { email, password },
       { withCredentials: true }
     );
-    return response.data.user;
+    return {
+      user: response.data.user,
+      token: response.data.token
+    };
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
       throw new Error("Invalid email or password");
@@ -61,7 +64,7 @@ export const loginWithEmail = async (email: string, password: string): Promise<U
   }
 };
 
-export const loginWithFirebase = async (): Promise<User> => {
+export const loginWithFirebase = async (): Promise<{ user: User, token: string }> => {
   const userCredential = await signInWithPopup(auth, googleProvider);
   const idToken = await userCredential.user.getIdToken();
 
@@ -71,15 +74,21 @@ export const loginWithFirebase = async (): Promise<User> => {
     { idToken },
     { withCredentials: true }
   );
-  return response.data.user;
+  return {
+    user: response.data.user,
+    token: response.data.token
+  };
 };
 
-export const registerUser = async (data: RegisterData): Promise<User> => {
+export const registerUser = async (data: RegisterData): Promise<{ user: User, token: string }> => {
   const url = getApiUrl();
   const response = await axios.post(`${url}/auth/register`, data, {
     withCredentials: true,
   });
-  return response.data.user;
+  return {
+    user: response.data.user,
+    token: response.data.token
+  };
 };
 
 export const logoutUser = async (): Promise<void> => {
