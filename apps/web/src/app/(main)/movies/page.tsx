@@ -5,11 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { 
   IconSearch, 
-  IconFilter, 
   IconMovie, 
   IconCalendar, 
   IconClock,
-  IconChevronRight,
   IconTicket
 } from "@tabler/icons-react";
 import { Input } from "@/components/ui/input";
@@ -77,7 +75,7 @@ function MoviesContent() {
             src="/feat-videobg.jpg"
             alt="Movies Hero"
             fill
-            className="object-cover opacity-30"
+            className="opacity-30 object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#171717]/50 to-[#171717]"></div>
         </div>
@@ -109,7 +107,7 @@ function MoviesContent() {
               placeholder="Search by title..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-12 bg-[#2A2A2A] border-none text-white rounded-xl focus:ring-2 focus:ring-[#FAAA47]"
+              className="pl-2 h-12 bg-[#2A2A2A] border-none text-white rounded-xl focus:ring-2 focus:ring-[#FAAA47]"
               icon={<IconSearch size={20} className="text-[#FAAA47]" />}
             />
           </div>
@@ -122,7 +120,7 @@ function MoviesContent() {
                 className={cn(
                   "px-6 py-2 rounded-full whitespace-nowrap transition-all duration-300 border font-medium text-sm",
                   selectedGenre === genre
-                    ? "bg-[#FAAA47] text-black border-[#FAAA47] shadow-[0_0_15px_rgba(250,170,71,0.4)]"
+                    ? "bg-[#FAAA47] text-black border-[#FAAA47]"
                     : "bg-[#2A2A2A] text-[#CAC1C1] border-white/10 hover:border-[#FAAA47]/50"
                 )}
               >
@@ -149,6 +147,7 @@ function MoviesContent() {
           <motion.div 
             layout
             className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8"
+            id="movie-list"
           >
             <AnimatePresence mode="popLayout">
               {filteredMovies.map((movie) => (
@@ -162,7 +161,7 @@ function MoviesContent() {
                   className="group relative"
                 >
                   <Link href={`/movies/${movie._id}`}>
-                    <div className="relative aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl border border-white/5 transition-all duration-500 group-hover:border-[#FAAA47]/50 group-hover:shadow-[#FAAA47]/10 group-hover:-translate-y-2">
+                    <div className="relative aspect-[2/3] overflow-hidden shadow-2xl border border-white/5 transition-all duration-500 group-hover:border-[#FAAA47]/50 group-hover:shadow-[#FAAA47]/10 group-hover:-translate-y-2">
                       <Image
                         src={movie.imageUrl}
                         alt={movie.title}
@@ -199,11 +198,11 @@ function MoviesContent() {
                   
                   <div className="mt-4">
                     <Link href={`/movies/${movie._id}`}>
-                      <h3 className="text-white font-bold text-lg truncate group-hover:text-[#FAAA47] transition-colors">
+                      <h3 className="font-bold text-lg text-white truncate group-hover:text-[#FAAA47] transition-colors">
                         {movie.title}
                       </h3>
                     </Link>
-                    <p className="text-[#6A6A6A] text-sm flex items-center mt-1">
+                    <p className="flex items-center mt-1 text-sm text-[#6A6A6A]">
                       {movie.director}
                     </p>
                   </div>
@@ -246,14 +245,14 @@ function MoviesContent() {
             </p>
             <div className="flex flex-wrap gap-4">
               <Button 
-                className="bg-[#FAAA47] text-black hover:bg-[#F97316] h-14 px-8 rounded-2xl font-bold text-lg"
+                className="bg-[#FAAA47] text-black hover:bg-[#F97316] h-14 px-8 rounded-2xl font-bold text-lg hover:cursor-pointer"
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               >
                 Start Exploring
               </Button>
               <Button 
                 variant="outline" 
-                className="border-white/10 text-white hover:bg-white/5 h-14 px-8 rounded-2xl font-bold text-lg"
+                className="border-white/10 text-black hover:bg-[#FAAA47]/5 hover:text-white hover:cursor-pointer h-14 px-8 rounded-2xl font-bold text-lg"
               >
                 View Showtimes
               </Button>
@@ -261,7 +260,6 @@ function MoviesContent() {
           </div>
           
           <div className="w-full md:w-1/3 relative aspect-square md:aspect-auto md:h-80 z-10">
-            <div className="absolute inset-0 bg-[#FAAA47] opacity-10 animate-pulse rounded-3xl blur-2xl"></div>
             <div className="relative w-full h-full bg-[#3A3A3A] rounded-3xl border border-white/10 flex items-center justify-center p-8 overflow-hidden">
                <IconTicket size={120} className="text-[#FAAA47] rotate-12 opacity-80" />
                <div className="absolute bottom-4 right-4 bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl text-white text-xs font-medium border border-white/10">
@@ -272,15 +270,6 @@ function MoviesContent() {
         </div>
       </section>
       
-      {/* Scroll to top */}
-      <motion.button
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className="fixed bottom-8 right-8 z-50 w-12 h-12 bg-[#FAAA47] text-black rounded-full shadow-2xl flex items-center justify-center"
-      >
-        <IconChevronRight size={24} className="-rotate-90" />
-      </motion.button>
     </div>
   );
 }

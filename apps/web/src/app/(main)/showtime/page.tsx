@@ -44,7 +44,7 @@ export default function ShowtimePage() {
 
   // Generate next 7 days
   const dates = useMemo(() => {
-    return Array.from({ length: 7 }, (_, i) => addDays(new Date(), i));
+    return Array.from({ length: 5 }, (_, i) => addDays(new Date(), i));
   }, []);
 
   useEffect(() => {
@@ -129,10 +129,10 @@ export default function ShowtimePage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
         {/* Date Selector & Filters */}
-        <div className="sticky top-0 z-40 bg-[#1A0A0A]/80 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-4 md:p-6 shadow-2xl flex flex-col md:flex-row gap-6 items-center justify-between">
+        <div className="z-40 bg-[#1A0A0A]/80 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-4 md:p-6 shadow-2xl flex flex-col md:flex-row gap-6 items-center justify-between mt-4">
           
           {/* Calendar Strip */}
-          <div className="flex items-center gap-3 overflow-x-auto no-scrollbar w-full md:w-auto pb-2 md:pb-0">
+          <div className="flex items-center gap-3 overflow-x-auto no-scrollbar w-full md:w-auto p-2">
             {dates.map((date, i) => {
               const isActive = isSameDay(date, selectedDate);
               return (
@@ -142,8 +142,8 @@ export default function ShowtimePage() {
                   className={cn(
                     "flex flex-col items-center justify-center min-w-[70px] h-20 rounded-2xl transition-all duration-300 border",
                     isActive 
-                      ? "bg-[#FAAA47] border-[#FAAA47] text-[#1A0A0A] shadow-[0_10px_20px_rgba(250,170,71,0.3)] scale-110" 
-                      : "bg-white/5 border-white/10 text-neutral-400 hover:border-[#FAAA47]/50"
+                      ? "bg-[#FAAA47] border-[#FAAA47] text-[#1A0A0A] scale-110" 
+                      : "bg-white/5 border-white/10 text-neutral-400 hover:border-[#FAAA47]/50 hover:cursor-pointer"
                   )}
                 >
                   <span className="text-[10px] font-black uppercase tracking-widest">{format(date, "EEE")}</span>
@@ -247,7 +247,7 @@ export default function ShowtimePage() {
                                       </div>
                                       <div className="h-1 w-1 rounded-full bg-white/20" />
                                       <div className="text-[10px] font-black uppercase tracking-widest text-[#FAAA47]">
-                                         BDT {show.basePrice}
+                                         ৳{show.basePrice}
                                       </div>
                                    </div>
                                    

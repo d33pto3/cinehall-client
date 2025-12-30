@@ -32,7 +32,7 @@ const Footer: FC = () => {
 
   return (
     <div>
-      <div className="relative py-12 px-8 flex md:flex-row flex-col gap-4 md:gap-0 justify-between items-center">
+      <div className="relative py-16 px-8 flex md:flex-row flex-col gap-4 md:gap-0 justify-between items-center border-t-[1px] border-[#d7a65e]">
         <div className="text-[#D7A65E] font-bold">
           <div className="leading-[1.1]">
             <p className="text-[48px]">Great MOVIES don&apos;t wait.</p>

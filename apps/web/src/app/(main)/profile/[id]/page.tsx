@@ -150,13 +150,13 @@ export default function ProfilePage() {
             <div className="flex gap-3">
               <Button 
                 variant="outline" 
-                className="border-[#3A3A3A] text-white hover:bg-[#3A3A3A]"
+                className="border-[#3A3A3A] text-black hover:bg-[#3A3A3A] hover:text-white hover:cursor-pointer"
                 onClick={() => router.push("/")}
               >
                 Browse Movies
               </Button>
               <Button 
-                className="bg-gradient-to-r from-[#FAAA47] to-[#F97316] text-white hover:opacity-90"
+                className="bg-gradient-to-r from-[#FAAA47] to-[#F97316] text-white hover:opacity-90 hover:cursor-pointer"
                 onClick={handleLogout}
               >
                 <IconLogout size={18} className="mr-2" />

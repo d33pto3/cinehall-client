@@ -489,7 +489,7 @@ const BookingPage = () => {
                 <div className="min-w-[900px] bg-[#2D1B1B] p-12 rounded-[40px] border border-white/5 shadow-inner relative">
                     <div className="text-center mb-16 space-y-2">
                         <p className="text-xs font-bold text-neutral-500 uppercase tracking-[0.5em]">
-                            Base Price : BDT {selectedShow.basePrice}
+                            Base Price : ৳{selectedShow.basePrice}
                         </p>
                     </div>
 
@@ -571,7 +571,7 @@ const BookingPage = () => {
                       >
                            <div className="text-center space-y-4">
                                <p className="text-[#4A2C2C] text-2xl font-black">{selectedSeatIds.length} Seats Selected</p>
-                               <p className="text-[#4A2C2C]/70 text-lg font-bold">Total: BDT {totalAmount}</p>
+                               <p className="text-[#4A2C2C]/70 text-lg font-bold">Total: ৳{totalAmount}</p>
                                <button 
                                 onClick={handlePayNow}
                                 disabled={processingPayment}

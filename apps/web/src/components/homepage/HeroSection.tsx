@@ -7,6 +7,7 @@ import NowShowing from "./NowShowing";
 import ComingSoon from "./ComingSoon";
 import Image from "next/image";
 import { CarouselSkeleton, MovieGridSkeleton } from "@/components/ui/skeleton";
+import { EmptyMoviesFallback } from "../shared/EmptyMoviesFallback";
 
 interface HeroSectionProps {
   empty?: true;
@@ -23,29 +24,36 @@ export interface Movie {
 }
 
 const HeroSection = ({}: HeroSectionProps) => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [nowShowing, setNowShowing] = useState<Movie[]>([]);
+  const [comingSoon, setComingSoon] = useState<Movie[]>([]);
   const [imageUrls, setImageUrls] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMovies = async () => {
+    const fetchAllData = async () => {
       try {
         setLoading(true);
         const url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
-        const res = await fetch(`${url}/movie`, {
-          // Include credentials if needed, but be careful if backend strictly requires them for non-auth endpoints
-          // mode: 'cors', // default
-        });
         
-        if (!res.ok) {
-           throw new Error(`HTTP error! status: ${res.status}`);
+        const [allRes, nowRes, comingRes] = await Promise.all([
+          fetch(`${url}/movie`),
+          fetch(`${url}/movie/now-showing`),
+          fetch(`${url}/movie/coming-soon`)
+        ]);
+
+        if (!allRes.ok || !nowRes.ok || !comingRes.ok) {
+           throw new Error("One or more API requests failed");
         }
 
-        const data = await res.json();
-        const moviesList = data.data;
+        const [allData, nowData, comingData] = await Promise.all([
+          allRes.json(),
+          nowRes.json(),
+          comingRes.json()
+        ]);
 
-        setMovies(moviesList);
-        setImageUrls(moviesList.map((movie: Movie) => movie.imageUrl));
+        setImageUrls(allData.data.map((movie: Movie) => movie.imageUrl));
+        setNowShowing(nowData.data.slice(0, 10));
+        setComingSoon(comingData.data.slice(0, 10));
       } catch (error) {
         console.error("Failed to fetch movies:", error);
       } finally {
@@ -53,7 +61,7 @@ const HeroSection = ({}: HeroSectionProps) => {
       }
     };
 
-    fetchMovies();
+    fetchAllData();
   }, []);
 
   if (loading) {
@@ -70,8 +78,9 @@ const HeroSection = ({}: HeroSectionProps) => {
     <section className="min-h-screen">
       {/* Content */}
       <MovieCarousel slides={imageUrls} />
-      <NowShowing movies={movies} />
-      <ComingSoon movies={movies} />
+      <NowShowing movies={nowShowing} />
+      <ComingSoon movies={comingSoon} />
+
       {/* Footer top */}
       <div className="w-full h-[228px] lg:h-[400px] relative overflow-hidden bg-black mt-12">
         <Image
