@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "../ui/form";
 import InputFormField from "../shared/molecules/InputFormField";
 import { registerUser } from "@/lib/auth-actions";
+import { setAuthCookie } from "@/lib/auth-server-actions";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -52,9 +53,12 @@ export function RegistrationForm({
       setIsSubmitting(true);
       
       // 1. Register Action
-      await registerUser(data);
+      const { token } = await registerUser(data);
+
+      // 2. Set Cookie on Frontend Domain (for middleware)
+      await setAuthCookie(token);
       
-      // 2. Refresh Context
+      // 3. Refresh Context
       await refreshUser();
       
       // 3. Navigate

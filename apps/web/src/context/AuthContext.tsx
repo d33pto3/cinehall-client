@@ -37,9 +37,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
       // Also try to clear cookies via server action if possible (client-side we can't clear httpOnly)
       // This helps break redirect loops where middleware thinks we are logged in but server says no.
+      /* 
       import("@/lib/auth-server-actions").then(({ removeAuthCookie }) => {
         removeAuthCookie();
       });
+      */
     } finally {
       setLoading(false);
     }
