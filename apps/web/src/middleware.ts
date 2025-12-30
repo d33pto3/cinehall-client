@@ -35,9 +35,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (isAuthRoute && token) {
-    // If user is already authenticated and visits login/signup,
-    // redirect them to the home page or the intended 'redirect' target
+  if (isAuthRoute && token && request.method === "GET") {
+    // If user is already authenticated and visits login/signup via GET (navigation),
+    // redirect them to the home page or the intended 'redirect' target.
+    // We only do this for GET requests to avoid interrupting Server Actions (POST).
     const redirectTo = searchParams.get("redirect") || "/";
     return NextResponse.redirect(new URL(redirectTo, request.url));
   }
