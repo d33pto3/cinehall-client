@@ -62,19 +62,9 @@ export const MovieGridSkeleton = ({ title, count = 5 }: { title?: string, count?
 
 export const CarouselSkeleton = () => {
   return (
-    <div className="relative w-full h-[300px] md:h-[500px] lg:h-[600px] overflow-hidden bg-[#1A1A1A]">
-      <Skeleton className="w-full h-full" />
-      <div className="absolute inset-0 flex flex-col justify-center px-[10%] space-y-6">
-         <div className="space-y-2">
-            <Skeleton className="h-12 w-2/3 md:w-1/2" />
-            <Skeleton className="h-12 w-1/2 md:w-1/3" />
-         </div>
-         <Skeleton className="h-6 w-1/4 md:w-1/6" />
-         <div className="flex gap-4">
-            <Skeleton className="h-12 w-32 rounded-full" />
-            <Skeleton className="h-12 w-32 rounded-full" />
-         </div>
-      </div>
+    <div className="relative w-full h-[400px] lg:h-[600px] bg-[#1A1A1A]">
+      <Skeleton className="w-full h-full rounded-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
     </div>
   );
 };

@@ -29,7 +29,7 @@ function MovieGridList({
               href={`/movies/${movie._id}`}
               className="group flex flex-col items-center p-2 sm:p-3 transition-all duration-300 hover:scale-105"
             >
-              <div className="relative w-full aspect-[2/3] rounded-2xl overflow-hidden shadow-lg border-2 border-transparent group-hover:border-[#FAAA47]">
+              <div className="relative w-full aspect-[2/3] overflow-hidden shadow-lg border-2 border-transparent group-hover:border-[#FAAA47]">
                 <Image
                   src={movie?.imageUrl}
                   alt={movie?.title}
