@@ -35,11 +35,15 @@ export const fetchCurrentUser = async (): Promise<User | null> => {
     console.log("fetchCurrentUser success:", response.data);
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      console.log("fetchCurrentUser 401 (not logged in)");
-      return null;
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 401) {
+        // Rethrow 401 to let the context provider handle it (clear cookies, etc)
+        throw error;
+      }
+      console.error("fetchCurrentUser API error:", error.response?.data || error.message);
+    } else {
+      console.error("fetchCurrentUser unexpected error:", error);
     }
-    console.error("fetchCurrentUser error:", error);
     return null;
   }
 };
