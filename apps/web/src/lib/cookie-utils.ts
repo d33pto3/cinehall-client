@@ -38,7 +38,7 @@ export function validateAndCleanupCookies() {
   if (typeof document === "undefined") return;
 
   const cookies = document.cookie.split(";").map((c) => c.trim());
-  const authCookieNames = ["token", "user"];
+  const authCookieNames = ["cinehall-token", "user"];
 
   console.log("[CookieUtils] Starting auth cookie validation...");
 

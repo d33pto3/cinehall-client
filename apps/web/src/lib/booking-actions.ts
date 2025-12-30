@@ -130,3 +130,17 @@ export const initiatePayment = async (
   const response = await axios.post(`${url}/booking/initiate/${bookingId}`);
   return response.data;
 };
+
+// Fetch global show schedule
+export const fetchSchedule = async (params: { date?: string, hallId?: string }): Promise<IShow[]> => {
+  const url = getApiUrl();
+  const response = await axios.get(`${url}/show/schedule`, { params });
+  return response.data.data;
+};
+
+// Fetch all halls
+export const fetchHalls = async (): Promise<any[]> => {
+  const url = getApiUrl();
+  const response = await axios.get(`${url}/hall`);
+  return response.data.data;
+};

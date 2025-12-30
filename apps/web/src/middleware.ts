@@ -16,7 +16,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Get the auth token from cookies
-  const token = request.cookies.get("token")?.value;
+  const token = request.cookies.get("cinehall-token")?.value;
 
   // Check if the current path is a protected route
   const isProtectedRoute = protectedRoutes.some((route) =>

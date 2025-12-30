@@ -33,7 +33,7 @@ export enum PaymentMethod {
 
 export interface IShow {
   _id: string;
-  movieId: string | { _id: string; title: string; duration: number; genre: string; posterUrl?: string };
+  movieId: string | { _id: string; title: string; duration: number; genre: string; imageUrl?: string };
   screenId: string | { _id: string; name: string; hallId: string }; // Updated to include hallId potentially
   startTime: string; // ISO Date string
   endTime: string; // ISO Date string

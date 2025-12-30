@@ -2,12 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { Input } from "../ui/input";
 import { IconSearch, IconMenu2, IconX } from "@tabler/icons-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import UserDropdown from "./UserDropdown";
-import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -19,20 +18,31 @@ const navLinks = [
 
 function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && searchQuery.trim()) {
+      router.push(`/movies?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+      setIsOpen(false);
+    }
+  };
 
   return (
     <nav className="text-white px-6 py-2 my-12 relative">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-8">
           {/* Logo */}
-          <Link href="/" className="relative z-50">
+          <Link href="/" className="relative z-10 block hover:opacity-90 transition-opacity">
             <Image
-              src="/logo.png"
+              src="/cinehall-logo.svg"
               alt="Cinehall Logo"
               width={180}
-              height={90}
-              className="object-contain"
+              height={60}
+              className="w-auto h-12 sm:h-16 lg:h-20 object-contain"
+              priority
             />
           </Link>
 
@@ -41,6 +51,9 @@ function Navbar() {
             <Input
               type="text"
               placeholder="Search Movies..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearch}
               className="ml-2 sm:ml-4 px-3 py-5 rounded-[20px] bg-[#46444470] border-none w-full sm:w-64 md:w-80"
               icon={<IconSearch className="text-[#FAAA47] w-5 h-5" />}
             />
@@ -103,6 +116,9 @@ function Navbar() {
             <Input
               type="text"
               placeholder="Search Movies..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearch}
               className="px-3 py-5 rounded-[20px] bg-[#46444470] border-none w-full"
               icon={<IconSearch className="text-[#FAAA47] w-5 h-5" />}
             />
