@@ -38,13 +38,16 @@ export function NavUser({ user }: { user: User | null }) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={user?.avatar} alt={user?.name} />
+                <AvatarImage src={user?.avatar} alt={user?.username} />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user?.name}</span>
+                <span className="truncate font-medium">{user?.username}</span>
                 <span className="text-muted-foreground truncate text-xs">
                   {user?.email}
+                </span>
+                <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary mt-1">
+                  {user?.role}
                 </span>
               </div>
               <IconDotsVertical className="ml-auto size-4" />
@@ -59,11 +62,11 @@ export function NavUser({ user }: { user: User | null }) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user?.avatar} alt={user?.name} />
+                  <AvatarImage src={user?.avatar} alt={user?.username} />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user?.name}</span>
+                  <span className="truncate font-medium">{user?.username}</span>
                   <span className="text-muted-foreground truncate text-xs">
                     {user?.email}
                   </span>

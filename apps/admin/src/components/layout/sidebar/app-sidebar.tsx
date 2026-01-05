@@ -1,13 +1,13 @@
 import {
-  IconChartBar,
-  IconDashboard,
-  IconInnerShadowTop,
-  IconListDetails,
-  IconUsers,
-  IconCrop169,
-  IconTheater,
-  IconTicket,
-} from "@tabler/icons-react";
+  LayoutDashboard,
+  Users,
+  Building2,
+  Monitor,
+  CalendarDays,
+  Ticket,
+  Film,
+  BarChart3,
+} from "lucide-react";
 import { NavMain } from "@/components/layout/sidebar/nav-main";
 import { NavUser } from "@/components/layout/sidebar/nav-user";
 import {
@@ -32,64 +32,64 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
           {
             title: "Dashboard",
             url: "/admin",
-            icon: IconDashboard,
+            icon: LayoutDashboard,
           },
           {
             title: "Users",
             url: "/admin/users",
-            icon: IconUsers,
+            icon: Users,
           },
           {
             title: "Halls",
             url: "/admin/halls",
-            icon: IconListDetails,
+            icon: Building2,
           },
           {
             title: "Screens",
             url: "/admin/screens",
-            icon: IconCrop169,
+            icon: Monitor,
           },
           {
             title: "Movies",
             url: "/admin/movies",
-            icon: IconTheater,
+            icon: Film,
           },
           {
             title: "Shows",
             url: "/admin/shows",
-            icon: IconCrop169,
+            icon: CalendarDays,
           },
           {
             title: "Tickets",
             url: "/admin/tickets",
-            icon: IconTicket,
+            icon: Ticket,
           },
         ]
       : [
           {
             title: "Dashboard",
             url: "/hallowner",
-            icon: IconDashboard,
+            icon: LayoutDashboard,
           },
           {
             title: "My Halls",
             url: "/hallowner/halls",
-            icon: IconListDetails,
+            icon: Building2,
           },
           {
             title: "My Screens",
             url: "/hallowner/screens",
-            icon: IconChartBar,
+            icon: BarChart3,
           },
           {
             title: "My Shows",
             url: "/hallowner/shows",
-            icon: IconCrop169,
+            icon: CalendarDays,
           },
           {
             title: "Staff",
             url: "#",
-            icon: IconUsers,
+            icon: Users,
           },
         ];
 
@@ -103,8 +103,10 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="/">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">CineHall</span>
+                <Film className="!size-5" strokeWidth={1} />
+                <span className="text-base font-semibold tracking-tighter">
+                  CINEHALL
+                </span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

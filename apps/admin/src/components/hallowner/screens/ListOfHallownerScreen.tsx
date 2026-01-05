@@ -105,12 +105,12 @@ export default function ListOfHallownerScreens({ search, filters }: Props) {
     {
       accessorKey: "hall",
       header: "Hall Name",
-      cell: ({ row }) => row.original.hallId.name,
+      cell: ({ row }) => row.original.hallId?.name || "N/A",
     },
     {
       accessorKey: "hallAddress",
       header: "Hall Address",
-      cell: ({ row }) => row.original.hallId.address || "N/A",
+      cell: ({ row }) => row.original.hallId?.address || "N/A",
     },
     {
       accessorKey: "rows",

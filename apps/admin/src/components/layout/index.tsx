@@ -17,10 +17,10 @@ function Layout() {
       // }
       >
         <AppSidebar variant="floating" user={user} />
-        <main className="flex-1 p-6 bg-muted/40 overflow-auto">
-          <div className="@container/main flex flex-1 flex-col gap-2">
+        <main className="flex-1 p-8 lg:p-12 bg-background overflow-auto">
+          <div className="@container/main flex flex-1 flex-col gap-8">
             <SiteHeader />
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+            <div className="flex flex-col gap-8 py-4 md:gap-12 md:py-8">
               <Outlet />
             </div>
           </div>
