@@ -34,36 +34,36 @@ export default function ListOfUsers({ search, filters }: Props) {
   const [pageSize, setPageSize] = useState(5); // items per page
   const [pageCount, setPageCount] = useState(0); // total number of pages
 
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const params: Record<string, any> = {
+        search,
+        page: pageIndex + 1,
+        limit: pageSize,
+      };
+
+      // if (filters.screens && filters.screens.length > 0) {
+      //   params.screens = filters.screens.join(",");
+      // }
+
+      if (filters.dateRange?.from)
+        params.dateFrom = filters.dateRange.from.toISOString();
+
+      if (filters.dateRange?.to)
+        params.dateTo = filters.dateRange.to.toISOString();
+
+      const res = await getUsersByRole("user", params);
+      setUsers(res.users);
+      setPageCount(res.pages); // from backend
+    } catch (error) {
+      console.error("Failed to fetch users", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchUsers = async () => {
-      setLoading(true);
-      try {
-        const params: Record<string, any> = {
-          search,
-          page: pageIndex + 1,
-          limit: pageSize,
-        };
-
-        // if (filters.screens && filters.screens.length > 0) {
-        //   params.screens = filters.screens.join(",");
-        // }
-
-        // if (filters.dateRange?.from)
-        //   params.dateFrom = filters.dateRange.from.toISOString();
-
-        // if (filters.dateRange?.to)
-        //   params.dateTo = filters.dateRange.to.toISOString();
-
-        const res = await getUsersByRole("user", params);
-        setUsers(res.users);
-        setPageCount(res.pages); // from backend
-      } catch (error) {
-        console.error("Failed to fetch users", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUsers();
   }, [search, pageIndex, pageSize, filters]);
 
@@ -86,7 +86,9 @@ export default function ListOfUsers({ search, filters }: Props) {
     {
       id: "actions",
       header: "",
-      cell: ({ row }) => <UserMoreAction userId={row.original._id} />,
+      cell: ({ row }) => (
+        <UserMoreAction userId={row.original._id} onDeleted={fetchUsers} />
+      ),
     },
   ];
 
@@ -113,14 +115,5 @@ export default function ListOfUsers({ search, filters }: Props) {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  return (
-    <TSTable<User>
-      loading={loading}
-      table={table}
-      pagination={{
-        pageIndex: pageIndex + 1,
-        pageSize: pageCount,
-      }}
-    />
-  );
+  return <TSTable<User> loading={loading} table={table} />;
 }

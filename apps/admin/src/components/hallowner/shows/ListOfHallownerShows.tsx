@@ -127,14 +127,5 @@ export default function ListOfHallownerShows({ search, filters }: Props) {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  return (
-    <TSTable<Show>
-      loading={loading}
-      table={table}
-      pagination={{
-        pageIndex: pageIndex + 1,
-        pageSize,
-      }}
-    />
-  );
+  return <TSTable<Show> loading={loading} table={table} />;
 }

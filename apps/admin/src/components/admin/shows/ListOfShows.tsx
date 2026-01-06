@@ -168,14 +168,5 @@ export default function ListOfShows({ search, filters }: Props) {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  return (
-    <TSTable<Show>
-      loading={loading}
-      table={table}
-      pagination={{
-        pageIndex: pageIndex + 1,
-        pageSize: pageCount,
-      }}
-    />
-  );
+  return <TSTable<Show> loading={loading} table={table} />;
 }

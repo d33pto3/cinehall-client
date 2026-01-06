@@ -34,36 +34,32 @@ export default function ListOfHallowners({ search, filters }: Props) {
   const [pageSize, setPageSize] = useState(5); // items per page
   const [pageCount, setPageCount] = useState(0); // total number of pages
 
+  const fetchHallowners = async () => {
+    setLoading(true);
+    try {
+      const params: Record<string, any> = {
+        search,
+        page: pageIndex + 1,
+        limit: pageSize,
+      };
+
+      if (filters.dateRange?.from)
+        params.dateFrom = filters.dateRange.from.toISOString();
+
+      if (filters.dateRange?.to)
+        params.dateTo = filters.dateRange.to.toISOString();
+
+      const res = await getUsersByRole("hallOwner", params);
+      setHallowners(res.users);
+      setPageCount(res.pages);
+    } catch (error) {
+      console.error("Failed to fetch users", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchHallowners = async () => {
-      setLoading(true);
-      try {
-        const params: Record<string, any> = {
-          search,
-          page: pageIndex + 1,
-          limit: pageSize,
-        };
-
-        // if (filters.screens && filters.screens.length > 0) {
-        //   params.screens = filters.screens.join(",");
-        // }
-
-        // if (filters.dateRange?.from)
-        //   params.dateFrom = filters.dateRange.from.toISOString();
-
-        // if (filters.dateRange?.to)
-        //   params.dateTo = filters.dateRange.to.toISOString();
-
-        const res = await getUsersByRole("hallOwner", params);
-        setHallowners(res.users);
-        setPageCount(res.pages); // from backend
-      } catch (error) {
-        console.error("Failed to fetch users", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchHallowners();
   }, [search, pageIndex, pageSize, filters]);
 
@@ -86,7 +82,12 @@ export default function ListOfHallowners({ search, filters }: Props) {
     {
       id: "actions",
       header: "",
-      cell: ({ row }) => <HallownerMoreAction hallownerId={row.original._id} />,
+      cell: ({ row }) => (
+        <HallownerMoreAction
+          hallownerId={row.original._id}
+          onDeleted={fetchHallowners}
+        />
+      ),
     },
   ];
 
@@ -113,14 +114,5 @@ export default function ListOfHallowners({ search, filters }: Props) {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  return (
-    <TSTable<Hallowner>
-      loading={loading}
-      table={table}
-      pagination={{
-        pageIndex: pageIndex + 1,
-        pageSize: pageCount,
-      }}
-    />
-  );
+  return <TSTable<Hallowner> loading={loading} table={table} />;
 }
