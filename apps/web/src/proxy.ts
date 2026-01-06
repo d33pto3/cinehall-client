@@ -7,7 +7,7 @@ const protectedRoutes = ["/profile"];
 // Define auth routes that should redirect to home if already authenticated
 const authRoutes = ["/login", "/signup"];
 
-export function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
 
   // Fail-safe: Always allow homepage
@@ -18,11 +18,13 @@ export function middleware(request: NextRequest) {
   // Get the auth token from cookies
   const token = request.cookies.get("cinehall-token")?.value;
 
-  console.log(`Middleware: Checking path ${pathname}, Token exists: ${!!token}`);
+  console.log(
+    `Middleware: Checking path ${pathname}, Token exists: ${!!token}`
+  );
 
   // Check if the current path is a protected route
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname === route || pathname.startsWith(`${route}/`)
+  const isProtectedRoute = protectedRoutes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
   );
 
   // Check if the current path is an auth route
