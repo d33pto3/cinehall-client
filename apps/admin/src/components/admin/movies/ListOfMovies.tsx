@@ -100,15 +100,15 @@ export default function ListOfMovies({ search, filters }: Props) {
     },
     {
       accessorKey: "image",
-      header: "Image",
+      header: "Poster",
       cell: ({ row }) => (
-        <>
+        <div className="w-12 aspect-movie overflow-hidden border border-border/50">
           <img
             src={row.original.imageUrl || "/public/fallback_img.png"}
-            width={50}
-            height={50}
+            className="w-full h-full object-cover grayscale-[0.5] hover:grayscale-0 transition-all duration-500"
+            alt={row.original.title}
           />
-        </>
+        </div>
       ),
     },
     {

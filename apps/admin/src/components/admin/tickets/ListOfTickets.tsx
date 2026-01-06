@@ -85,12 +85,12 @@ export default function ListOfTickets({ search, filters }: Props) {
     {
       accessorKey: "userId",
       header: "User Name",
-      cell: ({ row }) => row.original.userId.username,
+      cell: ({ row }) => row.original.userId?.username || "N/A",
     },
     {
       accessorKey: "seatId",
       header: "Seat Number",
-      cell: ({ row }) => row.original.seatId.seatNumber,
+      cell: ({ row }) => row.original.seatId?.seatNumber || "N/A",
     },
     {
       id: "actions",

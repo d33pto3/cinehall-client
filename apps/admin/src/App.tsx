@@ -28,6 +28,9 @@ const Show = lazy(() => import("@/pages/admin/show/ShowId"));
 const Tickets = lazy(() => import("@/pages/admin/ticket"));
 
 // Lazy imports (Hallowner)
+const HallownerDashboard = lazy(
+  () => import("@/pages/hallowner/HallownerDashboard")
+);
 const HallownerHalls = lazy(() => import("@/pages/hallowner/hall"));
 const HallOwnerAddScreenForm = lazy(
   () => import("@/components/hallowner/screens/add-new-screen/AddNewScreenForm")
@@ -117,7 +120,7 @@ function App() {
             )}
             {user?.role === "hallOwner" && (
               <>
-                <Route path="/hallowner" element={<AdminDashboard />} />
+                <Route path="/hallowner" element={<HallownerDashboard />} />
                 {/* halls */}
                 <Route path="/hallowner/halls" element={<HallownerHalls />} />
                 <Route

@@ -13,7 +13,9 @@ export function SiteHeader() {
           orientation="vertical"
           className="mx-2 data-[orientation=vertical]:h-4"
         />
-        <h1 className="text-base font-medium">{location.pathname}</h1>
+        <h1 className="text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground/80">
+          {location.pathname.split("/").filter(Boolean).pop() || "Dashboard"}
+        </h1>
         <div className="ml-auto flex items-center gap-2">
           {/* <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
             <a
