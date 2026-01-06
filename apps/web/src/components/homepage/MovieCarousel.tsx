@@ -15,8 +15,8 @@ type PropType = { slides: string[]; options?: EmblaOptionsType };
 
 function MovieCarousel(props: PropType) {
   const { slides, options } = props;
-  const [emblaRef, emblaApi] = useEmblaCarousel(options, [
-    AutoScroll({ playOnInit: false }),
+  const [emblaRef, emblaApi] = useEmblaCarousel({ ...options, loop: true }, [
+    AutoScroll({ playOnInit: true, stopOnInteraction: false, speed: 1 }),
   ]);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -74,29 +74,33 @@ function MovieCarousel(props: PropType) {
         <div className="embla__container">
           {slides.map((slide, index) => (
             <div className="embla__slide" key={index}>
-              <div className="embla__slide__number">
-                <Image src={slide} alt={slide} fill />
+              <div className="embla__slide__number relative w-full h-full overflow-hidden">
+                <Image
+                  src={slide}
+                  alt={`Movie Slide ${index + 1}`}
+                  fill
+                  className="object-cover"
+                  priority={index === 0}
+                  sizes="100vw"
+                  quality={90}
+                />
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="embla__controls">
-        <div className="embla__buttons">
-          <PrevButton
-            onClick={() => onButtonAutoplayClick(onPrevButtonClick)}
-            disabled={prevBtnDisabled}
-          />
-          <NextButton
-            onClick={() => onButtonAutoplayClick(onNextButtonClick)}
-            disabled={nextBtnDisabled}
-          />
-        </div>
-
-        {/* <button className="embla__play" onClick={toggleAutoplay} type="button">
-          {isPlaying ? "Stop" : "Start"}
-        </button> */}
+      <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between px-4 pointer-events-none z-30">
+        <PrevButton
+          onClick={() => onButtonAutoplayClick(onPrevButtonClick)}
+          disabled={prevBtnDisabled}
+          className="pointer-events-auto bg-black/50 hover:bg-black/80 text-white rounded-full w-10 h-10 flex items-center justify-center transition-all bg-opacity-40"
+        />
+        <NextButton
+          onClick={() => onButtonAutoplayClick(onNextButtonClick)}
+          disabled={nextBtnDisabled}
+          className="pointer-events-auto bg-black/50 hover:bg-black/80 text-white rounded-full w-10 h-10 flex items-center justify-center transition-all bg-opacity-40"
+        />
       </div>
     </div>
   );

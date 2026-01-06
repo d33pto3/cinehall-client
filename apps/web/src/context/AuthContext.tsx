@@ -10,6 +10,7 @@ import {
   useMemo,
 } from "react";
 import { User, fetchCurrentUser } from "@/lib/auth-actions";
+import { validateAndCleanupCookies } from "@/lib/cookie-utils";
 
 interface AuthContextType {
   user: User | null;
@@ -25,11 +26,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Core function to sync state with server
   const refreshUser = useCallback(async () => {
-    // Only set loading true if it's the very first load or explicit refresh if needed.
-    // However, to keep it "boring", let's just fetch.
-    // We might NOT want to set loading=true on every background refresh to avoid UI flickering.
-    // For now, let's keep it simple: initial load sets loading, manual refresh waits for promise.
-    
     try {
       console.log("AuthContext: refreshUser starting...");
       const userData = await fetchCurrentUser();
@@ -37,7 +33,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(userData);
     } catch (error) {
       console.error("AuthContext: refreshUser error:", error);
+      // If we get an unauthorized error, make sure to clear local state
       setUser(null);
+      // Also try to clear cookies via server action if possible (client-side we can't clear httpOnly)
+      // This helps break redirect loops where middleware thinks we are logged in but server says no.
+      /* 
+      import("@/lib/auth-server-actions").then(({ removeAuthCookie }) => {
+        removeAuthCookie();
+      });
+      */
     } finally {
       setLoading(false);
     }
@@ -45,6 +49,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Initial check on mount
   useEffect(() => {
+    // 1. Cleanup stale cookies before attempting to fetch user
+    validateAndCleanupCookies();
+    
+    // 2. Refresh user state
     refreshUser();
   }, [refreshUser]);
 

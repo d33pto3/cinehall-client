@@ -5,6 +5,9 @@ import MovieCarousel from "./MovieCarousel";
 
 import NowShowing from "./NowShowing";
 import ComingSoon from "./ComingSoon";
+import Image from "next/image";
+import { CarouselSkeleton, MovieGridSkeleton } from "@/components/ui/skeleton";
+import { EmptyMoviesFallback } from "../shared/EmptyMoviesFallback";
 
 interface HeroSectionProps {
   empty?: true;
@@ -21,41 +24,94 @@ export interface Movie {
 }
 
 const HeroSection = ({}: HeroSectionProps) => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [nowShowing, setNowShowing] = useState<Movie[]>([]);
+  const [comingSoon, setComingSoon] = useState<Movie[]>([]);
   const [imageUrls, setImageUrls] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMovies = async () => {
+    const fetchAllData = async () => {
       try {
+        setLoading(true);
         const url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
-        const res = await fetch(`${url}/movie`, {
-          // Include credentials if needed, but be careful if backend strictly requires them for non-auth endpoints
-          // mode: 'cors', // default
-        });
         
-        if (!res.ok) {
-           throw new Error(`HTTP error! status: ${res.status}`);
+        const [allRes, nowRes, comingRes] = await Promise.all([
+          fetch(`${url}/movie`),
+          fetch(`${url}/movie/now-showing`),
+          fetch(`${url}/movie/coming-soon`)
+        ]);
+
+        if (!allRes.ok || !nowRes.ok || !comingRes.ok) {
+           throw new Error("One or more API requests failed");
         }
 
-        const data = await res.json();
-        const moviesList = data.data;
+        const [allData, nowData, comingData] = await Promise.all([
+          allRes.json(),
+          nowRes.json(),
+          comingRes.json()
+        ]);
 
-        setMovies(moviesList);
-        setImageUrls(moviesList.map((movie: Movie) => movie.imageUrl));
+        setImageUrls(allData.data.map((movie: Movie) => movie.imageUrl));
+        setNowShowing(nowData.data.slice(0, 10));
+        setComingSoon(comingData.data.slice(0, 10));
       } catch (error) {
         console.error("Failed to fetch movies:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchMovies();
+    fetchAllData();
   }, []);
+
+  if (loading) {
+    return (
+      <section className="min-h-screen">
+        <CarouselSkeleton />
+        <MovieGridSkeleton title="Now Showing" />
+        <MovieGridSkeleton title="Coming Soon" />
+      </section>
+    );
+  }
 
   return (
     <section className="min-h-screen">
       {/* Content */}
       <MovieCarousel slides={imageUrls} />
-      <NowShowing movies={movies} />
-      <ComingSoon movies={movies} />
+      <NowShowing movies={nowShowing} />
+      <ComingSoon movies={comingSoon} />
+
+      {/* Footer top */}
+      <div className="w-full h-[228px] lg:h-[400px] relative overflow-hidden bg-black mt-12">
+        <Image
+          src={"/footer-top.jpg"}
+          alt="cinehall-footertop"
+          fill
+          className="object-cover object-center opacity-60"
+        />
+        <div className="absolute left-[5%] -bottom-10 lg:bottom-[-20%] w-[180px] sm:w-[250px] lg:w-[500px] z-10 transition-all duration-500">
+          <Image
+            src={"/popcorn.png"}
+            alt="cinehall-popcorn"
+            width={528}
+            height={428}
+            className="object-contain w-full h-auto"
+          />
+        </div>
+        <div className="absolute right-[5%] lg:right-[10%] top-1/2 -translate-y-1/2 text-right z-20">
+          <div className="text-[20px] sm:text-[32px] lg:text-[56px] text-[#FAAA47] font-bold leading-tight">
+            <h4>
+              Some scenes stay with you.
+              <br />
+              So does our popcorn.
+            </h4>
+          </div>
+          <div className="mt-4 text-[14px] sm:text-[20px] lg:text-[32px] text-[#ccc] font-medium max-w-xl ml-auto">
+            <p>Pop it, Love it and Repeat... cause every scene</p>
+            <p>needs a crunch!</p>
+          </div>
+        </div>
+      </div>
     </section>
   );
 };

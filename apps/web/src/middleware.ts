@@ -8,34 +8,41 @@ const protectedRoutes = ["/profile"];
 const authRoutes = ["/login", "/signup"];
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, searchParams } = request.nextUrl;
 
   // Fail-safe: Always allow homepage
   if (pathname === "/") {
     return NextResponse.next();
   }
-  
+
   // Get the auth token from cookies
-  const token = request.cookies.get("token")?.value;
+  const token = request.cookies.get("cinehall-token")?.value;
+
+  console.log(`Middleware: Checking path ${pathname}, Token exists: ${!!token}`);
 
   // Check if the current path is a protected route
   const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
+    pathname === route || pathname.startsWith(`${route}/`)
   );
-  
+
   // Check if the current path is an auth route
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
-  
+
   if (isProtectedRoute && !token) {
     const url = new URL("/login", request.url);
+    // Preserving the original pathname to redirect back after login
     url.searchParams.set("redirect", pathname);
     return NextResponse.redirect(url);
   }
-  
-  if (isAuthRoute && token) {
-     return NextResponse.redirect(new URL("/", request.url));
+
+  if (isAuthRoute && token && request.method === "GET") {
+    // If user is already authenticated and visits login/signup via GET (navigation),
+    // redirect them to the home page or the intended 'redirect' target.
+    // We only do this for GET requests to avoid interrupting Server Actions (POST).
+    const redirectTo = searchParams.get("redirect") || "/";
+    return NextResponse.redirect(new URL(redirectTo, request.url));
   }
-  
+
   return NextResponse.next();
 }
 
