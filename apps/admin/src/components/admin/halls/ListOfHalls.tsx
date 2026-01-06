@@ -123,14 +123,5 @@ export default function ListOfHalls({ search, filters }: Props) {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  return (
-    <TSTable<Hall>
-      loading={loading}
-      table={table}
-      pagination={{
-        pageIndex: pageIndex + 1,
-        pageSize: pageCount,
-      }}
-    />
-  );
+  return <TSTable<Hall> loading={loading} table={table} />;
 }

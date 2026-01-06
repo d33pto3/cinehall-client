@@ -127,14 +127,5 @@ export default function ListOfTickets({ search, filters }: Props) {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  return (
-    <TSTable<Ticket>
-      loading={loading}
-      table={table}
-      pagination={{
-        pageIndex: pageIndex + 1,
-        pageSize: pageCount,
-      }}
-    />
-  );
+  return <TSTable<Ticket> loading={loading} table={table} />;
 }

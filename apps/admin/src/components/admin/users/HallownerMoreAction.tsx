@@ -4,8 +4,10 @@ import { DeleteButton } from "./HallownerDeleteButton";
 
 export default function HallownerMoreAction({
   hallownerId,
+  onDeleted,
 }: {
   hallownerId: string;
+  onDeleted?: () => void;
 }) {
   // Define the actions for the reusable MoreAction component
   const actions = [
@@ -13,7 +15,9 @@ export default function HallownerMoreAction({
       component: <ViewButton hallownerId={hallownerId} />,
     },
     {
-      component: <DeleteButton hallownerId={hallownerId} />,
+      component: (
+        <DeleteButton hallownerId={hallownerId} onDeleted={onDeleted} />
+      ),
       isSeparatorBefore: true,
     },
   ];
