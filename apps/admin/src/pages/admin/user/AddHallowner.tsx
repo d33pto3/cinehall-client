@@ -4,7 +4,10 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AddHallOwnerForm from "@/components/admin/users/add-new-hallowner/AddHallownerForm";
 
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+
 function AddHallOwner() {
+  useDocumentTitle("Add Hall Owner");
   const navigate = useNavigate();
 
   const handleGoBack = () => {

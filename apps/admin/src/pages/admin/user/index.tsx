@@ -1,7 +1,10 @@
 import HallownerTable from "@/components/admin/users/HallownerTable";
 import UserTable from "@/components/admin/users/UserTable";
 
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+
 function Users() {
+  useDocumentTitle("Users");
   //   {
   //   searchParams,
   // }: {

@@ -1,7 +1,10 @@
 import HallsTable from "@/components/admin/halls/HallsTable";
 
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+
 // import ListingsTable from "./components/ListingsTable";
 function Halls() {
+  useDocumentTitle("Halls");
   //   {
   //   searchParams,
   // }: {

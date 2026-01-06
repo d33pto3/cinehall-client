@@ -17,7 +17,10 @@ const DataTable = lazy(() =>
 
 import { getAdminRecentBookings } from "@/services/dashboard";
 
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+
 function AdminDashboard() {
+  useDocumentTitle("Dashboard");
   const { user } = useAuth();
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

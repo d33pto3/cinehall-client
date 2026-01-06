@@ -1,7 +1,10 @@
 import HallsTable from "@/components/hallowner/halls/HallsTable";
 
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+
 // import ListingsTable from "./components/ListingsTable";
 function HallownerHalls() {
+  useDocumentTitle("Halls");
   //   {
   //   searchParams,
   // }: {

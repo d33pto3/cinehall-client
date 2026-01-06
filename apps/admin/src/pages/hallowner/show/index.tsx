@@ -1,6 +1,9 @@
 import HallownerShowsTable from "@/components/hallowner/shows/HallownerShowsTable";
 
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+
 function HallownerShows() {
+  useDocumentTitle("Shows");
   return (
     <div>
       <div className="space-y-5 w-full overflow-y-auto px-3">
