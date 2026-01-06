@@ -107,6 +107,8 @@ export default function ListOfMovies({ search, filters }: Props) {
             src={row.original.imageUrl || "/public/fallback_img.png"}
             className="w-full h-full object-cover grayscale-[0.5] hover:grayscale-0 transition-all duration-500"
             alt={row.original.title}
+            loading="lazy"
+            decoding="async"
           />
         </div>
       ),
