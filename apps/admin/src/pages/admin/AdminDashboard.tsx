@@ -15,24 +15,27 @@ const DataTable = lazy(() =>
   import("@/components/data-table").then((m) => ({ default: m.DataTable }))
 );
 
+import { getAdminRecentBookings } from "@/services/dashboard";
+
 function AdminDashboard() {
   const { user } = useAuth();
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate server-side data fetching
-    const fetchData = async () => {
+    const fetchRecentBookings = async () => {
       try {
-        const jsonData = await import("@/constants/data.json");
-        setData(jsonData.default);
+        const res = await getAdminRecentBookings();
+        if (res.success) {
+          setData(res.data);
+        }
       } catch (error) {
-        console.error("Failed to fetch dashboard data:", error);
+        console.error("Failed to fetch recent bookings:", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
+    fetchRecentBookings();
   }, []);
 
   return (

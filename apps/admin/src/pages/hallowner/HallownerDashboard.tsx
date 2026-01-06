@@ -15,17 +15,23 @@ const DataTable = lazy(() =>
   import("@/components/data-table").then((m) => ({ default: m.DataTable }))
 );
 
+import {
+  getHallOwnerRecentBookings,
+  getHallOwnerChartData,
+} from "@/services/dashboard";
+
 function HallownerDashboard() {
   const { user } = useAuth();
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate server-side data fetching
     const fetchData = async () => {
       try {
-        const jsonData = await import("@/constants/data.json");
-        setData(jsonData.default);
+        const res = await getHallOwnerRecentBookings();
+        if (res.success) {
+          setData(res.data);
+        }
       } catch (error) {
         console.error("Failed to fetch dashboard data:", error);
       } finally {
@@ -41,7 +47,7 @@ function HallownerDashboard() {
 
       <Suspense fallback={<ChartSkeleton />}>
         <div className="px-4 lg:px-6">
-          <ChartAreaInteractive />
+          <ChartAreaInteractive fetchData={getHallOwnerChartData} />
         </div>
       </Suspense>
 

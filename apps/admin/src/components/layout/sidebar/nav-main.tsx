@@ -34,7 +34,7 @@ export function NavMain({
                   onClick={() => navigate(item.url)}
                   className={`transition-all duration-200 ${
                     isActive
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90 opacity-100 shadow-sm"
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground opacity-100 shadow-sm"
                       : "hover:bg-accent/50 opacity-70 hover:opacity-100"
                   }`}
                 >
