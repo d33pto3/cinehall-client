@@ -1,7 +1,10 @@
 import ShowsTable from "@/components/admin/shows/ShowsTable";
 
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+
 // import ListingsTable from "./components/ListingsTable";
 function Shows() {
+  useDocumentTitle("Shows");
   //   {
   //   searchParams,
   // }: {

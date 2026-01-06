@@ -1,7 +1,10 @@
 import TicketsTable from "@/components/admin/tickets/TicketsTable";
 
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+
 // import ListingsTable from "./components/ListingsTable";
 function Tickets() {
+  useDocumentTitle("Tickets");
   //   {
   //   searchParams,
   // }: {
