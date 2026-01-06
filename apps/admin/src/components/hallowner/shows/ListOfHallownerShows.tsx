@@ -73,12 +73,12 @@ export default function ListOfHallownerShows({ search, filters }: Props) {
     {
       accessorKey: "movieId",
       header: "Movie",
-      cell: ({ row }) => row.original.movieId.title,
+      cell: ({ row }) => row.original.movieId?.title || "N/A",
     },
     {
       accessorKey: "screenId",
       header: "Screen",
-      cell: ({ row }) => row.original.screenId.name,
+      cell: ({ row }) => row.original.screenId?.name || "N/A",
     },
     {
       accessorKey: "startTime",

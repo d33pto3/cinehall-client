@@ -1,4 +1,4 @@
-import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -27,30 +27,38 @@ export function SectionCards({
   cardData: ICardData[];
 }) {
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+    <div className="grid grid-cols-1 gap-6 px-4 lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
       {cardData.map((card, index) => {
         const isUp = card.trendDirection === "up";
-        const TrendIcon = isUp ? IconTrendingUp : IconTrendingDown;
+        const TrendIcon = isUp ? TrendingUp : TrendingDown;
 
         return (
-          <Card className="@container/card" key={index}>
-            <CardHeader>
-              <CardDescription>{card.description}</CardDescription>
-              <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+          <Card
+            className="@container/card bg-card/50 border-border/50 backdrop-blur-sm"
+            key={index}
+          >
+            <CardHeader className="pb-2">
+              <CardDescription className="text-[10px] uppercase tracking-[0.2em] font-medium text-muted-foreground">
+                {card.description}
+              </CardDescription>
+              <CardTitle className="text-3xl font-light tabular-nums @[250px]/card:text-4xl tracking-tighter">
                 {card.title}
               </CardTitle>
               <CardAction>
-                <Badge variant="outline">
-                  <TrendIcon className="mr-1" />
+                <Badge
+                  variant="outline"
+                  className="rounded-none border-border/30 px-2 py-0 text-[10px] uppercase tracking-wider"
+                >
+                  <TrendIcon className="size-3 mr-1" strokeWidth={1.5} />
                   {card.trend}
                 </Badge>
               </CardAction>
             </CardHeader>
-            <CardFooter className="flex-col items-start gap-1.5 text-sm">
-              <div className="line-clamp-1 flex gap-2 font-medium">
-                {card.subtext} <TrendIcon className="size-4" />
+            <CardFooter className="flex-col items-start gap-1 text-sm mt-2">
+              <div className="text-[10px] uppercase tracking-[0.1em] text-muted-foreground font-medium flex items-center gap-1">
+                {card.subtext}{" "}
+                <TrendIcon className="size-3 opacity-50" strokeWidth={1} />
               </div>
-              <div className="text-muted-foreground">{card.subtext}</div>
             </CardFooter>
           </Card>
         );

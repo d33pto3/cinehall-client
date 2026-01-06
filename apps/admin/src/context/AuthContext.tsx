@@ -16,7 +16,7 @@ type UserRole = "admin" | "hallOwner";
 
 export interface User {
   _id: string;
-  name: string;
+  username: string;
   email: string;
   role: UserRole;
   avatar: string;
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           currentPath === ""
         ) {
           if (user?.role === "admin") navigate("/admin");
-          else if (user?.role === "hallowner") navigate("/hallowner");
+          else if (user?.role === "hallOwner") navigate("/hallowner");
         }
       } catch (error) {
         setUser(null);

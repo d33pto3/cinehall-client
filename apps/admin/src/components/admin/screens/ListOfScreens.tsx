@@ -76,7 +76,7 @@ export default function ListOfScreens({ search, filters }: Props) {
     {
       accessorKey: "hall",
       header: "Hall Name",
-      cell: ({ row }) => row.original.hallId.name,
+      cell: ({ row }) => row.original.hallId?.name || "N/A",
     },
     {
       accessorKey: "rows",

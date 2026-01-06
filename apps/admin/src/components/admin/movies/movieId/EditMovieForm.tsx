@@ -214,17 +214,19 @@ function EditMovieForm({ movieInfo }: { movieInfo: MovieProps | null }) {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-500">Edit Movie</h2>
+        <h2 className="text-xl font-bold uppercase tracking-[0.2em] text-foreground/80">
+          Edit Movie
+        </h2>
       </div>
 
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-1 gap-6 md:grid-cols-2"
+          className="grid grid-cols-1 gap-8 md:grid-cols-2"
         >
           {/* Movie Information */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-700">
+          <div className="space-y-6">
+            <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
               Movie Information
             </h3>
 
@@ -263,8 +265,8 @@ function EditMovieForm({ movieInfo }: { movieInfo: MovieProps | null }) {
           </div>
 
           {/* Additional Information */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-700">
+          <div className="space-y-6">
+            <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
               Additional Information
             </h3>
 
@@ -277,13 +279,16 @@ function EditMovieForm({ movieInfo }: { movieInfo: MovieProps | null }) {
             />
 
             <div>
-              <Label>Current Image</Label>
-              <img
-                src={currentImageUrl || "/public/fallback_img.png"}
-                alt={movieInfo.title}
-                className="mt-2 rounded-lg border"
-                style={{ height: "120px", width: "auto", objectFit: "cover" }}
-              />
+              <Label className="text-xs uppercase tracking-wider mb-2 block">
+                Current Poster
+              </Label>
+              <div className="w-32 aspect-movie overflow-hidden border border-border/50 bg-muted/20">
+                <img
+                  src={currentImageUrl || "/public/fallback_img.png"}
+                  alt={movieInfo.title}
+                  className="w-full h-full object-cover grayscale-[0.3]"
+                />
+              </div>
             </div>
 
             <div>
