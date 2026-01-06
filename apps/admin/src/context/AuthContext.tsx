@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     initAuth();
-  }, []); // Empty dependency array = runs once on mount
+  }, []);
 
   const login = async (email: string, password: string) => {
     const user = await loginAPI(email, password); // Sets cookie via backend
