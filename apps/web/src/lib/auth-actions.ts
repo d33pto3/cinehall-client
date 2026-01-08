@@ -37,10 +37,13 @@ export const fetchCurrentUser = async (): Promise<User | null> => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 401) {
-        // Rethrow 401 to let the context provider handle it (clear cookies, etc)
-        throw error;
+        // Return null instead of throwing to indicate no user is logged in
+        return null;
       }
-      console.error("fetchCurrentUser API error:", error.response?.data || error.message);
+      console.error(
+        "fetchCurrentUser API error:",
+        error.response?.data || error.message
+      );
     } else {
       console.error("fetchCurrentUser unexpected error:", error);
     }
@@ -48,7 +51,10 @@ export const fetchCurrentUser = async (): Promise<User | null> => {
   }
 };
 
-export const loginWithEmail = async (email: string, password: string): Promise<{ user: User, token: string }> => {
+export const loginWithEmail = async (
+  email: string,
+  password: string
+): Promise<{ user: User; token: string }> => {
   try {
     const url = getApiUrl();
     const response = await axios.post(
@@ -58,7 +64,7 @@ export const loginWithEmail = async (email: string, password: string): Promise<{
     );
     return {
       user: response.data.user,
-      token: response.data.token
+      token: response.data.token,
     };
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
@@ -68,7 +74,10 @@ export const loginWithEmail = async (email: string, password: string): Promise<{
   }
 };
 
-export const loginWithFirebase = async (): Promise<{ user: User, token: string }> => {
+export const loginWithFirebase = async (): Promise<{
+  user: User;
+  token: string;
+}> => {
   const userCredential = await signInWithPopup(auth, googleProvider);
   const idToken = await userCredential.user.getIdToken();
 
@@ -80,18 +89,20 @@ export const loginWithFirebase = async (): Promise<{ user: User, token: string }
   );
   return {
     user: response.data.user,
-    token: response.data.token
+    token: response.data.token,
   };
 };
 
-export const registerUser = async (data: RegisterData): Promise<{ user: User, token: string }> => {
+export const registerUser = async (
+  data: RegisterData
+): Promise<{ user: User; token: string }> => {
   const url = getApiUrl();
   const response = await axios.post(`${url}/auth/register`, data, {
     withCredentials: true,
   });
   return {
     user: response.data.user,
-    token: response.data.token
+    token: response.data.token,
   };
 };
 
@@ -100,7 +111,10 @@ export const logoutUser = async (): Promise<void> => {
   try {
     await axios.post(`${url}/auth/logout`, {}, { withCredentials: true });
   } catch (error) {
-    console.error("Logout failed (server might be down), but clearing client state.", error);
+    console.error(
+      "Logout failed (server might be down), but clearing client state.",
+      error
+    );
     // Suppress error, just let client clear state
   }
 };
