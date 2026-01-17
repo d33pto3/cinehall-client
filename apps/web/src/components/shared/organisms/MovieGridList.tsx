@@ -23,16 +23,16 @@ function MovieGridList({
       <div className="px-6">
         <div className="flex justify-between items-center text-[#FAAA47]">
           <h4 className="font-medium text-[2.25rem]">{title}</h4>
-          {seeAllHref && movies.length > 0 && (
+          {seeAllHref && movies?.length > 0 && (
             <Link href={seeAllHref} className="text-base cursor-pointer hover:underline">
               See all
             </Link>
           )}
         </div>
         
-        {movies.length > 0 ? (
+        {movies?.length > 0 ? (
           <div className="mt-7 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-            {movies.map((movie, index) => (
+            {movies?.map((movie, index) => (
               <Link
                 key={movie._id || index}
                 href={`/movies/${movie._id}`}

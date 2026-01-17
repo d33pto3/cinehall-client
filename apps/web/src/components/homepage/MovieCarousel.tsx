@@ -20,8 +20,6 @@ function MovieCarousel(props: PropType) {
   ]);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  console.log(isPlaying);
-
   const {
     prevBtnDisabled,
     nextBtnDisabled,
@@ -65,8 +63,6 @@ function MovieCarousel(props: PropType) {
       .on("autoScroll:stop", () => setIsPlaying(false))
       .on("reInit", () => setIsPlaying(autoScroll.isPlaying()));
   }, [emblaApi]);
-
-  console.log(slides);
 
   return (
     <div className="embla text-white">
