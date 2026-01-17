@@ -30,6 +30,7 @@ const HeroSection = ({}: HeroSectionProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("here");
     const fetchAllData = async () => {
       try {
         setLoading(true);
@@ -51,18 +52,20 @@ const HeroSection = ({}: HeroSectionProps) => {
           comingRes.json()
         ]);
 
+        
         setImageUrls(allData.data.map((movie: Movie) => movie.imageUrl));
-        setNowShowing(nowData.data.slice(0, 10));
-        setComingSoon(comingData.data.slice(0, 10));
+        setNowShowing(nowData?.data?.slice(0, 10));
+        setComingSoon(comingData?.data?.slice(0, 10));
       } catch (error) {
         console.error("Failed to fetch movies:", error);
       } finally {
         setLoading(false);
       }
     };
-
+    
     fetchAllData();
   }, []);
+
 
   if (loading) {
     return (
