@@ -36,6 +36,7 @@ interface PopulatedBooking {
   movieId: {
     title: string;
     imageUrl: string;
+    releaseDate?: string;
   };
   showId: {
     startTime: string;
@@ -271,54 +272,67 @@ export default function ProfilePage() {
                       {bookings.map((booking) => (
                         <div
                           key={booking._id}
-                          className="group relative bg-[#2A2A2A]/40 border border-[#3A3A3A] rounded-2xl overflow-hidden hover:border-[#FAAA47]/50 transition-all duration-300"
+                          className="relative flex flex-col items-center group transition-all duration-500"
                         >
-                          <div className="flex gap-4 p-4">
-                            <div className="relative w-24 h-36 rounded-lg overflow-hidden flex-shrink-0">
-                              <Image
-                                src={booking.movieId?.imageUrl || "/placeholder-movie.jpg"}
-                                alt={booking.movieId?.title}
-                                fill
-                                className="object-cover"
-                              />
+                          {/* Background Stack */}
+                          <div className="absolute left-1/2 -translate-x-1/2 bottom-[-6px] h-[50%] w-[85%] bg-[url('/images/ticket-bg-bottom-3.png')] bg-contain bg-center bg-no-repeat transition-all duration-500"></div>
+                          <div className="absolute left-1/2 -translate-x-1/2 bottom-[-8px] h-[70%] w-[75%] bg-[url('/images/ticket-bg-bottom-2.png')] bg-contain bg-center bg-no-repeat transition-all duration-500"></div>
+                          <div className="absolute left-1/2 -translate-x-1/2 bottom-[-18px] h-[90%] w-[85%] bg-[url('/images/ticket-bg-bottom-1.png')] bg-contain bg-center bg-no-repeat transition-all duration-500"></div>
+                          
+                          {/* Main Ticket */}
+                          <div className="relative w-full aspect-[16/9] bg-[url('/images/ticket-top.png')] bg-contain mx-auto bg-center bg-no-repeat p-8 flex flex-col mt-2">
+                            {/* Top Section: Poster & Info */}
+                            <div className="flex justify-center items-center gap-6 items-start">
+                              <div className="relative w-20 h-28 rounded-md overflow-hidden shadow-xl border border-white/10 shrink-0">
+                                <Image
+                                  src={booking.movieId?.imageUrl || "/images/no_poster.png"}
+                                  alt={booking.movieId?.title || "unknown"}
+                                  fill
+                                  className="object-cover"
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <h3 className="text-xl font-bold text-[#D0021B] drop-shadow-sm leading-tight">
+                                  {booking.movieId?.title}({new Date(booking.movieId?.releaseDate || Date.now()).getFullYear()})
+                                </h3>
+                                <p className="text-[10px] text-gray-700 font-medium leading-relaxed max-w-[200px]">
+                                  Bashundhara Shopping Mall<br />
+                                  Level 8, Bashundhara City 13/3 Ka, Panthapath, Tejgaon, Dhaka 1205, Bangladesh
+                                </p>
+                                <p className="text-[11px] text-gray-600 font-semibold pt-1"> {formatTime(booking.showId.startTime)},{" "}
+                                  {new Date(booking.showId.startTime).toLocaleDateString(undefined, {
+                                    month: 'long',
+                                    day: 'numeric',
+                                    year: 'numeric'
+                                  })}({new Date(booking.showId.startTime).toLocaleDateString(undefined, { weekday: 'long' })})
+                                </p>
+                              </div>
                             </div>
-                            <div className="flex-1 flex flex-col justify-between">
-                              <div>
-                                <div className="flex justify-between items-start">
-                                  <h3 className="text-lg font-bold text-white group-hover:text-[#FAAA47] transition-colors line-clamp-1">
-                                    {booking.movieId?.title}
-                                  </h3>
-                                  <span className={getStatusBadge(booking.paymentStatus)}>
-                                    {booking.paymentStatus.toUpperCase()}
-                                  </span>
-                                </div>
-                                <div className="mt-2 space-y-1">
-                                  <div className="flex items-center text-sm text-[#CAC1C1]">
-                                    <IconCalendar size={14} className="mr-2 text-[#FAAA47]" />
-                                    {new Date(booking.showId.startTime).toLocaleDateString(undefined, {
-                                      weekday: 'short',
-                                      month: 'short',
-                                      day: 'numeric'
-                                    })}
-                                  </div>
-                                  <div className="flex items-center text-sm text-[#CAC1C1]">
-                                    <IconClock size={14} className="mr-2 text-[#FAAA47]" />
-                                    {formatTime(booking.showId.startTime)} - {formatTime(booking.showId.endTime)}
-                                  </div>
-                                  <div className="flex items-center text-sm text-[#CAC1C1]">
-                                    <IconMapPin size={14} className="mr-2 text-[#FAAA47]" />
-                                    Seats: {booking.seats.map(s => s.seatNumber).join(", ")}
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="flex justify-between items-end mt-2 pt-2 border-t border-[#3A3A3A]">
-                                <span className="text-xs text-[#6A6A6A]">
-                                  ID: {booking._id.slice(-8).toUpperCase()}
-                                </span>
-                                <span className="text-[#FAAA47] font-bold">
-                                  ৳{booking.totalPrice.toFixed(2)}
-                                </span>
-                              </div>
+
+                            {/* Middle Section: Seats & Amount */}
+                            <div className="flex-1 flex flex-col justify-center items-center -mt-1">
+                              <h2 className="text-2xl font-black text-[#333] tracking-wider">
+                                {booking.seats.map(s => s.seatNumber).join(", ")}
+                              </h2>
+                              <p className="text-sm font-bold text-gray-600">
+                                Total Amount: BDT {booking.totalPrice}
+                              </p>
+                            </div>
+
+                            {/* Separator */}
+                            <div className="w-full border-t-2 border-dashed border-gray-300 opacity-50 my-2"></div>
+
+                            {/* Bottom Section: Action */}
+                            <div className="flex justify-center pb-2">
+                              {booking.paymentStatus.toLowerCase() !== 'paid' ? (
+                                <button className="bg-[#8B0000] text-white px-10 py-2 rounded-lg font-bold text-lg hover:bg-[#A00000] transition-colors shadow-lg active:scale-95">
+                                  Pay Now
+                                </button>
+                              ) : (
+                                <button className="bg-green-700 text-white px-10 py-2 rounded-lg font-bold text-lg hover:bg-green-800 transition-colors shadow-lg">
+                                  Paid
+                                </button>
+                              )}
                             </div>
                           </div>
                         </div>
